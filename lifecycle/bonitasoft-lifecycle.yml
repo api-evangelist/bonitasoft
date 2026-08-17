@@ -1,0 +1,208 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  https://documentation.ofelia.com/bonita/latest/version-update/product-versioning,
+  https://documentation.ofelia.com/bonita/latest/release-notes,
+  https://documentation.ofelia.com/cloud/latest/sla/service-availability,
+  https://documentation.ofelia.com/cloud/latest/sla/maintenance-and-upgrades,
+  plus openapi/bonitasoft-bonita-openapi.yml for deprecated operations.
+
+versioning:
+  api_contract:
+    scheme: semver
+    current: 1.0.9
+    published: '2026-06-19'
+    location: https://api-documentation.ofelia.com/latest/openapi.yaml
+    per_version_reference: 'https://api-documentation.ofelia.com/{version}/ (e.g. /1.0.9/)'
+    release_assets: https://github.com/bonitasoft/bonita-openapi/releases
+    history:
+      - {version: 1.0.9, date: '2026-06-19'}
+      - {version: 1.0.8, date: '2026-05-04'}
+      - {version: 1.0.7, date: '2026-04-28'}
+      - {version: 1.0.6, date: '2025-09-11'}
+      - {version: 1.0.5, date: '2025-07-11'}
+      - {version: 1.0.4, date: '2025-07-08'}
+      - {version: 1.0.3, date: '2025-02-26'}
+      - {version: 1.0.2, date: '2025-02-20'}
+      - {version: 1.0.1, date: '2025-02-20'}
+      - {version: 1.0.0, date: '2025-02-20'}
+    note: >-
+      The OpenAPI document is versioned INDEPENDENTLY of the product and is the
+      only artifact in this profile with a real semver train. It first shipped
+      1.0.0 on 2025-02-20.
+  url_path:
+    scheme: unversioned
+    detail: >-
+      No version segment in the REST paths (/bonita/API/bpm/case). The effective
+      API version is the runtime version the customer is running.
+  product:
+    scheme: 'YYYY.#-uX'
+    quoted_from_docs: 'YYYY = release year, # = release number within that year, uX = update number'
+    current: 2026.2-u1
+    current_release_date: '2026-06-30'
+    latest_update_date: '2026-07-17'
+    cadence: >-
+      "Two main versions are released every year" and "A new maintenance version
+      is made available at least every month to our customers."
+    cross_compatibility: >-
+      "All maintenance versions are cross-compatible for the same main version" —
+      moving between updates of one main version requires no database update
+      procedure.
+    next_announced: 2027.1-alpha
+    docs: https://documentation.ofelia.com/bonita/latest/version-update/product-versioning
+
+changelog:
+  url: https://documentation.ofelia.com/bonita/latest/release-notes
+  artifact: changelog/bonitasoft-changelog.yml
+  machine_readable: false
+  note: >-
+    Dated, per-version release notes rendered by Antora, with archives for older
+    versions. Human-readable HTML only — no feed, no JSON.
+
+deprecation:
+  policy_documented: false
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  checked: '2026-08-17'
+  evidence:
+    - url: https://documentation.ofelia.com/bonita/latest/version-update/product-versioning
+      status: 200
+      finding: >-
+        Documents the versioning scheme and release cadence but states no
+        maintenance window, no end-of-life date and no deprecation or sunset
+        policy.
+    - url: https://documentation.ofelia.com/bonita/latest/support
+      status: 404
+    - url: https://documentation.ofelia.com/bonita/latest/maintenance-policy
+      status: 404
+    - url: https://documentation.ofelia.com/bonita/latest/product-lifecycle
+      status: 404
+  in_spec_deprecation:
+    supported: true
+    mechanism: 'OpenAPI `deprecated: true` on the operation'
+    deprecated_operation_count: 33
+    note: >-
+      This is the interesting finding. Bonitasoft has NO published deprecation
+      POLICY, but it does mark deprecation in the contract — 33 of 224 operations
+      (15%) carry `deprecated: true`. So a machine can see WHAT is deprecated
+      while a human cannot find out WHEN it will be removed or what replaces it.
+      No Deprecation pointer is emitted in apis.yml because the check reads a
+      published policy, and there is none.
+
+deprecated_operations:
+- openapi/bonitasoft-bonita-openapi.yml#createApplication
+- openapi/bonitasoft-bonita-openapi.yml#updateApplicationById
+- openapi/bonitasoft-bonita-openapi.yml#importApplication
+- openapi/bonitasoft-bonita-openapi.yml#uploadApplication
+- openapi/bonitasoft-bonita-openapi.yml#createApplicationMenu
+- openapi/bonitasoft-bonita-openapi.yml#updateApplicationMenuById
+- openapi/bonitasoft-bonita-openapi.yml#createApplicationPage
+- openapi/bonitasoft-bonita-openapi.yml#uploadApplicationConfiguration
+- openapi/bonitasoft-bonita-openapi.yml#uploadBDMAccessControl
+- openapi/bonitasoft-bonita-openapi.yml#importBDMAccessControl
+- openapi/bonitasoft-bonita-openapi.yml#installBDM
+- openapi/bonitasoft-bonita-openapi.yml#updateActorById
+- openapi/bonitasoft-bonita-openapi.yml#createProcess
+- openapi/bonitasoft-bonita-openapi.yml#updateProcessById
+- openapi/bonitasoft-bonita-openapi.yml#uploadProcess
+- openapi/bonitasoft-bonita-openapi.yml#updateProcessConnectorByProcessId
+- openapi/bonitasoft-bonita-openapi.yml#updateProcessParameterById
+- openapi/bonitasoft-bonita-openapi.yml#updateFormMappingById
+- openapi/bonitasoft-bonita-openapi.yml#getPlatformLicense
+- openapi/bonitasoft-bonita-openapi.yml#uploadPage
+- openapi/bonitasoft-bonita-openapi.yml#createPage
+- openapi/bonitasoft-bonita-openapi.yml#updatePageById
+- openapi/bonitasoft-bonita-openapi.yml#createProfile
+- openapi/bonitasoft-bonita-openapi.yml#updateProfileById
+- openapi/bonitasoft-bonita-openapi.yml#uploadprofiles
+- openapi/bonitasoft-bonita-openapi.yml#importProfiles
+- openapi/bonitasoft-bonita-openapi.yml#searchProfileEntries
+- openapi/bonitasoft-bonita-openapi.yml#createProfileEntry
+- openapi/bonitasoft-bonita-openapi.yml#getProfileEntryById
+- openapi/bonitasoft-bonita-openapi.yml#updateProfileEntryById
+- openapi/bonitasoft-bonita-openapi.yml#deleteProfileEntryById
+- openapi/bonitasoft-bonita-openapi.yml#createTheme
+- openapi/bonitasoft-bonita-openapi.yml#restoreTheme
+
+deprecation_clusters:
+  applications: >-
+    The entire legacy Application/ApplicationMenu/ApplicationPage write surface is
+    deprecated, consistent with the move to Bonita Fabric / UI Builder and
+    "advanced applications".
+  profiles_and_themes: >-
+    Profile, ProfileEntry and Theme writes are deprecated — the Bonita Portal
+    look-and-feel and profile-entry model these served are legacy.
+  design_time_writes: >-
+    createProcess / updateProcessById / uploadProcess and the BDM install/import
+    operations are deprecated in favour of the Maven/Studio build-and-deploy path
+    (see cli/bonitasoft-cli.yml). Design-time mutation over REST is being closed.
+
+sla:
+  published: true
+  scope: Bonita Cloud only (managed offering)
+  uptime_target: null
+  uptime_language: >-
+    "Bonitasoft will use commercially reasonable efforts to ensure an overall
+    availability in each billing month for its production AppRuntime." No numeric
+    percentage is stated on the availability page; the pricing page separately
+    advertises a "99.9% uptime SLA" as a Bonita Enterprise inclusion.
+  availability_formula: '(Uptime / Total Available Time) x 100%, excluding maintenance windows and force majeure'
+  maintenance_notice:
+    scheduled: at least three business days before any downtime
+    unscheduled: aims for one business day notice
+  redundancy: >-
+    Application redundancy with load balancing, continuous data backup, and
+    network redundancy across separate zones within the same region.
+  pages:
+    service_availability: https://documentation.ofelia.com/cloud/latest/sla/service-availability
+    maintenance_and_upgrades: https://documentation.ofelia.com/cloud/latest/sla/maintenance-and-upgrades
+    disaster_recovery: https://documentation.ofelia.com/cloud/latest/sla/disaster-recovery
+    high_performance: https://documentation.ofelia.com/cloud/latest/sla/high-performance
+    data_management: https://documentation.ofelia.com/cloud/latest/sla/data-management
+  support_response_times: not published
+  self_hosted_note: >-
+    None of this applies to a self-hosted Bonita. On premises the customer owns
+    availability entirely; the SLA is a property of the Bonita Cloud contract.
+
+status_page:
+  url: null
+  found: false
+  checked: '2026-08-17'
+  evidence:
+    - {url: 'https://status.bonitasoft.com', status: 0, finding: does not resolve}
+    - {url: 'https://status.ofelia.com', status: 0, finding: does not resolve}
+    - {url: 'https://status.bonita.cloud', status: 0, finding: does not resolve}
+    - {url: 'https://ofelia.statuspage.io', status: 200, finding: 'redirects to atlassian.com/software/statuspage — Atlassian marketing, not an Ofelia page'}
+  note: >-
+    No public status page exists on any host. NO StatusPage pointer is emitted.
+    Bonita Cloud customers are notified of maintenance by direct notice (three
+    business days scheduled / one business day unscheduled) rather than via a
+    public status surface.
+
+support:
+  community: https://community.ofelia.com/
+  customer_service_center: https://csc.bonitacloud.ofelia.com/apps/CustomerServices/downloads
+  csc_note: >-
+    Subscription customers download binaries and open tickets through the
+    Customer Service Center, which is itself a Bonita application running on
+    bonitacloud.ofelia.com — the vendor dogfoods its own platform.
+
+rebrand:
+  event: Bonitasoft became Ofelia
+  date: '2026-06-09'
+  domains_moved:
+    - {from: 'www.bonitasoft.com', to: 'www.ofelia.com', mechanism: 301}
+    - {from: 'documentation.bonitasoft.com', to: 'documentation.ofelia.com', mechanism: 301}
+    - {from: 'api-documentation.bonitasoft.com', to: 'api-documentation.ofelia.com', mechanism: 301}
+    - {from: 'community.bonitasoft.com', to: 'community.ofelia.com', mechanism: 301}
+  retained: >-
+    The GitHub organization is still github.com/bonitasoft and the product is
+    still Bonita. Only the corporate identity and web properties moved. The
+    security contact moved too: product-security@ofelia.com.
+  lifecycle_significance: >-
+    A rebrand is a lifecycle event for API consumers: every hardcoded
+    bonitasoft.com docs URL, every bookmarked reference, and the OpenAPI repo's
+    own homepage field (still https://api-documentation.bonitasoft.com/) now
+    depend on a redirect. The redirects are in place and working as of
+    2026-08-17.

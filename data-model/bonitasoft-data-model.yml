@@ -1,0 +1,468 @@
+generated: '2026-08-17'
+method: derived
+source: >-
+  Derived from openapi/bonitasoft-bonita-openapi.yml (Bonita API 1.0.9, 162
+  component schemas, 153 paths), by walking every schema `$ref` link and every
+  id-reference property (144 fields matching *_id / *Id excluding the primary
+  `id`). Domain naming cross-checked against
+  https://documentation.ofelia.com/bonita/latest/api/api-glossary.
+summary:
+  entities: 162
+  ref_links: 39
+  id_reference_fields: 144
+  domains: 6
+  note: >-
+    Bonita's model has an unusual shape for an API data model: it is a
+    BPMN execution graph, not a CRUD object graph. The dominant relationship is
+    not "belongs_to a parent record" but "was produced by a definition and lives
+    inside a case", and almost every runtime entity has an ARCHIVED twin, because
+    a completed BPMN element moves out of the live tables. An agent that models
+    Bonita as ordinary REST resources will 404 constantly (see
+    errors/bonitasoft-problem-types.yml, the 404 remediation).
+
+id_conventions:
+  primary_key: >-
+    `id` — a numeric string on most resources. Not prefixed and not globally
+    unique across resource types, so an id alone does not identify what it is.
+  foreign_key_styles:
+  - 'camelCase: processId, caseId, rootCaseId, parentCaseId, assigneeId, actorId'
+  - 'snake_case: user_id, group_id, role_id, process_id, actor_id, case_id, profile_id'
+  inconsistency: >-
+    Both styles coexist, sometimes on sibling fields of the SAME schema — Activity
+    carries processId, parentCaseId, rootCaseId, rootContainerId, actorId AND
+    assigned_id. ActorMember uses actor_id/role_id/group_id/user_id while
+    DelegatedTask uses actorId/assigneeId. This is a real ergonomics defect: a
+    generated client cannot infer the foreign-key name from the entity name.
+  archive_convention: >-
+    Archived entities carry `sourceObjectId` (or `sourcedObjectId` on the variable
+    schemas — another spelling inconsistency) pointing back at the id the live
+    entity had before archiving. That field is the join between the live and
+    archived halves of the model.
+
+domains:
+- name: BPM design-time
+  description: What was modelled and deployed.
+  entities: [ProcessDefinition, ProcessDeploymentInfo, DesignProcessDefinition, FlowElementContainerDefinition, Contract, ContractInput, ContractConstraint, Expression, ActorDefinition, Actor, ActorMember, ProcessParameter, ProcessConnectorDependency, FormMapping, ProcessSupervisor, ProcessResolutionProblem, Diagram, ProcessInfo]
+- name: BPM runtime
+  description: What is executing right now.
+  entities: [ProcessInstance, Activity, FlowNode, AbstractTask, HumanTask, UserTask, ManualTask, Task, ProcessInstanceVariable, ActivityVariable, ProcessInstanceComment, ProcessInstanceDocument, ConnectorInstance, ConnectorFailure, BPMFailure, TimerEventTrigger, Message, Signal, DelegationRule, DelegatedTask, DelegationUser]
+- name: BPM archive
+  description: The immutable record of what completed. Every entity here mirrors a runtime entity.
+  entities: [ArchivedProcessInstance, ArchivedActivity, ArchivedFlowNode, ArchivedHumanTask, ArchivedManualTask, ArchivedUserTask, ArchivedTask, ArchivedProcessInstanceVariable, ArchivedActivityVariable, ArchivedProcessInstanceComment, ArchivedProcessInstanceDocument, ArchivedConnectorInstance, ArchivedBPMFailure]
+- name: Identity
+  entities: [User, Group, Role, Membership, Profile, ProfileEntry, ProfileMember, CustomUser, CustomUserDefinition, CustomUserValue, ProfessionalContactData, Session]
+- name: Business Data (BDM)
+  entities: [Bdm, BDMAccessControl, BusinessObjectWithRetentionRule, CompositionNode, DataRetentionConfig, RetentionRuleCreateRequest, RetentionRuleUpdateRequest, ReferenceDate, BusinessDataCreationResult]
+- name: Application / platform
+  entities: [AbstractApplication, ApplicationMenu, ApplicationPage, Page, Theme, Platform, License, Log, I18nlocale, I18ntranslation, Maintenance, TenantResourceState]
+
+relationships:
+# --- design-time -> runtime ---
+- from: ProcessInstance
+  to: ProcessDefinition
+  kind: belongs_to
+  via: processDefinitionId
+  note: A case is an instance of a deployed process definition.
+- from: ProcessDefinition
+  to: ProcessInstance
+  kind: has_many
+  via: processDefinitionId
+- from: ProcessDeploymentInfo
+  to: ProcessDefinition
+  kind: belongs_to
+  via: processId
+- from: ProcessDefinition
+  to: ActivationState
+  kind: has_one
+  via: $ref
+- from: ProcessDefinition
+  to: ConfigurationState
+  kind: has_one
+  via: $ref
+- from: ProcessDefinition
+  to: Actor
+  kind: has_one
+  via: actorinitiatorid
+  note: The actor allowed to start the process.
+- from: Actor
+  to: ProcessDefinition
+  kind: belongs_to
+  via: process_id
+- from: ActorMember
+  to: Actor
+  kind: belongs_to
+  via: actor_id
+- from: ActorMember
+  to: User
+  kind: has_one
+  via: user_id
+- from: ActorMember
+  to: Group
+  kind: has_one
+  via: group_id
+- from: ActorMember
+  to: Role
+  kind: has_one
+  via: role_id
+  note: >-
+    An actor member is a polymorphic mapping — exactly one of user_id, group_id,
+    role_id (or a group+role pair) is populated. This is the join that decides who
+    can act on a task.
+- from: ProcessParameter
+  to: ProcessDefinition
+  kind: belongs_to
+  via: process_id
+- from: ProcessSupervisor
+  to: User
+  kind: has_one
+  via: user_id
+- from: FormMapping
+  to: ProcessDefinition
+  kind: belongs_to
+  via: processDefinitionId
+- from: FormMapping
+  to: Page
+  kind: has_one
+  via: pageId
+- from: ProcessConnectorDependency
+  to: ProcessDefinition
+  kind: belongs_to
+  via: connector_process_id
+- from: DesignProcessDefinition
+  to: Contract
+  kind: has_one
+  via: $ref
+- from: Contract
+  to: ContractInput
+  kind: has_many
+  via: $ref
+- from: Contract
+  to: ContractConstraint
+  kind: has_many
+  via: $ref
+- from: ContractInput
+  to: ContractInput
+  kind: has_many
+  via: $ref
+  note: >-
+    Recursive. A contract input can be a complex type containing further inputs —
+    this is the shape of the JSON body POST /API/bpm/case expects.
+- from: DesignProcessDefinition
+  to: ActorDefinition
+  kind: has_many
+  via: $ref
+- from: DesignProcessDefinition
+  to: Expression
+  kind: has_many
+  via: $ref
+- from: Expression
+  to: Expression
+  kind: has_many
+  via: $ref
+  note: Recursive expression tree (Groovy/constant/variable expressions).
+
+# --- case hierarchy ---
+- from: ProcessInstance
+  to: ProcessInstance
+  kind: belongs_to
+  via: rootCaseId
+  note: >-
+    Self-referential. A called (sub-process) case points at its root case; callerId
+    points at the flow node that called it. This is how Bonita models call
+    activities.
+- from: ProcessInstance
+  to: FlowNode
+  kind: has_one
+  via: callerId
+- from: ProcessInstanceVariable
+  to: ProcessInstance
+  kind: belongs_to
+  via: case_id
+- from: ProcessInstanceComment
+  to: ProcessInstance
+  kind: belongs_to
+  via: processInstanceId
+- from: ProcessInstanceComment
+  to: User
+  kind: has_one
+  via: userId
+- from: ProcessInstanceDocument
+  to: ProcessInstance
+  kind: belongs_to
+  via: caseId
+- from: ProcessInstanceDocument
+  to: Upload
+  kind: has_one
+  via: contentStorageId
+  note: contentStorageId is the token returned by the upload servlet, not a document id.
+
+# --- flow nodes and tasks ---
+- from: FlowNode
+  to: ProcessInstance
+  kind: belongs_to
+  via: caseId
+- from: FlowNode
+  to: ProcessInstance
+  kind: belongs_to
+  via: rootCaseId
+- from: FlowNode
+  to: ProcessDefinition
+  kind: belongs_to
+  via: processId
+- from: FlowNode
+  to: User
+  kind: has_one
+  via: assigned_id
+- from: FlowNode
+  to: Actor
+  kind: has_one
+  via: actorId
+- from: FlowNode
+  to: FlowNode
+  kind: belongs_to
+  via: parentTaskId
+- from: Activity
+  to: ActivityType
+  kind: has_one
+  via: $ref
+- from: Activity
+  to: ActivityState
+  kind: has_one
+  via: $ref
+- from: Activity
+  to: ActivityPriority
+  kind: has_one
+  via: $ref
+- from: AbstractTask
+  to: ActivityState
+  kind: has_one
+  via: $ref
+- from: ActivityVariable
+  to: FlowNode
+  kind: belongs_to
+  via: containerId
+- from: ConnectorInstance
+  to: FlowNode
+  kind: belongs_to
+  via: containerId
+  note: >-
+    containerId is polymorphic — a connector instance may hang off a flow node OR a
+    process instance. The spec does not distinguish them by field, only by context.
+- from: ConnectorFailure
+  to: ConnectorInstance
+  kind: belongs_to
+  via: connectorInstanceId
+- from: BPMFailure
+  to: ProcessInstance
+  kind: belongs_to
+  via: caseId
+- from: BPMFailure
+  to: FlowNode
+  kind: belongs_to
+  via: flowNodeInstanceId
+- from: BPMFailure
+  to: ProcessDefinition
+  kind: belongs_to
+  via: processDefinitionId
+- from: TimerEventTrigger
+  to: FlowNode
+  kind: belongs_to
+  via: eventInstanceId
+
+# --- delegation (2026.2) ---
+- from: DelegationRule
+  to: DelegationUser
+  kind: has_one
+  via: $ref
+  note: Both the delegator and the delegate are DelegationUser projections.
+- from: DelegationRule
+  to: DelegationStatus
+  kind: has_one
+  via: $ref
+  note: 'Date-driven status: Active | Scheduled | Expired.'
+- from: DelegationRule
+  to: User
+  kind: has_one
+  via: delegatorId
+- from: DelegationRule
+  to: User
+  kind: has_one
+  via: delegateId
+- from: DelegatedTask
+  to: DelegationUser
+  kind: has_one
+  via: $ref
+- from: DelegatedTask
+  to: ProcessDeploymentInfo
+  kind: has_one
+  via: $ref
+- from: DelegatedTask
+  to: User
+  kind: has_one
+  via: assigneeId
+- from: DelegationUser
+  to: User
+  kind: has_one
+  via: managerUserId
+
+# --- archive joins ---
+- from: ArchivedActivity
+  to: Activity
+  kind: belongs_to
+  via: sourceObjectId
+- from: ArchivedBPMFailure
+  to: BPMFailure
+  kind: belongs_to
+  via: sourceObjectId
+- from: ArchivedActivityVariable
+  to: ActivityVariable
+  kind: belongs_to
+  via: sourcedObjectId
+  note: 'Spelling differs from sourceObjectId elsewhere — "sourcedObjectId".'
+- from: ArchivedProcessInstanceVariable
+  to: ProcessInstanceVariable
+  kind: belongs_to
+  via: sourcedObjectId
+
+# --- identity ---
+- from: User
+  to: User
+  kind: belongs_to
+  via: manager_id
+  note: Self-referential management hierarchy.
+- from: User
+  to: User
+  kind: has_one
+  via: created_by_user_id
+- from: Group
+  to: Group
+  kind: belongs_to
+  via: parent_group_id
+  note: Self-referential group tree (path-addressed).
+- from: Membership
+  to: User
+  kind: belongs_to
+  via: user_id
+- from: Membership
+  to: Group
+  kind: belongs_to
+  via: group_id
+- from: Membership
+  to: Role
+  kind: belongs_to
+  via: role_id
+  note: >-
+    Membership is the three-way join (user x group x role) that Bonita's
+    organization model is built on. assigned_by_user_id records who granted it.
+- from: ProfileMember
+  to: Profile
+  kind: belongs_to
+  via: profile_id
+- from: ProfileMember
+  to: User
+  kind: has_one
+  via: user_id
+- from: ProfileMember
+  to: Group
+  kind: has_one
+  via: group_id
+- from: ProfileMember
+  to: Role
+  kind: has_one
+  via: role_id
+  note: Same polymorphic shape as ActorMember. Profiles are what carry API permissions.
+- from: ProfileEntry
+  to: Profile
+  kind: belongs_to
+  via: profile_id
+- from: ProfileEntry
+  to: ProfileEntry
+  kind: belongs_to
+  via: parent_id
+- from: CustomUser
+  to: CustomUserDefinition
+  kind: has_one
+  via: $ref
+- from: CustomUserValue
+  to: User
+  kind: belongs_to
+  via: userId
+- from: CustomUserValue
+  to: CustomUserDefinition
+  kind: belongs_to
+  via: definitionId
+- from: Session
+  to: User
+  kind: belongs_to
+  via: user_id
+
+# --- application / platform ---
+- from: AbstractApplication
+  to: Profile
+  kind: has_one
+  via: profileId
+- from: ApplicationPage
+  to: AbstractApplication
+  kind: belongs_to
+  via: applicationId
+- from: ApplicationPage
+  to: Page
+  kind: belongs_to
+  via: pageId
+- from: ApplicationMenu
+  to: AbstractApplication
+  kind: belongs_to
+  via: applicationId
+- from: ApplicationMenu
+  to: ApplicationPage
+  kind: has_one
+  via: applicationPageId
+- from: ApplicationMenu
+  to: ApplicationMenu
+  kind: belongs_to
+  via: parentMenuId
+- from: Log
+  to: LogSeverityLevel
+  kind: has_one
+  via: $ref
+- from: Bdm
+  to: TenantResourceState
+  kind: has_one
+  via: $ref
+- from: BDMAccessControl
+  to: TenantResourceState
+  kind: has_one
+  via: $ref
+
+# --- BDM retention (2026.1) ---
+- from: BusinessObjectWithRetentionRule
+  to: CompositionNode
+  kind: has_many
+  via: $ref
+- from: CompositionNode
+  to: CompositionNode
+  kind: has_many
+  via: $ref
+  note: >-
+    Recursive composition tree. Retention deletion cascades down it, which is the
+    whole point of the 2026.1 GDPR feature.
+- from: DataRetentionConfig
+  to: ReferenceDate
+  kind: has_one
+  via: $ref
+
+business_data_note: >-
+  The Business Data Model is the one part of this graph the OpenAPI CANNOT
+  describe. Business objects are defined per deployment at design time, so
+  /API/bdm/businessData/{businessDataType} is generic and its queries are
+  addressed by name (?q=<namedQuery>). An agent cannot enumerate a customer's
+  business entities from the published contract — it must read that deployment's
+  BDM. This is the single biggest discoverability limit of the Bonita API.
+
+expansion_note: >-
+  Related entities are inlined with the repeatable d= (deploy) query parameter,
+  e.g. /API/bpm/flowNode/143?d=processId&d=caseId&d=assigned_id. See
+  conventions/bonitasoft-conventions.yml — d= is documented in prose but not
+  declared per-operation in the spec.
+
+render: null

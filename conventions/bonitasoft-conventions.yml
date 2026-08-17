@@ -1,0 +1,248 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  https://documentation.ofelia.com/bonita/latest/api/rest-api-overview and
+  https://documentation.ofelia.com/bonita/latest/api/using-list-and-search-methods,
+  cross-checked against openapi/bonitasoft-bonita-openapi.yml (Bonita API 1.0.9,
+  153 paths / 224 operations).
+description: >-
+  How the Bonita Web REST API behaves across every operation: base URL shape,
+  session authentication with a CSRF token, list/search pagination, the
+  content-range response header, the error envelope, versioning, and the one
+  place a rate limit is signalled. These are the cross-cutting runtime semantics
+  the OpenAPI document does not fully express.
+
+deployment_model: >-
+  IMPORTANT context for every convention below. Bonita is software the customer
+  runs — on premises, in a container, or as managed Bonita Cloud. There is no
+  vendor-operated API host. Every convention here is a property of the runtime
+  the customer deploys, at whatever host they deploy it to.
+
+base_url:
+  pattern: '{scheme}://{host}:{port}/bonita/API'
+  quoted_from_docs: 'http://host:port/bonita/API/...'
+  spec_sample_server: http://localhost:8080/bonita
+  bonita_cloud_default: 'https://{subscription}.bonitacloud.com/bonita'
+  bonita_cloud_environments:
+    production: '{customer-name}.bonitacloud.com'
+    non_production: '{customer-name}-integration.bonitacloud.com'
+  custom_domain: >-
+    Bonita Cloud customers may delegate their own domain/subdomain to Ofelia
+    name servers; Ofelia then manages the SSL certificate lifecycle. The same
+    custom domain must be applied across all environments.
+  docs: https://documentation.ofelia.com/cloud/latest/manage/url-customization
+  extension_path: '{bonita_context}/API/extension/{pathTemplate}'
+  extension_docs: https://documentation.ofelia.com/bonita/latest/api/rest-api-extensions
+
+api_style: REST over HTTP(S); form-urlencoded login, JSON request/response bodies.
+
+authentication:
+  scheme: >-
+    Session cookie plus CSRF token. POST /loginservice with
+    application/x-www-form-urlencoded username/password/redirect returns 204 with
+    a Set-Cookie JSESSIONID (Path=/bonita; HttpOnly; SameSite=Lax) and an
+    X-Bonita-API-Token cookie/header.
+  csrf:
+    header: X-Bonita-API-Token
+    required_on: [POST, PUT, DELETE]
+    source: >-
+      The value is read from the cookie named X-Bonita-API-Token issued by the
+      most recent successful /loginservice call. CSRF protection is enabled by
+      default on all fresh installations.
+    docs: https://documentation.ofelia.com/bonita/latest/security/csrf-security
+  session_pitfall: >-
+    The docs warn explicitly that the cookies transferred must be the ones
+    generated during the LAST successful login, and that a stale
+    X-Bonita-API-Token yields 401.
+  enterprise_bearer: >-
+    When the runtime is configured for OIDC SSO (Enterprise edition), the REST
+    API also accepts an Authorization: Bearer <access_token> header
+    (securityScheme bearer_auth).
+  logout: GET /logoutservice?redirect=false
+  platform_scope: >-
+    Platform-level administration is a separate session: POST
+    /platformloginservice, credentials from
+    bonita-platform-community-custom.properties.
+  detail: authentication/bonitasoft-authentication.yml
+  authorization_model: >-
+    Not OAuth scopes. Bonita maps API calls to PERMISSIONS, and permissions to
+    PROFILES (User, Administrator, Super Administrator). See
+    documentation.ofelia.com/bonita/latest/identity/api-permissions-overview and
+    .../identity/rest-api-authorization. This is why scopes/ is intentionally
+    absent from this repo.
+
+idempotency:
+  supported: false
+  mechanism: null
+  evidence: >-
+    No idempotency-key header, parameter or convention appears anywhere in the
+    224 operations of Bonita API 1.0.9, and none is documented. The only
+    conflict-shaped signal is a single 409 response (on one operation). Retrying
+    a POST /API/bpm/case will create a second case.
+  consequence: >-
+    NO `Idempotency` pointer is emitted in apis.yml. An agent driving Bonita
+    writes must dedupe on its own — for example by carrying a caller-generated
+    correlation value in a business variable or process parameter and searching
+    for it (GET /API/bpm/case with the f= filter) before re-posting.
+
+pagination:
+  style: offset (page index + page size)
+  required: >-
+    p and c are declared `required: true` on the list/search operations that use
+    them — a list call without both is a 400, not a defaulted first page.
+  request_params:
+    p: index of the page to display; integer >= 0, default 0
+    c: maximum number of elements to retrieve; integer >= 1, default 20
+    o: sort order, e.g. o=myProp%20ASC
+    f: 'filter, repeatable, form f={filter_name}={filter_value} url-encoded'
+    s: free-text search term
+  usage_counts:
+    c: 60 operations
+    p: 54 operations
+    f: 51 operations
+    o: 45 operations
+    s: 32 operations
+  response_fields:
+    content-range: >-
+      Pagination state is returned in the content-range RESPONSE HEADER, not in
+      the JSON body. List bodies are bare JSON arrays.
+  known_hazard: >-
+    The docs call out HTTP 416 Range Not Satisfiable when a firewall or proxy
+    strips the content-range header.
+  docs: https://documentation.ofelia.com/bonita/latest/api/using-list-and-search-methods
+
+field_expansion:
+  supported: true
+  mechanism: 'd= (deploy) query parameter, repeatable, naming a related attribute to inline'
+  quoted_from_spec: >-
+    "Specifiy multiple `d` parameter to extend several resources. For instance,
+    to retrieve the flow node of id 143 and the associated process, process
+    instance and assigned user, call
+    /API/bpm/flowNode/143?d=processId&d=caseId&d=assigned_id"
+  evidence: >-
+    openapi/bonitasoft-bonita-openapi.yml info.description (the "API Extension"
+    / deploy section). Also referenced per-field, e.g. startedBySubstitute is
+    only populated when d=startedBySubstitute is given.
+  note: >-
+    Many BPM/identity resources return foreign keys (processDefinitionId,
+    caseId, assigned_id, started_by) and accept d=<attribute> to embed the
+    referenced object. The `d` parameter is described in the spec's prose rather
+    than declared as a formal `parameters[]` entry on each operation, so an
+    OpenAPI-driven client will not discover it from the machine-readable
+    contract — a real gap worth reporting upstream.
+
+counters:
+  supported: true
+  mechanism: 'n= query parameter'
+  values: [activeFlowNodes, failedFlowNodes]
+  evidence: 'GET /API/bpm/case/{id} declares n with description "Count of related resources".'
+  note: >-
+    Unlike d=, n= IS formally declared — but on exactly one operation, as an
+    enum of two values.
+
+sparse_fields:
+  supported: false
+
+named_queries:
+  supported: true
+  mechanism: 'GET /API/bdm/businessData/{businessDataType}?q=<namedQuery>&p=&c='
+  note: >-
+    Business Data Model queries are addressed by NAME, not by a filter language.
+    q is required; the query itself is declared in the BDM at design time (e.g.
+    q=searchEmployeeByFirstNameAndLastName). An agent cannot enumerate available
+    queries from the OpenAPI — they are deployment-specific.
+
+metadata:
+  supported: true
+  mechanism: >-
+    Not a generic key/value bag. Extensibility is modelled as first-class
+    resources: custom user information (CustomUserDefinition / CustomUserValue),
+    process parameters (ProcessParameter), process instance variables
+    (ProcessInstanceVariable), activity variables (ActivityVariable) and
+    comments (ProcessInstanceComment).
+
+request_tracing:
+  request_id_header: null
+  supported: false
+  note: >-
+    No correlation/request-id header is documented or declared in the spec. The
+    audit trail is server-side instead: the Log resource (GET /API/system/log)
+    and, for Enterprise, work-execution audit
+    (documentation.ofelia.com/bonita/latest/runtime/work-execution-audit).
+
+versioning:
+  api_contract:
+    scheme: semver on the OpenAPI document
+    current: 1.0.9
+    published: '2026-06-19'
+    location: https://api-documentation.ofelia.com/latest/openapi.yaml
+    versioned_reference: 'https://api-documentation.ofelia.com/{contract-version}/ — e.g. /1.0.9/'
+  url_path:
+    scheme: unversioned
+    note: >-
+      No version segment appears in the REST paths (/bonita/API/bpm/case, not
+      /v1/...). The API version is the runtime version.
+  product:
+    scheme: 'YYYY.#-uX (year . release-in-year - update)'
+    current: 2026.2-u1
+    cadence: two main versions per year; a maintenance update at least monthly
+    cross_compatibility: >-
+      All maintenance versions of the same main version are cross-compatible and
+      require no database update procedure.
+    docs: https://documentation.ofelia.com/bonita/latest/version-update/product-versioning
+  detail: lifecycle/bonitasoft-lifecycle.yml
+
+error_envelope:
+  media_type: application/json
+  schema: Error
+  shape: '{ "message": string }'
+  extended_shape: >-
+    Some responses widen this to { code, description, message, exception,
+    explanations } — the 429 on POST /API/bpm/process/{id}/instantiation is the
+    clearest example.
+  rfc9457: false
+  note: >-
+    Bonita does NOT use application/problem+json. Zero problem+json media types
+    appear in the 224-operation spec. Errors are a plain JSON object with a
+    human-readable `message`, reused via components/responses (BadRequest,
+    Unauthorized, Forbidden, NotFound, Conflict, ServerError).
+  detail: errors/bonitasoft-problem-types.yml
+
+rate_limit_signaling:
+  declared: partial
+  headers_returned: [Retry-After]
+  status_on_exhaustion: 429
+  scope: >-
+    Only two operations declare a 429, both on case creation, and only for
+    Community Edition 2024.3 and later. There is no account-wide or per-key rate
+    limit — because there is no vendor-operated gateway to enforce one.
+  detail: rate-limits/bonitasoft-rate-limits.yml
+
+cors:
+  supported: true
+  note: >-
+    Not enabled by default; the customer enables it in their bundle. Documented
+    at documentation.ofelia.com/bonita/latest/security/enable-cors-in-tomcat-bundle.
+
+content_types:
+  request: [application/json, application/x-www-form-urlencoded, multipart/form-data]
+  response: [application/json, text/plain, application/xml]
+  note: >-
+    text/plain appears on 9 responses and application/xml on 1; everything else
+    is application/json. File upload/download (documents, .bar business archives,
+    pages, themes, BDM) uses multipart/form-data via the Upload and
+    FormFileUpload resources.
+
+hardening_defaults:
+  csrf: enabled by default on fresh installations
+  brute_force_login_protection: https://documentation.ofelia.com/bonita/latest/security/brute-force-login-protection
+  html_sanitizer: https://documentation.ofelia.com/bonita/latest/security/sanitizer-security
+  java_security_policy: https://documentation.ofelia.com/bonita/latest/security/java-security-policy
+
+cross_links:
+  authentication: authentication/bonitasoft-authentication.yml
+  errors: errors/bonitasoft-problem-types.yml
+  lifecycle: lifecycle/bonitasoft-lifecycle.yml
+  rate_limits: rate-limits/bonitasoft-rate-limits.yml
+  data_model: data-model/bonitasoft-data-model.yml
+  sandbox: sandbox/bonitasoft-sandbox.yml

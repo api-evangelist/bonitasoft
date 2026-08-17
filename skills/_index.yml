@@ -1,0 +1,79 @@
+generated: '2026-08-17'
+method: generated
+source: >-
+  Generated from openapi/bonitasoft-bonita-openapi.yml (Bonita API 1.0.9),
+  conventions/bonitasoft-conventions.yml, errors/bonitasoft-problem-types.yml,
+  rate-limits/bonitasoft-rate-limits.yml and
+  data-model/bonitasoft-data-model.yml. Every operationId referenced in every
+  skill was verified to exist verbatim in the spec.
+search_result: >-
+  No provider-published Agent Skills or AGENTS.md was found. github.com/bonitasoft
+  has 157 public repositories and none carries a skills/ directory or AGENTS.md;
+  the bonita-openapi repository does carry a CLAUDE.md, and
+  bonita-connector-template advertises "Claude Code review" in CI, so the
+  organization uses coding agents internally — but it publishes no agent-facing
+  operating instructions for consuming the Bonita API. These five are ours.
+grounding_rule: >-
+  Nothing in these skills is invented. Every operationId, path, parameter, header,
+  status code and default credential is either declared in the published OpenAPI
+  or quoted from the provider's own documentation.
+
+skills:
+- file: bonitasoft-authenticate-and-call.md
+  name: Authenticate against a Bonita runtime and make a first call
+  api: openapi/bonitasoft-bonita-openapi.yml
+  operations: [login, getSession, searchProcesses, logout]
+  why: >-
+    The session-plus-CSRF model is the first wall every integrator hits. A valid
+    session still 401s on a write without the X-Bonita-API-Token header, and the
+    required p/c pagination parameters 400 an otherwise correct read.
+
+- file: bonitasoft-start-and-complete-a-case.md
+  name: Start a Bonita case and drive it to completion
+  api: openapi/bonitasoft-bonita-openapi.yml
+  operations: [searchProcesses, getProcessContractById, instanciateProcess, createProcessInstance, getProcessInstanceById, getProcessInstanceInfoById, searchHumanTasks, updateHumanTaskById, getContractByUserTaskId, executeUserTask]
+  why: >-
+    The core BPM flow. Emphasises reading the per-process Contract before building
+    a payload (it cannot be guessed from the spec) and the absence of idempotency
+    on case creation.
+
+- file: bonitasoft-read-case-history.md
+  name: Read Bonita case history from the archive
+  api: openapi/bonitasoft-bonita-openapi.yml
+  operations: [searchArchivedProcessInstances, getArchivedProcessInstanceById, getContextByArchivedProcessInstanceId, searchArchivedHumanTasks, searchArchivedTasks, searchArchivedActivities, searchArchivedFlowNodes, getArchivedProcessInstanceVariables, searchLogs]
+  why: >-
+    The archive duality is the single biggest source of unexpected 404s in this
+    API and nothing in the spec links a live resource to its archived twin.
+
+- file: bonitasoft-provision-organization.md
+  name: Provision a Bonita organization member and grant them work
+  api: openapi/bonitasoft-bonita-openapi.yml
+  operations: [createUser, searchUsers, getUserById, updateUserById, searchUserSummaries, createGroup, searchGroups, createRole, searchRoles, createMembership, searchMemberships, searchProfiles, createProfileMember, searchActors, searchActorMembers, createCustomUserDefinition, searchCustomUsers, createDelegationRule]
+  why: >-
+    Authorization is profile-based rather than scope-based, so a user with no
+    profile member record gets 403 everywhere. This is the step integrations
+    forget, and there is no scope surface to audit it against.
+
+- file: bonitasoft-diagnose-and-recover-failures.md
+  name: Diagnose and recover a failed Bonita process
+  api: openapi/bonitasoft-bonita-openapi.yml
+  operations: [getProcessInstanceInfoById, getBPMFailuresByCaseId, getBPMFailuresByRootCaseId, getBPMFailuresByFlowNodeInstanceId, getArchivedBPMFailuresByCaseId, getArchivedBPMFailuresByRootCaseId, searchFlowNodes, getFlowNodeById, updateFlowNodeById, searchConnectorInstances, getConnectorFailureById, searchTimerEventTriggers, updateTimerEventTriggerById, searchLogs, getLogById]
+  why: >-
+    Bonita models failure as first-class durable data (BPMFailure,
+    ConnectorFailure and their archived twins), which is a real strength — but
+    nothing pushes it to you, so recovery is a polling discipline.
+
+not_covered:
+  business_data: >-
+    A Business Data Model skill was deliberately NOT generated. The BDM operations
+    (searchBusinessData, insertBusinessData, updateBusinessData,
+    deleteBusinessData) are generic over a per-deployment
+    {businessDataType} and address queries by name (?q=<namedQuery>) declared at
+    design time. A useful skill would have to name entities and queries that exist
+    only in one customer's deployment, so writing one would mean inventing them.
+    The constraint is recorded in data-model/bonitasoft-data-model.yml instead.
+  design_time: >-
+    No skill covers deploying processes, pages or the BDM over REST, because those
+    write operations (createProcess, updateProcessById, uploadProcess, installBDM,
+    importBDMAccessControl) are all marked deprecated in the contract. The
+    supported path is the Maven plugin — see cli/bonitasoft-cli.yml.

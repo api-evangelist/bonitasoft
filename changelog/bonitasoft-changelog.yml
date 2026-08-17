@@ -1,0 +1,181 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  https://documentation.ofelia.com/bonita/latest/release-notes plus the versioned
+  archives https://documentation.ofelia.com/bonita/2026.1/release-notes and
+  https://documentation.ofelia.com/bonita/2025.2/release-notes, and the
+  independently versioned contract train at
+  https://github.com/bonitasoft/bonita-openapi/releases.
+description: >-
+  Recent window only. Bonitasoft publishes dated, per-version release notes for
+  the Bonita product AND a separate semver release train for the OpenAPI
+  contract. Both are recorded because they move at different speeds and a
+  consumer needs both.
+
+format: html
+machine_readable: false
+feed: null
+note_on_machine_readability: >-
+  The release notes are Antora-rendered HTML with no RSS/Atom feed and no JSON.
+  The OpenAPI train is the one part of this changelog a machine can follow
+  reliably — the GitHub Releases API returns tag, date and asset list.
+
+scheme:
+  product: 'YYYY.#-uX (year . release-in-year - update); pre-release builds use -bN'
+  api_contract: semver, tracked independently of the product
+
+current:
+  product: 2026.2-u1
+  product_date: '2026-07-17'
+  api_contract: 1.0.9
+  api_contract_date: '2026-06-19'
+
+maintained_trains:
+  note: >-
+    Three main versions received fixes on the SAME day, 2026-07-17 — 2026.2-u1,
+    2026.1-u1 and 2025.2-u9. That is direct evidence of parallel maintenance
+    across at least three release lines, which matters because no end-of-life
+    policy is published (see lifecycle/bonitasoft-lifecycle.yml).
+  observed:
+    - {train: '2026.2', latest: 2026.2-u1, date: '2026-07-17'}
+    - {train: '2026.1', latest: 2026.1-u1, date: '2026-07-17'}
+    - {train: '2025.2', latest: 2025.2-u9, date: '2026-07-17'}
+
+entries:
+- version: 2026.2-u1
+  date: '2026-07-17'
+  kind: maintenance
+  breaking: false
+  fixes:
+  - 'BPA-633 — GET bpm/archivedCase returned HTTP 404 for the whole list when a deployed started_by / startedBySubstitute user no longer existed in the organization.'
+  - 'BPA-680 — [Studio/Windows] process deploy ran "mvn clean install", failed to delete the locked BDM jar, wiped the BDM build output and broke the BAR build.'
+  - Several dependencies updated.
+
+- version: 2026.2-u0
+  date: '2026-06-30'
+  kind: main
+  breaking: false
+  api_additions:
+  - 'delegation/rule — create, search, update and delete delegation rules. Subscription editions only.'
+  - 'delegation/task — read-only; searches the tasks the caller can act on through an active delegation. Subscription editions only.'
+  - 'GET /API/bpm/processName — read-only; searches process deployment information grouped by name and display name, one entry per distinct name with its deployed versions. Any edition.'
+  - 'GET /API/identity/userSummary — read-only; lightweight paginated user list (id, user name, first name, last name, job title) for user pickers, without the full identity/user payload. Any edition.'
+  highlights:
+  - >-
+    Task Delegation (Teamwork, Efficiency, Performance, Enterprise and Scale
+    editions). A designated delegate can see and perform an absent user's
+    assigned tasks without reassignment, with full audit traceability. Delivered
+    via a new Enterprise-edition Bonita User Application (app token
+    userAppEEBonita) that supersedes the previous one (userAppBonita); the two
+    coexist after an update until the old one is removed.
+  - >-
+    Authorization rules updated: TaskPermissionRule and
+    TaskExecutionPermissionRule now grant an active delegate access to delegated
+    tasks, and a new DelegationPermissionRule secures the delegation endpoints,
+    with matching entries in dynamic-permissions-checks.properties.
+  - >-
+    ProcessAPI.isInvolvedInProcessInstance and
+    ProcessAPI.isInvolvedInHumanTaskInstance now also return true for an active
+    delegate — a behaviour change for callers using them outside authorization.
+  - >-
+    The Bonita User Application process list page was re-implemented in Svelte,
+    replacing React. Descriptor-level customizations keep working; forked page
+    source must be ported.
+  security_fixes:
+  - 'CVE-375 / public CVE-2026-7307 — keycloak-saml-core: a remote unauthenticated attacker could send crafted XML input to the endpoint.'
+  - 'CVE-431 / public CVE-2026-2575 — keycloak-saml-adapter-core: an unauthenticated remote attacker could trigger an application-level denial of service.'
+  migration_required: true
+  migration_notes: >-
+    Manual steps are required to surface the new Delegations pages
+    (page-user-delegation, page-admin-delegation) in existing or customized
+    applications, and customized REST API authorization rules must be re-applied
+    on top of the new rule versions or delegation will not work.
+  known_limitation: >-
+    BDM access is controlled separately from delegation — a delegate needs the
+    same BDM rights as the delegator to open a task form.
+
+- version: 2026.2-b5
+  date: '2026-06-19'
+  kind: pre-release
+  breaking: false
+  fixes:
+  - 'BPA-567 — OIDC callback failed with IllegalArgumentException, so login never completed.'
+  - Several dependencies updated.
+
+- version: 2026.1-u1
+  date: '2026-07-17'
+  kind: maintenance
+  breaking: false
+
+- version: 2026.1-u0
+  date: '2026-04-28'
+  kind: main
+  breaking: true
+  breaking_change: >-
+    BDM REST API response format standardization. Scalar queries (COUNT, AVG,
+    MAX, MIN, SUM) now return {"value": n} instead of [n]; single-entity queries
+    now return the object directly {...} instead of [{...}]. List queries are
+    unchanged. This affects every REST consumer — JavaScript clients, UI Designer
+    pages and external applications. Server-side Groovy DAO code is unaffected.
+    Backward compatibility is available by setting
+    bonita.runtime.business-data.serialization.standard-shape.enabled=false.
+  highlights:
+  - >-
+    BDM data retention (GDPR) — per-BDM-object-type retention rules with a
+    reference date (creation or last update) and a period in days, a scheduled
+    cleanup job that cascades to composition children, a new
+    BUSINESS_DATA_CLEANED_UP queriable log event, and a new
+    bonita.runtime.retention.schedule.cron property (default 0 0 2 * * 6, every
+    Saturday 02:00 UTC). Teamwork, Efficiency, Performance, Enterprise and Scale
+    editions only. Objects created before this version are not tracked
+    automatically; a backfill procedure is documented.
+
+- version: 2025.2-u0
+  date: '2025-12-15'
+  kind: main
+  breaking: false
+  highlights:
+  - Bonita UI Builder can be launched directly from Bonita Studio during development.
+  - >-
+    New Ollama AI connector — runs models locally (default base URL
+    http://localhost:11434, default model llama3.1) with the same Ask / Extract /
+    Classify interface as the cloud AI connectors, so no API key or internet
+    access is required.
+  - >-
+    REST connectors gained built-in OAuth2 support: client-credentials (RFC
+    6749), authorization-code with optional PKCE (RFC 7636), and bearer token.
+  maintenance_updates:
+  - {version: 2025.2-u9, date: '2026-07-17'}
+  - {version: 2025.2-u8, date: '2026-04-27'}
+  - {version: 2025.2-u7, date: '2026-04-01'}
+  - {version: 2025.2-u5, date: '2026-02-26'}
+  - {version: 2025.2-u3, date: '2026-01-21'}
+  - {version: 2025.2-u2, date: '2026-01-13'}
+
+api_contract_entries:
+- {version: 1.0.9, date: '2026-06-19', assets: [bonita-openapi-1.0.9.yaml, bonita-openapi-1.0.9.zip, bonita-postman-collection-1.0.9.json]}
+- {version: 1.0.8, date: '2026-05-04'}
+- {version: 1.0.7, date: '2026-04-28'}
+- {version: 1.0.6, date: '2025-09-11'}
+- {version: 1.0.5, date: '2025-07-11'}
+- {version: 1.0.4, date: '2025-07-08'}
+- {version: 1.0.3, date: '2025-02-26'}
+- {version: 1.0.2, date: '2025-02-20'}
+- {version: 1.0.1, date: '2025-02-20'}
+- {version: 1.0.0, date: '2025-02-20'}
+api_contract_note: >-
+  Every release ships three assets: the bundled OpenAPI YAML, a zip, and a
+  Postman collection generated from it. The contract release dates track the
+  product releases closely (1.0.7 on 2026-04-28 = 2026.1-u0 day; 1.0.9 on
+  2026-06-19 = the 2026.2-b5 build), which is evidence the spec is generated as
+  part of the release process rather than maintained by hand after the fact.
+
+corporate:
+- event: Bonitasoft rebranded to Ofelia
+  date: '2026-06-09'
+  note: >-
+    Not in the product release notes, but a change every API consumer feels: the
+    documentation, API reference and community hosts all moved from
+    bonitasoft.com to ofelia.com behind 301s. Announced alongside a governed
+    agentic AI orchestration line (private preview stated for Q3 2026, general
+    availability early 2027).

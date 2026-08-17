@@ -1,0 +1,116 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  https://documentation.ofelia.com/bonita/latest/version-update/update-with-update-tool,
+  https://documentation.ofelia.com/bonita/latest/version-update/update-with-migration-tool,
+  and the plugin descriptor (META-INF/maven/plugin.xml) inside
+  bonita-project-maven-plugin-2.1.2.jar on Maven Central.
+description: >-
+  Bonitasoft does not ship a general-purpose API CLI — there is no `bonita api`
+  command and no way to drive the REST API from a first-party binary. What it does
+  ship is two real command-line surfaces: a Maven plugin that is the supported
+  build-and-deploy path for a Bonita project, and standalone update/migration
+  tools for moving a runtime between versions. Both are recorded here because
+  together they are how Bonita work actually reaches a runtime, and because the
+  deprecation of the REST design-time write operations (see
+  lifecycle/bonitasoft-lifecycle.yml) is pushing integrators toward them.
+api_cli: false
+api_cli_note: >-
+  To script the REST API, the first-party options are the Java client
+  (org.bonitasoft.web:bonita-java-client) or raw HTTP with the published
+  OpenAPI/Postman artifacts.
+
+surfaces:
+
+- name: bonita-project-maven-plugin
+  kind: maven-plugin
+  goal_prefix: bonita-project
+  version: 2.1.2
+  published: '2026-06-30'
+  install: >-
+    Declared in the project POM; the Bonita project archetype and Bonita Studio
+    generate it. Invoked as `mvn bonita-project:<goal>`.
+  package: packages/bonitasoft-packages.yml
+  repository: https://github.com/bonitasoft/bonita-project-maven-plugin
+  goals:
+  - {goal: analyze, description: 'Runs an analysis on the current project dependencies to detect Bonita specific extensions; can look for incompatible dependencies and writes an analysis report.'}
+  - {goal: business-archive, description: 'Builds Business Archives (.bar) from diagram sources; controls form-mapping and process-parameter embedding, dependency-jar inclusion, and the configuration environment (default Local).'}
+  - {goal: copy-provided-pages, description: 'Detects which Bonita provided pages (from the User Application) a project''s applications use, resolves them from a repository, and copies the page artifacts to an output folder for packaging.'}
+  - {goal: create-bdm-module, description: Creates a BDM module and its submodules with a Business Object Model descriptor sample file.}
+  - {goal: create-extensions-module, description: Creates an extensions module in the current project.}
+  - {goal: extract-configuration, description: Extracts parameters from every process in the project into a single parameters file.}
+  - {goal: merge-configuration, description: Merges given parameters into a Bonita configuration archive (.bconf).}
+  - {goal: generate-bdm-model, description: Generates the BDM model Java source from the Business Object Model descriptor.}
+  - {goal: generate-bdm-dao-client, description: Generates the BDM DAO client Java source from the Business Object Model descriptor.}
+  - {goal: uid-page, description: Builds UI Designer pages from sources.}
+  - {goal: validate, description: Executes validation criteria on the Bonita artifacts in the current project.}
+  - {goal: install, description: Looks for unknown dependencies in the current project and resolves them from a project-local dependency store.}
+  - {goal: help, description: 'Displays help; `mvn bonita-project:help -Ddetail=true -Dgoal=<goal>`.'}
+  key_flows:
+    build_and_deploy: 'mvn bonita-project:validate → bonita-project:business-archive → deploy the .bar'
+    bdm_codegen: 'mvn bonita-project:generate-bdm-model bonita-project:generate-bdm-dao-client'
+    environment_config: 'mvn bonita-project:extract-configuration then bonita-project:merge-configuration per environment (.bconf named ${project.artifactId}-${project.version}-${bonita.environment}.bconf)'
+  ci_relevance: >-
+    This is the CI/CD path. Bonitasoft markets a "CI/CD-ready approach", and these
+    goals are what a pipeline calls; the deprecated createProcess / uploadProcess /
+    installBDM REST operations are the surface being retired in favour of them.
+
+- name: bonita-update
+  kind: standalone-cli
+  scripts:
+    linux: bonita-update
+    windows: bonita-update.bat
+  dry_run_script: check-update-dryrun
+  dry_run_note: >-
+    Runs every verification without making changes — equivalent to the main update
+    with a --verify option.
+  flags:
+  - {flag: '-Dauto.accept=true', description: 'System property for unattended/background execution; bypasses interactive confirmation prompts.'}
+  requirements: Java 11 JRE minimum; distributed as a zip archive to extract into a dedicated directory.
+  obtain:
+    community: https://www.ofelia.com/downloads
+    subscription: https://csc.bonitacloud.ofelia.com/apps/CustomerServices/downloads
+  docs: https://documentation.ofelia.com/bonita/latest/version-update/update-with-update-tool
+  purpose: >-
+    Updates a Bonita runtime (including the database) from one version to the
+    next. Because Bonita is self-hosted, this — not a vendor deployment — is how a
+    customer moves onto a new API contract version.
+
+- name: bonita-migration
+  kind: standalone-cli
+  repository: https://github.com/bonitasoft/bonita-migration
+  docs: https://documentation.ofelia.com/bonita/latest/version-update/update-with-migration-tool
+  purpose: The older version-upgrade tool, for major-version migrations.
+  note: >-
+    Recorded from the repository and the update-path documentation. Command syntax
+    is not quoted here because it was not read from a page in this pass.
+
+- name: mtmr-tool
+  kind: standalone-cli
+  docs: https://documentation.ofelia.com/bonita/latest/version-update/mtmr-tool
+  purpose: >-
+    A documented version-update utility (Multi-Tenancy / Move-to-Mono-Runtime
+    path). Listed for completeness; not exercised in this pass.
+
+deprecated:
+- name: bonita-application-packager
+  repository: https://github.com/bonitasoft/bonita-application-packager
+  language: Go
+  status: DEPRECATED (so marked in the repository description)
+  purpose: Packaged a Bonita application for deployment; superseded by the Maven plugin.
+
+studio_note: >-
+  Bonita Studio (github.com/bonitasoft/bonita-studio) is the primary developer
+  tool and it is a desktop IDE, not a CLI. Much of what other vendors expose as
+  CLI commands — scaffolding a project, generating a REST API extension, deploying
+  to a local test runtime — happens in Studio here, with the Maven plugin as the
+  headless equivalent for CI.
+
+archetypes:
+  note: >-
+    Maven archetypes are the scaffolding equivalent of `<vendor> init`:
+  items:
+  - {name: bonita-rest-api-extension-archetype, repository: 'https://github.com/bonitasoft/bonita-rest-api-extension-archetype', purpose: Creates a new Bonita REST API extension project.}
+  - {name: bonita-connector-archetype, repository: 'https://github.com/bonitasoft/bonita-connector-archetype', purpose: Creates a new Bonita connector project.}
+  - {name: bonita-actorfilter-archetype, repository: 'https://github.com/bonitasoft/bonita-actorfilter-archetype', purpose: Creates a new Bonita actor filter project.}
+  - {name: bonita-theme-archetype, repository: 'https://github.com/bonitasoft/bonita-theme-archetype', purpose: Creates a Bonita theme project.}

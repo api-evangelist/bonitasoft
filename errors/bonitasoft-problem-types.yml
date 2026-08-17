@@ -1,0 +1,196 @@
+generated: '2026-08-17'
+method: derived
+format: bonita-json-error
+rfc9457: false
+source: >-
+  Derived from every 4xx/5xx response declared in
+  openapi/bonitasoft-bonita-openapi.yml (Bonita API 1.0.9, OpenAPI 3.0.2, 153
+  paths / 224 operations), cross-checked against
+  https://documentation.ofelia.com/bonita/latest/api/rest-api-overview.
+summary: >-
+  Bonita does not use RFC 9457 problem details. Errors are a plain
+  application/json object whose only guaranteed member is `message`, declared
+  once as components.schemas.Error and reused through eight named
+  components.responses entries. The error contract is unusually CONSISTENT — 224
+  of 224 operations declare 401, 403 and 5XX, and 219 declare 400 — but
+  unusually SHALLOW: there is no machine-readable error code, no error type URI,
+  and no per-error registry anywhere in the docs. An agent cannot branch on the
+  cause of a failure; it can only branch on the HTTP status.
+
+envelope:
+  media_type: application/json
+  schema: Error
+  shape: '{ "message": string }'
+  extended_shape: >-
+    Two operations widen the body on 429 to { code: number, description: string,
+    message: string, exception: string, explanations: array } — see
+    rate-limits/bonitasoft-rate-limits.yml. This wider shape is declared inline
+    and is NOT the shared Error schema.
+  type_field: null
+  code_field: null
+  note: >-
+    Because `message` is free text and there is no code, remediation below is
+    derived from the declared response DESCRIPTIONS in the spec plus the
+    operation semantics, not from a provider-published error reference.
+
+coverage:
+  operations_total: 224
+  status_declaration_counts:
+    '200': 213
+    '201': 3
+    '204': 8
+    '400': 219
+    '401': 224
+    '403': 222
+    '404': 119
+    '409': 1
+    '429': 2
+    5XX: 224
+  problem_json_media_types: 0
+  named_error_responses: [BadRequest, Unauthorized, Forbidden, NotFound, Conflict, ServerError]
+
+problems:
+- status: 400
+  name: BadRequest
+  title: Bad request
+  component: '#/components/responses/BadRequest'
+  declared_on_operations: 219
+  example_body: '{ "message": "Bad request" }'
+  common_causes: >-
+    A required list/search parameter is missing — p and c are declared
+    `required: true` on paginated operations, so omitting either is a 400, not a
+    defaulted first page. Also raised on malformed filter syntax
+    (f={name}={value}, url-encoded) and on parameters that violate the declared
+    maxLength 250 / pattern ^[A-Za-z0-9%]{0,250}$ constraints.
+  remediation: >-
+    Always send both p and c on list operations. URL-encode f, o and s values.
+    Validate against the parameter patterns in the spec before sending.
+
+- status: 401
+  name: Unauthorized
+  title: Authorization information is missing or invalid
+  component: '#/components/responses/Unauthorized'
+  declared_on_operations: 224
+  example_body: '{ "message": "Unauthorized" }'
+  common_causes: >-
+    No JSESSIONID cookie; a JSESSIONID from a superseded login; an expired
+    session; or an X-Bonita-API-Token header that does not match the token
+    cookie issued by the most recent successful /loginservice call. The docs
+    warn about exactly this mismatch.
+  remediation: >-
+    POST /loginservice again, capture BOTH the fresh JSESSIONID cookie and the
+    fresh X-Bonita-API-Token cookie value, and use them together. For Enterprise
+    OIDC deployments, refresh the bearer token instead.
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#login
+
+- status: 403
+  name: Forbidden
+  title: >-
+    Forbidden. The request contained valid data and was understood by the server,
+    but the server is refusing action.
+  component: '#/components/responses/Forbidden'
+  declared_on_operations: 222
+  example_body: '{ "message": "Forbidden, The request contained valid data and was understood by the server, but the server is refusing action." }'
+  common_causes: >-
+    The authenticated user's PROFILE does not carry the permission mapped to
+    this endpoint. Bonita authorization is profile/permission based, not
+    scope based: the User, Administrator and Super Administrator profiles each
+    map to a different permission set.
+  remediation: >-
+    Check the endpoint against the profile permission tables
+    (identity/user-api-permissions, identity/admin-api-permissions,
+    identity/super-admin-api-permissions, identity/all-api-permissions) and
+    grant the profile, or authenticate as a user who holds it. A 403 here is a
+    configuration answer, not a retryable one.
+  docs: https://documentation.ofelia.com/bonita/latest/identity/rest-api-authorization
+
+- status: 404
+  name: NotFound
+  title: The resource for the specified ID was not found
+  component: '#/components/responses/NotFound'
+  declared_on_operations: 119
+  example_body: '{ "message": "Resource not found." }'
+  common_causes: >-
+    An id that never existed, or — very common in BPM — an id that has moved to
+    the archive. A completed case, task or flow node is no longer addressable on
+    the live resource.
+  remediation: >-
+    For BPM ids, retry against the archived counterpart
+    (/API/bpm/archivedCase, /API/bpm/archivedTask,
+    /API/bpm/archivedHumanTask, /API/bpm/archivedFlowNode,
+    /API/bpm/archivedActivity) before treating it as absent.
+
+- status: 409
+  name: Conflict
+  title: >-
+    Conflict. The request could not be completed because it conflicts with the
+    current state of the target resource.
+  component: '#/components/responses/Conflict'
+  declared_on_operations: 1
+  example_body: '{ "message": "Conflict" }'
+  common_causes: State conflict on the single operation that declares it.
+  remediation: Re-read the resource state before retrying.
+  note: >-
+    Declared on exactly one operation across the whole API. Bonita has no
+    optimistic-concurrency (ETag/If-Match) convention, so most state conflicts
+    surface as 400 or 500 rather than 409.
+
+- status: 429
+  name: TooManyRequests
+  title: Case creation limit reached (Community 2024.3+ only)
+  declared_on_operations: 2
+  headers:
+    Retry-After: 'string (date-time) — "Date when case counter will be refilled"'
+  extended_body: '{ "code": number, "description": string, "message": string, "exception": string, "explanations": array }'
+  common_causes: >-
+    Community Edition enforces a monthly case-creation quota (150 process
+    instances per month per the published pricing page). Enterprise deployments
+    do not carry this counter.
+  remediation: >-
+    Read Retry-After — it is an absolute date-time, not a delay in seconds — and
+    resume after the counter refills, or move to a subscription edition.
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createProcessInstance
+  also_on: openapi/bonitasoft-bonita-openapi.yml#instanciateProcess
+  detail: rate-limits/bonitasoft-rate-limits.yml
+
+- status: 5XX
+  name: ServerError
+  title: Unexpected error
+  component: '#/components/responses/ServerError'
+  declared_on_operations: 224
+  example_body: '{ "message": "An unexpected error occured." }'
+  common_causes: >-
+    Declared as the wildcard 5XX range on every operation. In practice a Bonita
+    500 frequently carries a wrapped Java engine exception in `message`.
+  remediation: >-
+    Do not parse `message` as a stable contract. For process/connector failures
+    use the dedicated failure resources instead — Failure, ConnectorFailure,
+    ArchivedFailure, ArchivedConnectorInstance and the retry/replay operations
+    documented at
+    documentation.ofelia.com/bonita/latest/api/handle-a-failed-activity.
+
+gaps_to_report_upstream:
+- >-
+  No machine-readable error code or type URI. Every failure carries only a free
+  text `message`, so an agent cannot distinguish "wrong filter syntax" from
+  "missing pagination parameter" without string matching.
+- >-
+  No published error reference page. The eight components.responses entries are
+  the entire error catalog; there is no docs page enumerating error conditions
+  per resource.
+- >-
+  The 5XX wildcard is declared on all 224 operations, which tells a client
+  nothing about which server errors are expected versus exceptional.
+- >-
+  Adopting RFC 9457 application/problem+json with a stable `type` per condition
+  would be a small change to components.schemas.Error and would make the API
+  agent-drivable without string matching.
+- >-
+  SPELLING DEFECT IN THE PUBLISHED CONTRACT: the archived-failure paths are
+  spelled "achivedFailure", not "archivedFailure" — /API/bpm/achivedFailure/
+  flowNode/{flowNodeInstanceId}, /API/bpm/achivedFailure/case/{caseId} and
+  /API/bpm/achivedFailure/case/{rootCaseId}/childCases. Verified in Bonita API
+  1.0.9. Every other archived resource uses "archived". This is recorded here,
+  not corrected: the spec describes the runtime, so if the typo is in the URL the
+  runtime serves, "fixing" it in our copy would break every caller. If it is a
+  spec-only typo, only Bonitasoft can say which.

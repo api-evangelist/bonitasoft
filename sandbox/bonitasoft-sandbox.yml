@@ -1,0 +1,155 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  https://hub.docker.com/_/bonita (Docker Official Image documentation),
+  openapi/bonitasoft-bonita-openapi.yml x-codeSamples (the provider's own runnable
+  curl examples), https://www.ofelia.com/downloads and
+  https://documentation.ofelia.com/bonita/latest/getting-started/getting-started-index.
+description: >-
+  Bonita has no hosted sandbox, no test-mode API key and no vendor test tenant —
+  because there is no vendor-operated API. What it has instead is arguably
+  stronger for an evaluator: the ENTIRE product runs locally from one command,
+  the default credentials are published, and the free edition is the full API. The
+  "sandbox" for Bonita is a container on your own machine.
+model: self-hosted-local-instance
+test_live_separation: none
+test_live_note: >-
+  There is no test/live key split, no sk_test_/sk_live_ style prefix and no
+  sandbox host, because authentication is a session against whichever runtime you
+  point at. Isolation is achieved by running a separate instance (Bonita Cloud
+  gives subscription customers a separate non-production environment at
+  {customer-name}-integration.bonitacloud.com alongside production at
+  {customer-name}.bonitacloud.com).
+
+quickstart:
+  docker:
+    command: docker run --name bonita -p 8080:8080 -d bonita
+    image: bonita
+    registry: Docker Official Images
+    tags_available: [latest, 2026.2-u0, 2026.2, 11.1.0, 11.1]
+    tag_published: '2026-06-30'
+    architecture: amd64 only
+    url: http://localhost:8080/bonita
+    api_base: http://localhost:8080/bonita/API
+    pull_count: 14110801
+  download:
+    community_edition: https://www.ofelia.com/downloads
+    per_os:
+    - https://www.ofelia.com/download-for-windows
+    - https://www.ofelia.com/download-for-macos
+    - https://www.ofelia.com/download-for-linux
+    credit_card_required: false
+  subscription_binaries: https://csc.bonitacloud.ofelia.com/apps/CustomerServices/downloads
+
+published_default_credentials:
+  disclaimer: >-
+    These are the vendor's own published defaults for a fresh local instance,
+    quoted verbatim from the Docker Official Image documentation and the OpenAPI
+    x-codeSamples. They are development defaults for a container on localhost, not
+    secrets, and they are documented precisely so an evaluator can make the first
+    call. They must be changed before any deployment is reachable from a network.
+  tenant_admin:
+    username: install
+    password: install
+    env_vars: [BONITA_RUNTIME_ADMIN_USERNAME, BONITA_RUNTIME_ADMIN_PASSWORD]
+    used_by: POST /loginservice
+  platform_admin:
+    username: platformAdmin
+    password: platform
+    env_vars: [PLATFORM_LOGIN, PLATFORM_PASSWORD]
+    used_by: POST /platformloginservice
+    note: >-
+      The spec says the platform credentials live in
+      bonita-platform-community-custom.properties; the Docker image sets them from
+      these environment variables.
+
+environment_flags:
+  HTTP_API:
+    default: false
+    effect: >-
+      Enables/disables the Bonita HTTP API on the container. Relevant because the
+      Java client (bonita-java-client) talks to the HTTP API.
+  rest_api_authorization:
+    default: enabled
+    effect: >-
+      "REST API authorization" is activated by default with BOTH static and
+      dynamic authorization checks. This is why a fresh instance returns 403 on
+      endpoints the logged-in profile does not hold — see
+      errors/bonitasoft-problem-types.yml (403) and
+      documentation.ofelia.com/bonita/latest/identity/rest-api-authorization.
+  csrf:
+    default: enabled
+    effect: >-
+      CSRF protection is on for all fresh installations, so every POST/PUT/DELETE
+      needs the X-Bonita-API-Token header. This is the single most common reason a
+      first scripted call fails.
+
+first_call:
+  published_example: >-
+    Quoted from the login operation's x-codeSamples in the provider's own OpenAPI
+    document.
+  steps:
+  - 'curl -v -c saved_cookies.txt --url ''http://localhost:8080/bonita/loginservice'' --header ''Content-Type: application/x-www-form-urlencoded'' --data-urlencode ''username=install'' --data-urlencode ''password=install'' --data-urlencode ''redirect=false'' --data-urlencode ''redirectURL='''
+  - 'curl -b saved_cookies.txt -X GET --header ''X-Bonita-API-Token: <token>'' --url ''http://localhost:8080/bonita/API/bpm/process?c=100&p=0'''
+  - 'curl -b saved_cookies.txt -X GET --url ''http://localhost:8080/bonita/logoutservice?redirect=false'''
+  token_note: >-
+    <token> is not a literal. Read it from the X-Bonita-API-Token COOKIE returned
+    by the login call and echo it as a header on every write.
+
+sample_data:
+  example_organization:
+    exists: true
+    note: >-
+      Bonita Studio ships an example ACME organization and example processes so a
+      fresh install has users, groups, roles and memberships to exercise the
+      identity API against. The specific user names are design-time sample data in
+      the Studio bundle, not values published as a fixed test fixture, so none are
+      quoted here as guaranteed.
+  example_projects:
+    - {name: bonita-vacation-management-example, url: 'https://github.com/bonitasoft/bonita-vacation-management-example', note: A Living Application git repository example.}
+    - {name: CustomerOnboarding, url: 'https://github.com/bonitasoft/CustomerOnboarding', note: Demo repository.}
+    - {name: rest-api-extension-user-information-example, url: 'https://github.com/bonitasoft/rest-api-extension-user-information-example', note: Subscription REST API extension example.}
+
+test_tooling:
+  bonita_test_toolkit:
+    exists: true
+    docs: https://documentation.ofelia.com/test-toolkit/latest/
+    note: >-
+      A first-party automated-testing toolkit for Bonita processes, introduced with
+      Bonita 2023.2 and documented as its own component
+      (github.com/bonitasoft/bonita-test-toolkit-doc). This is the closest analogue
+      to a fixture/trigger harness in this profile.
+  swagger_ui_harness:
+    exists: true
+    source: https://github.com/bonitasoft/bonita-openapi (docker-compose.yaml)
+    note: >-
+      The OpenAPI repository ships a docker-compose.yaml that starts BOTH a
+      swagger-ui site and a live Bonita instance — Bonita at
+      http://bonita.localhost/bonita and Swagger UI at http://swagger.localhost —
+      so the published contract can be exercised against a real runtime with no
+      account. This is a genuinely good, and rare, provider-shipped try-it harness.
+  redoc_preview:
+    command: npm start
+    url: http://localhost:8080
+    note: ReDoc preview of the spec, the maintainers' preferred editing view.
+
+test_clocks:
+  supported: false
+  note: >-
+    No time-simulation facility for the API. Timer event triggers are real
+    scheduler entries; the TimerEventTrigger resource lets you read and update a
+    trigger's execution date, which is the nearest available lever, but it is a
+    runtime operation and not a test clock.
+
+magic_values:
+  exist: false
+  note: >-
+    No magic test identifiers (no test card numbers, test phone ranges, test IBANs
+    or forced-decline tokens). Bonita is not a payments or comms API; every id in
+    a Bonita deployment is real data the caller created.
+
+caution: >-
+  Do not point an evaluation script at a Bonita URL you do not own. Because
+  Bonita is self-hosted, an arbitrary host serving /bonita/API is somebody's
+  production workflow engine, and POST /API/bpm/case starts real work in a real
+  organization. Evaluate against your own container.

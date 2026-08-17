@@ -1,0 +1,145 @@
+generated: '2026-08-17'
+method: searched
+source: https://www.ofelia.com/pricing
+checked: '2026-08-17'
+plan_count: 4
+published_price_count: 1
+currency: USD
+billing_note: >-
+  Only one of four tiers carries a published price. Bonita Free is $0. The other
+  three — Bonita Enterprise, Ofelia Assistant and Ofelia Workflow — are
+  "custom pricing" / "request a demo" with no number, no unit and no billing
+  period stated. Historically Bonita subscriptions were priced per process user
+  on 1-year and 3-year terms, but that is not published on the current page and
+  is not recorded here as fact.
+
+plans:
+- name: Bonita Free
+  aka: Bonita Community Edition
+  product: Bonita BPM
+  price: 0
+  currency: USD
+  billing_period: unlimited
+  published: true
+  signup: https://www.ofelia.com/downloads
+  signup_friction: No credit card required
+  quota:
+    process_instances: 150 per month
+  limits:
+    case_creation: >-
+      Enforced in the API, not just in the contract. Community Edition 2024.3 and
+      later returns HTTP 429 with a Retry-After date-time on POST /API/bpm/case
+      and POST /API/bpm/process/{id}/instantiation once the monthly case counter
+      is exhausted. See rate-limits/bonitasoft-rate-limits.yml.
+  included:
+  - Process application development
+  - UI customization
+  - Collaboration and integration capabilities
+  - Full Bonita Web REST API (the OpenAPI contract is identical across editions)
+  excluded:
+  - Task Delegation (subscription editions only)
+  - BDM data retention / GDPR rules (subscription editions only)
+  - BDM access control
+  - Bonita Fabric, Work Hub, native AI connectors, IDP
+  - SLA, RBAC/SSO, high availability
+  - Bonita Update Tool binaries from the Customer Service Center
+  license: Open source (engine LGPL-2.1; OpenAPI GPL-2.0)
+
+- name: Bonita Enterprise
+  product: Bonita BPM
+  price: null
+  price_model: custom
+  currency: null
+  billing_period: null
+  published: false
+  signup: https://www.ofelia.com/demo
+  included:
+  - Bonita Fabric
+  - Bonita Work Hub
+  - Native AI connectors
+  - IDP (intelligent document processing) capabilities
+  - SLA enforcement
+  - RBAC / SSO
+  - High availability
+  - 99.9% uptime SLA
+  - Professional services
+  note: >-
+    The pricing page advertises "99.9% uptime SLA" as an Enterprise inclusion,
+    while the Bonita Cloud availability SLA page states only "commercially
+    reasonable efforts" with no numeric target. Those two published statements do
+    not agree; both are recorded verbatim rather than reconciled. See
+    lifecycle/bonitasoft-lifecycle.yml.
+  edition_family_note: >-
+    The release notes reveal finer-grained subscription tiers than the pricing
+    page does — features are gated to "Teamwork, Efficiency, Performance,
+    Enterprise and Scale editions". Those five named editions are not on the
+    pricing page and have no published prices.
+
+- name: Ofelia Assistant
+  product: Ofelia Agentic
+  price: null
+  price_model: contact-sales
+  currency: null
+  billing_period: null
+  published: false
+  signup: https://www.ofelia.com/demo
+  included:
+  - Knowledge Agent
+  - Execution Agent
+  - Slack / Microsoft Teams integration
+  - Role-based access control
+  - Audit logging
+  - Connector library
+  - Multi-language support
+  availability_note: >-
+    Announced with the June 2026 rebrand. Private preview stated for Q3 2026 and
+    general availability for early 2027, so this is a forward-looking listing
+    rather than a purchasable plan. No API, contract or endpoint is published for
+    it.
+
+- name: Ofelia Workflow
+  product: Ofelia Agentic
+  price: null
+  price_model: contact-sales
+  currency: null
+  billing_period: null
+  published: false
+  signup: https://www.ofelia.com/demo
+  included:
+  - AI Workflow Builder
+  - Workflow Agent
+  - BI / analytics dashboards
+  - Version control
+  - Approval steps
+  - Escalation rules
+  - API-first integration
+  availability_note: Same private-preview status as Ofelia Assistant.
+
+free_tier:
+  exists: true
+  kind: free-forever open-source edition with a metered ceiling
+  note: >-
+    Unusual and worth flagging: the free tier is not a trial. It is the full
+    open-source product with a hard monthly case-creation quota enforced at the
+    API layer. That makes Bonita Free a genuinely evaluable API surface — an agent
+    or developer can stand up the Docker Official Image and call all 224
+    operations without a sales conversation. See sandbox/bonitasoft-sandbox.yml.
+
+trial:
+  exists: false
+  note: No time-limited trial of the Enterprise edition is published; the route is a demo request.
+
+self_hosted_pricing_note: >-
+  Bonita is licensed software, so "plan" and "quota" mean something different
+  here than for a hosted API. Compute, storage and availability are the
+  customer's cost on premises; Bonita Cloud folds them into the subscription.
+  There is no per-request, per-token or per-seat API price because there is no
+  vendor-operated API gateway to meter.
+
+pages:
+  pricing: https://www.ofelia.com/pricing
+  downloads: https://www.ofelia.com/downloads
+  demo: https://www.ofelia.com/demo
+  terms: https://www.ofelia.com/terms-and-conditions
+  agentic_terms: https://www.ofelia.com/terms-of-use/conditions-generales-de-vente-et-dutilisation-de-la-solution-ofelia-agentic
+  professional_services: https://www.ofelia.com/professional-services

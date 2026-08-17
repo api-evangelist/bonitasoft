@@ -1,19 +1,90 @@
 aid: bonitasoft
 name: Bonitasoft
-description: 'Bonitasoft is a company surfaced as a portfolio company of serena and added to the API Evangelist
-  network as a stub for enrichment. Sector: saas. This profile is a lead awaiting the enrichment pipeline.'
+description: >-
+  Bonitasoft is the French open-source company behind Bonita, a business process
+  management and process automation platform used to model BPMN processes, build
+  living applications, and orchestrate work across an organization. Bonita ships
+  as Bonita Studio, Bonita Fabric (Process Designer, BPA Studio, UI Builder),
+  Bonita Work Hub and the Bonita Runtime, in a free Community Edition and a
+  commercial Enterprise Edition, plus a managed Bonita Cloud offering. Every
+  Bonita feature reachable over HTTP is described by a single first-party
+  OpenAPI 3.0.2 document — the Bonita Web REST API, 153 paths and 224
+  operations across BPM, identity, application, BDM and platform resources —
+  published as an open-source repository, a versioned release asset and a live
+  ReDoc reference. In June 2026 the company rebranded to Ofelia and moved its
+  web, documentation and community properties from bonitasoft.com to
+  ofelia.com, adding a governed agentic AI orchestration line (Ofelia Assistant,
+  Ofelia Workflow, Ofelia Agentic) alongside the Bonita BPM platform.
+image: https://cdn.prod.website-files.com/69babab287a7d4136d9c544a/69babbfcdec6f9319562e4b1_Opengraph.png
 url: https://raw.githubusercontent.com/api-evangelist/bonitasoft/refs/heads/main/apis.yml
 x-type: company
 x-source: serena-portfolio
-x-tier: stub
-x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-08-17'
 modified: '2026-08-17'
 tags:
 - Company
 - Saas
-apis: []
+- Business Process Management
+- Process Automation
+- Workflow
+- BPMN
+- Low Code
+- Open Source
+- Orchestration
+- Agentic AI
+- Case Management
+- Java
+apis:
+- aid: bonitasoft-bonita-web-rest-api
+  name: Bonita Web REST API
+  description: >-
+    The Bonita Web REST API exposes every Bonita Runtime feature reachable over
+    HTTP — BPM (processes, cases, tasks, activities, flow nodes, timers,
+    messages, signals), identity (users, groups, roles, memberships, profiles,
+    custom user information), applications and pages, the Business Data Model
+    and business data queries, documents and comments, and platform/license
+    administration. It is described by a single first-party OpenAPI 3.0.2
+    document (153 paths, 224 operations, 162 schemas) that Bonitasoft treats as
+    the single source of truth for the HTTP surface and publishes as an
+    open-source repository, a versioned GitHub release asset, and a live ReDoc
+    reference at api-documentation.ofelia.com.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  x-base-url-note: >-
+    TEMPLATED ON PURPOSE — do not "repair" this to a concrete host. Bonita is
+    self-hosted software, so there is no vendor-operated API host to name. The
+    documented forms are: Bonita Cloud production
+    https://{customer-name}.bonitacloud.com/bonita and non-production
+    https://{customer-name}-integration.bonitacloud.com/bonita
+    (https://documentation.ofelia.com/cloud/latest/manage/url-customization);
+    on premises {scheme}://{host}:{port}/bonita
+    (https://documentation.ofelia.com/bonita/latest/api/rest-api-overview quotes
+    "http://host:port/bonita/API/..."); and local
+    http://localhost:8080/bonita. The OpenAPI servers[] block declares
+    http://localhost:8080/bonita labelled "Sample url for a local development
+    server", which is a true statement about a self-hosted product rather than a
+    placeholder defect, so it is left untouched. repair-api-bases.py returns
+    verdict `no-usable-base` for this provider by design.
+  tags:
+  - BPM
+  - Workflow
+  - Process Automation
+  - Identity
+  - Business Data
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-bonita-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: Overlay
+    url: overlays/bonitasoft-bonita-overlay.yaml
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -21,4 +92,77 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.bonitasoft.com/
+  url: https://www.ofelia.com/
+- type: DeveloperPortal
+  url: https://documentation.ofelia.com/bonita/latest/
+- type: Documentation
+  url: https://documentation.ofelia.com/bonita/latest/api/api-index
+- type: APIReference
+  url: https://api-documentation.ofelia.com/latest/
+- type: GettingStarted
+  url: https://documentation.ofelia.com/bonita/latest/getting-started/getting-started-index
+- type: Support
+  url: https://community.ofelia.com/
+- type: Blog
+  url: https://www.ofelia.com/blog
+- type: GitHubOrganization
+  url: https://github.com/bonitasoft
+- type: Pricing
+  url: https://www.ofelia.com/pricing
+- type: SignUp
+  url: https://www.ofelia.com/downloads
+- type: TermsOfService
+  url: https://www.ofelia.com/terms-and-conditions
+- type: PrivacyPolicy
+  url: https://www.ofelia.com/personal-data-protection-policy
+- type: Postman
+  url: https://api-documentation.ofelia.com/latest/postman.json
+- type: ChangeLog
+  url: https://documentation.ofelia.com/bonita/latest/release-notes
+- type: Packages
+  url: packages/bonitasoft-packages.yml
+- type: SDKs
+  url: packages/bonitasoft-packages.yml
+- type: MCPServer
+  url: mcp/bonitasoft-mcp.yml
+- type: LLMsTxt
+  url: llms/bonitasoft-llms.txt
+- type: Conformance
+  url: conformance/bonitasoft-conformance.yml
+- type: ErrorCatalog
+  url: errors/bonitasoft-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/bonitasoft-lifecycle.yml
+- type: Authentication
+  url: authentication/bonitasoft-authentication.yml
+- type: DomainSecurity
+  url: security/bonitasoft-domain-security.yml
+- type: VulnerabilityDisclosure
+  url: security/bonitasoft-vulnerability-disclosure.yml
+- type: Security
+  url: https://documentation.ofelia.com/bonita/latest/contributing/vulnerability-reporting-policy
+- type: Compliance
+  url: https://www.ofelia.com/about
+- type: CLI
+  url: cli/bonitasoft-cli.yml
+- type: Conventions
+  url: conventions/bonitasoft-conventions.yml
+- type: ChangeLog
+  url: changelog/bonitasoft-changelog.yml
+- type: Components
+  url: components/bonitasoft-components.yml
+- type: DataModel
+  url: data-model/bonitasoft-data-model.yml
+- type: Sandbox
+  url: sandbox/bonitasoft-sandbox.yml
+- type: Plans
+  url: plans/bonitasoft-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/bonitasoft-rate-limits.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-17'
+  status: enriched
+  artifacts_added: 27
+  pass: local-v1

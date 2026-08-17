@@ -1,0 +1,101 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  openapi/bonitasoft-bonita-openapi.yml (the two operations that declare a 429,
+  including the Retry-After response header) plus
+  https://www.ofelia.com/pricing (the 150 process-instances-per-month Community
+  quota) and
+  https://documentation.ofelia.com/bonita/latest/api/rest-api-overview.
+checked: '2026-08-17'
+limit_count: 1
+summary: >-
+  Bonita publishes exactly ONE rate limit, and it is a licensing quota rather
+  than a throughput control: Community Edition 2024.3+ caps case creation and
+  answers HTTP 429 with a Retry-After header once the monthly counter is spent.
+  There is no per-key, per-account, per-endpoint or per-second throughput limit
+  anywhere in the 224-operation contract, and none is documented. That absence is
+  structural, not an oversight — Bonita runs on the customer's own
+  infrastructure, so there is no vendor gateway to meter and the practical limit
+  is the customer's own capacity.
+
+limits:
+- id: community-case-creation-quota
+  scope: per-deployment (Community Edition only)
+  kind: licensing-quota
+  window: calendar month
+  limit: 150
+  unit: process instances (cases) created
+  burst: null
+  applies_to_editions: [Community]
+  applies_from_version: 2024.3
+  status_on_exhaustion: 429
+  response_headers:
+    Retry-After:
+      type: string
+      format: date-time
+      semantics: >-
+        "Date when case counter will be refilled". NOTE: this is an ABSOLUTE
+        date-time, not the RFC 9110 delay-seconds form most APIs use. A client
+        that assumes seconds will parse it wrongly or back off for the wrong
+        duration.
+  response_body: >-
+    { "code": number, "description": string, "message": string, "exception":
+    string, "explanations": array } — a wider envelope than the shared
+    components.schemas.Error used by every other error. Declared inline on these
+    two operations only.
+  operations:
+  - openapi/bonitasoft-bonita-openapi.yml#createProcessInstance   # POST /API/bpm/case
+  - openapi/bonitasoft-bonita-openapi.yml#instanciateProcess      # POST /API/bpm/process/{id}/instantiation
+  quota_source: >-
+    The 150/month figure is published on the pricing page as the Bonita Free
+    limit. The spec declares the 429 and the Retry-After header but does not state
+    the numeric ceiling; the two sources together give the whole limit.
+  agent_guidance: >-
+    An agent creating cases against a Community deployment must treat 429 as a
+    HARD monthly stop, not a transient backpressure signal. Retrying in seconds
+    or minutes will keep failing until the date in Retry-After. There is no
+    header that reports remaining quota BEFORE exhaustion, so the only way to
+    know how much is left is to count locally or to read the Log resource.
+
+response_header_coverage:
+  x_ratelimit_family: false
+  ratelimit_family: false
+  retry_after: true
+  retry_after_scope: the two case-creation operations only
+  note: >-
+    No X-RateLimit-Limit / -Remaining / -Reset and no RFC 9331-style RateLimit
+    headers appear anywhere in the spec. 222 of the 224 operations expose no
+    rate-limit signal of any kind.
+
+undocumented_areas:
+- >-
+  No throughput limit is published for any read operation, and none for identity,
+  application, BDM or platform writes.
+- >-
+  No limit is published for Bonita Cloud specifically. The Cloud SLA pages cover
+  availability, disaster recovery, high performance and data management, but not
+  request quotas.
+- >-
+  Brute-force LOGIN protection exists and is a rate control in effect
+  (documentation.ofelia.com/bonita/latest/security/brute-force-login-protection),
+  but the thresholds are a deployment configuration rather than a published API
+  limit, so no numeric limit is recorded for it here.
+
+practical_ceilings_not_limits:
+  note: >-
+    Recorded so a reader does not mistake absence of a rate limit for absence of a
+    ceiling. These are real constraints an integrator will hit, but they are
+    validation and capacity rules, not published rate limits.
+  parameter_bounds:
+  - 'c (page size): integer >= 1, default 20 — no documented maximum, but list responses page through content-range.'
+  - 'p (page index): integer >= 0, default 0.'
+  - 'f, o, s: maxLength 250 with pattern ^[A-Za-z0-9%]{0,250}$ — a longer or unencoded filter is a 400, not a 429.'
+  capacity: >-
+    Throughput is a function of the customer's runtime, database and (for
+    Enterprise) the work-execution configuration. Bonita Cloud's "high
+    performance" SLA page describes the managed side of that.
+
+cross_links:
+  errors: errors/bonitasoft-problem-types.yml
+  plans: plans/bonitasoft-plans-pricing.yml
+  conventions: conventions/bonitasoft-conventions.yml

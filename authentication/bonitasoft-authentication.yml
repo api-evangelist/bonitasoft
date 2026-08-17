@@ -1,0 +1,36 @@
+generated: '2026-08-17'
+method: derived
+source: openapi/bonitasoft-bonita-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - cookie
+  - header
+schemes:
+- name: bonita_auth
+  type: apiKey
+  in: cookie
+  parameter: JSESSIONID
+  description: To call the REST API, you must first log on with a user registered in the Engine
+    database. Please refer to the __[Login API](#operation/login)__ operations section.
+  sources:
+  - openapi/bonitasoft-bonita-openapi.yml
+- name: bonita_token
+  type: apiKey
+  in: header
+  parameter: X-Bonita-API-Token
+  description: To call the REST API, you must first log on with a user registered in the Engine
+    database. Please refer to the __[Login API](#operation/login)__ operations section.
+  sources:
+  - openapi/bonitasoft-bonita-openapi.yml
+- name: bearer_auth
+  type: http
+  scheme: bearer
+  description: |-
+    ![edition](https://img.shields.io/badge/edition-entreprise-blue)
+
+    When Bonita runtime is configured for SSO with openID Connect it is possible To call the REST API directly with a Bearer Authorization header containing the access token.
+  sources:
+  - openapi/bonitasoft-bonita-openapi.yml

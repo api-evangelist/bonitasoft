@@ -1,0 +1,145 @@
+generated: '2026-08-17'
+method: probed
+source: live probes of /.well-known/ on every Bonitasoft/Ofelia host, 2026-08-17
+summary: >-
+  ZERO documents found. Every /.well-known/ path returns 404 on every host the
+  company controls — the marketing site (www.ofelia.com and the legacy
+  www.bonitasoft.com, which 301s to it), the documentation site
+  (documentation.ofelia.com), the API reference host
+  (api-documentation.ofelia.com) and the community forum
+  (community.ofelia.com). No security.txt, no OIDC discovery, no RFC 8414/9728
+  OAuth metadata, no api-catalog, no ai-plugin.json, and no A2A agent card at
+  either the canonical or legacy path.
+pointer_basis: >-
+  NO WellKnown pointer and NO SecurityTxt pointer are emitted from this file.
+  Nothing returned a 200 carrying a real document, so there is no provider
+  surface to point at. This file records a measured absence, which is valid
+  data — it is not evidence of a served well-known surface.
+architectural_note: >-
+  Part of this absence is structural rather than neglect. Bonita is software the
+  customer runs: the REST API lives at <customer-host>/bonita/API, so any
+  /.well-known/ discovery surface would have to be served by each deployment,
+  not by the vendor. There is no vendor-operated API host to serve it from. The
+  OIDC discovery document a Bonita Enterprise deployment consumes belongs to the
+  customer's own identity provider (see
+  documentation.ofelia.com/bonita/latest/identity/single-sign-on-with-oidc), not
+  to Bonitasoft. What is genuinely missing and IS the vendor's to fix is
+  /.well-known/security.txt on ofelia.com — the company publishes a real
+  vulnerability reporting policy (product-security@ofelia.com) but does not
+  advertise it via RFC 9116.
+false_positive_watch: >-
+  bonita.cloud answers HTTP 200 with a 114-byte HTML redirect stub for EVERY
+  path, including /.well-known/agent-card.json, and serves a text/plain
+  /llms.txt. It is NOT a Bonitasoft host: the llms.txt says the domain is listed
+  for sale on GoDaddy's aftermarket, and the stub redirects to /lander. Bonita
+  Cloud actually runs on *.bonitacloud.com (per
+  documentation.ofelia.com/cloud/latest/manage/url-customization). Any future
+  round that treats a bonita.cloud 200 as a Bonitasoft document is wrong.
+
+hosts:
+- host: https://www.ofelia.com
+  note: Marketing site (Webflow). www.bonitasoft.com 301s here.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://documentation.ofelia.com
+  note: Antora documentation site.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://api-documentation.ofelia.com
+  note: >-
+    ReDoc reference for the Bonita OpenAPI. Serves the real spec at
+    /latest/openapi.yaml (200, application/x-yaml) and the Postman collection at
+    /latest/postman.json (200, application/json) — those are documented in
+    apis.yml, but neither sits under /.well-known/.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://community.ofelia.com
+  note: Community forum.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://www.bonitasoft.com
+  note: >-
+    Legacy pre-rebrand host. Probed before the redirect was understood; every
+    path 404s and the site 301s to www.ofelia.com.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+
+excluded_hosts:
+- host: https://bonita.cloud
+  reason: >-
+    Parked GoDaddy aftermarket domain, not owned or operated by
+    Bonitasoft/Ofelia. Answers 200 with a 114-byte redirect stub on every path.
+    See false_positive_watch above.
+- host: https://{subscription}.bonitacloud.com
+  reason: >-
+    Real Bonita Cloud domain (documented as the default *.bonitacloud.com
+    pattern) but every host under it is a single customer's tenant behind
+    authentication. The apex has no A record. Probing a customer tenant is out
+    of scope for this pipeline.

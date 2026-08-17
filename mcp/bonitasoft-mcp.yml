@@ -1,0 +1,1294 @@
+generated: '2026-08-17'
+method: derived
+status: candidate
+source: >-
+  Derived from openapi/bonitasoft-bonita-openapi.yml (Bonita API 1.0.9, OpenAPI
+  3.0.2, 153 paths / 224 operations). No Bonitasoft- or Ofelia-published MCP
+  server exists as of 2026-08-17.
+search_evidence:
+  checked: '2026-08-17'
+  findings: >-
+    Searched the github.com/bonitasoft organization (157 public repositories, 0
+    matches for "mcp" via the GitHub repository search API), the Bonita and
+    Bonita Cloud documentation sitemaps (3,508 + 30 URLs, no MCP page), npm
+    (@modelcontextprotocol and @bonitasoft scopes), and the product/pricing
+    pages for Ofelia Assistant, Ofelia Workflow and Ofelia Agentic. Nothing
+    advertises a Model Context Protocol server, hosted or stdio.
+  adjacent_but_not_mcp: >-
+    The company does ship AI plumbing on the OTHER side of the boundary: a
+    first-party AI connector (org.bonitasoft.connectors:bonita-connector-ai
+    1.0.0, 2025-04-25) and a bonita-connector-ai-agent repository let a Bonita
+    process CALL a model. That makes Bonita an MCP *client*-side consumer of AI,
+    not an MCP server an external agent can call. The Ofelia Agentic line
+    announced at the June 2026 rebrand is in private preview with general
+    availability stated for early 2027, so its agent surface — if it exposes one
+    — is not yet observable.
+
+deployment:
+  mode: none
+  auth: unknown
+  verified: derived
+  note: >-
+    mode is `none` because nobody ships a server: there is no endpoint to POST
+    to and no package to install. endpoint/install/package are deliberately
+    absent rather than guessed. If a Bonita MCP server ever ships it will most
+    likely be self-hosted alongside the runtime (like the REST API itself), in
+    which case `mode` becomes local-stdio or a per-deployment remote, never a
+    single vendor-operated URL.
+
+server:
+  name: bonita
+  transport: null
+  url: null
+  note: >-
+    A hypothetical server would front <customer-host>/bonita/API and inherit
+    Bonita's session model (POST /loginservice for a JSESSIONID plus the
+    X-Bonita-API-Token CSRF header on every write), or the Enterprise
+    OIDC bearer token. See authentication/bonitasoft-authentication.yml.
+
+coverage:
+  candidate_tool_count: 224
+  categories: 75
+  read_operations: 122
+  write_operations: 102
+  deprecated_operations: 33
+  note: >-
+    One candidate tool per real operationId, grouped by the operation's first
+    OpenAPI tag. 33 tools are marked `deprecated: true` because the backing
+    operation is marked deprecated in the spec — a real server should not expose
+    those. Each tool's REAL inputSchema is the backing operation's `parameters`
+    plus `requestBody` in openapi/bonitasoft-bonita-openapi.yml; it is not
+    duplicated here.
+
+# Mechanically derived candidate tool list. Every `name` is the snake_case form of a
+# real operationId in openapi/bonitasoft-bonita-openapi.yml; every `source_operation`
+# names that operationId verbatim. Nothing here is published by Bonitasoft.
+tools:
+# --- Authentication (2 operations) ---
+- name: login
+  category: Authentication
+  description: "Login"
+  http: "POST /loginservice"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#login
+- name: logout
+  category: Authentication
+  description: "Logout the current user"
+  http: "GET /logoutservice"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#logout
+# --- Application (8 operations) ---
+- name: search_applications
+  category: Application
+  description: "Finds living applications"
+  http: "GET /API/living/application"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchApplications
+- name: create_application
+  category: Application
+  description: "Create a living application"
+  http: "POST /API/living/application"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createApplication
+  deprecated: true
+- name: get_application_by_id
+  category: Application
+  description: "Finds a living application by ID"
+  http: "GET /API/living/application/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getApplicationById
+- name: delete_application_by_id
+  category: Application
+  description: "Delete a living application by ID"
+  http: "DELETE /API/living/application/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteApplicationById
+- name: update_application_by_id
+  category: Application
+  description: "Update a living application by ID"
+  http: "PUT /API/living/application/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateApplicationById
+  deprecated: true
+- name: import_application
+  category: Application
+  description: "Import a living application"
+  http: "POST /services/application/import"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#importApplication
+  deprecated: true
+- name: upload_application
+  category: Application
+  description: "Upload a living application"
+  http: "POST /portal/applicationsUpload"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#uploadApplication
+  deprecated: true
+- name: upload_application_configuration
+  category: Application
+  description: "Upload an application configuration file"
+  http: "POST /APIv2/service/install"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#uploadApplicationConfiguration
+  deprecated: true
+# --- ApplicationMenu (5 operations) ---
+- name: search_application_menus
+  category: ApplicationMenu
+  description: "Finds application menus"
+  http: "GET /API/living/application-menu"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchApplicationMenus
+- name: create_application_menu
+  category: ApplicationMenu
+  description: "New application menu item"
+  http: "POST /API/living/application-menu"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createApplicationMenu
+  deprecated: true
+- name: ge_application_menu_by_id
+  category: ApplicationMenu
+  description: "Finds a application menu by ID"
+  http: "GET /API/living/application-menu/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#geApplicationMenuById
+- name: delete_application_menu_by_id
+  category: ApplicationMenu
+  description: "Delete an application menu by ID"
+  http: "DELETE /API/living/application-menu/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteApplicationMenuById
+- name: update_application_menu_by_id
+  category: ApplicationMenu
+  description: "Update an application menu by ID"
+  http: "PUT /API/living/application-menu/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateApplicationMenuById
+  deprecated: true
+# --- ApplicationPage (4 operations) ---
+- name: search_application_pages
+  category: ApplicationPage
+  description: "Finds application pages"
+  http: "GET /API/living/application-page"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchApplicationPages
+- name: create_application_page
+  category: ApplicationPage
+  description: "Create an application page"
+  http: "POST /API/living/application-page"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createApplicationPage
+  deprecated: true
+- name: get_application_page_by_id
+  category: ApplicationPage
+  description: "Finds an application page by ID"
+  http: "GET /API/living/application-page/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getApplicationPageById
+- name: delete_application_page_by_id
+  category: ApplicationPage
+  description: "Delete an application page by ID"
+  http: "DELETE /API/living/application-page/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteApplicationPageById
+# --- BusinessDataQuery (1 operations) ---
+- name: search_business_data
+  category: BusinessDataQuery
+  description: "Finds Business Data"
+  http: "GET /API/bdm/businessData/{businessDataType}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchBusinessData
+# --- Business Data Operations (4 operations) ---
+- name: insert_business_data
+  category: Business Data Operations
+  description: "Create new Business Data"
+  http: "POST /API/bdm/businessData/{businessDataType}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#insertBusinessData
+- name: import_business_data
+  category: Business Data Operations
+  description: "Import Business Data by bulk"
+  http: "POST /API/bdm/businessData/{businessDataType}/import"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#importBusinessData
+- name: update_business_data
+  category: Business Data Operations
+  description: "Update an existing Business Data"
+  http: "PUT /API/bdm/businessData/{businessDataType}/{persistenceId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateBusinessData
+- name: delete_business_data
+  category: Business Data Operations
+  description: "Delete an existing Business Data"
+  http: "DELETE /API/bdm/businessData/{businessDataType}/{persistenceId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteBusinessData
+# --- BDM (5 operations) ---
+- name: search_business_data_by_ids
+  category: BDM
+  description: "Finds business data By Ids"
+  http: "GET /API/bdm/businessData/{businessDataType}/findByIds"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchBusinessDataByIds
+- name: search_business_data_by_id
+  category: BDM
+  description: "Finds business data by Id"
+  http: "GET /API/bdm/businessData/{businessDataType}/{persistenceId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchBusinessDataById
+- name: search_business_data_attribute_by_id
+  category: BDM
+  description: "Finds business data attribute by id"
+  http: "GET /API/bdm/businessData/{businessDataType}/{persistenceId}/{attributeName}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchBusinessDataAttributeById
+- name: get_bdm
+  category: BDM
+  description: "Get the BDM"
+  http: "GET /API/tenant/bdm"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getBdm
+- name: install_b_d_m
+  category: BDM
+  description: "Install a BDM"
+  http: "POST /API/tenant/bdm"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#installBDM
+  deprecated: true
+# --- BDMAccessControl (4 operations) ---
+- name: get_b_d_m_access_control_status
+  category: BDMAccessControl
+  description: "BDM access control status"
+  http: "GET /API/accessControl/bdm"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getBDMAccessControlStatus
+- name: delete_b_d_m_access_control
+  category: BDMAccessControl
+  description: "Delete the BDM Access Control"
+  http: "DELETE /API/accessControl/bdm"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteBDMAccessControl
+- name: upload_b_d_m_access_control
+  category: BDMAccessControl
+  description: "Upload a BDM Access Control"
+  http: "POST /portal/bdmAccessControlUpload"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#uploadBDMAccessControl
+  deprecated: true
+- name: import_b_d_m_access_control
+  category: BDMAccessControl
+  description: "Import a BDM Access Control"
+  http: "POST /services/bdmAccessControl/install"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#importBDMAccessControl
+  deprecated: true
+# --- DataRetention (5 operations) ---
+- name: find_objects_with_retention_rules
+  category: DataRetention
+  description: "List business object types with their retention rules"
+  http: "GET /API/retention/object"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#findObjectsWithRetentionRules
+- name: get_retention_schedule
+  category: DataRetention
+  description: "Get the data retention schedule"
+  http: "GET /API/retention/schedule"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getRetentionSchedule
+- name: create_retention_rule
+  category: DataRetention
+  description: "Create a retention rule"
+  http: "POST /API/retention/rule"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createRetentionRule
+- name: update_retention_rule_by_id
+  category: DataRetention
+  description: "Update a retention rule by ID"
+  http: "PUT /API/retention/rule/{ruleId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateRetentionRuleById
+- name: delete_retention_rule_by_id
+  category: DataRetention
+  description: "Delete a retention rule by ID"
+  http: "DELETE /API/retention/rule/{ruleId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteRetentionRuleById
+# --- Delegation (5 operations) ---
+- name: search_delegation_rules
+  category: Delegation
+  description: "Search delegation rules"
+  http: "GET /API/delegation/rule"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchDelegationRules
+- name: create_delegation_rule
+  category: Delegation
+  description: "Create or replace a delegation rule"
+  http: "POST /API/delegation/rule"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createDelegationRule
+- name: update_delegation_rule_by_id
+  category: Delegation
+  description: "Update a delegation rule by ID"
+  http: "PUT /API/delegation/rule/{ruleId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateDelegationRuleById
+- name: delete_delegation_rule_by_id
+  category: Delegation
+  description: "Delete a delegation rule by ID"
+  http: "DELETE /API/delegation/rule/{ruleId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteDelegationRuleById
+- name: search_delegated_tasks
+  category: Delegation
+  description: "Search delegated tasks"
+  http: "GET /API/delegation/task"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchDelegatedTasks
+# --- Activity (3 operations) ---
+- name: search_activities
+  category: Activity
+  description: "Finds Activities"
+  http: "GET /API/bpm/activity"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchActivities
+- name: get_activity_by_id
+  category: Activity
+  description: "Finds the Activity by ID"
+  http: "GET /API/bpm/activity/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getActivityById
+- name: update_activity_by_id
+  category: Activity
+  description: "Update the Activity by ID"
+  http: "PUT /API/bpm/activity/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateActivityById
+# --- ArchivedActivity (2 operations) ---
+- name: search_archived_activities
+  category: ArchivedActivity
+  description: "Finds Archived Activities"
+  http: "GET /API/bpm/archivedActivity"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchArchivedActivities
+- name: get_archived_activity_by_id
+  category: ArchivedActivity
+  description: "Finds the Archived Activity by ID"
+  http: "GET /API/bpm/archivedActivity/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedActivityById
+# --- HumanTask (3 operations) ---
+- name: search_human_tasks
+  category: HumanTask
+  description: "Finds HumanTasks"
+  http: "GET /API/bpm/humanTask"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchHumanTasks
+- name: get_human_task_by_id
+  category: HumanTask
+  description: "Finds the HumanTask by ID"
+  http: "GET /API/bpm/humanTask/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getHumanTaskById
+- name: update_human_task_by_id
+  category: HumanTask
+  description: "Update the HumanTask by ID"
+  http: "PUT /API/bpm/humanTask/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateHumanTaskById
+# --- ManualTask (4 operations) ---
+- name: search_manual_tasks
+  category: ManualTask
+  description: "Finds ManualTasks"
+  http: "GET /API/bpm/manualTask"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchManualTasks
+- name: create_manual_task
+  category: ManualTask
+  description: "Create the ManualTask"
+  http: "POST /API/bpm/manualTask"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createManualTask
+- name: get_manual_task_by_id
+  category: ManualTask
+  description: "Finds the ManualTask by ID"
+  http: "GET /API/bpm/manualTask/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getManualTaskById
+- name: update_manual_task_by_id
+  category: ManualTask
+  description: "Update the ManualTask by ID"
+  http: "PUT /API/bpm/manualTask/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateManualTaskById
+# --- Task (3 operations) ---
+- name: search_tasks
+  category: Task
+  description: "Finds Tasks"
+  http: "GET /API/bpm/task"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchTasks
+- name: get_task_by_id
+  category: Task
+  description: "Finds the Task by ID"
+  http: "GET /API/bpm/task/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getTaskById
+- name: update_task_by_id
+  category: Task
+  description: "Update the Task by ID"
+  http: "PUT /API/bpm/task/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateTaskById
+# --- UserTask (6 operations) ---
+- name: search_user_tasks
+  category: UserTask
+  description: "Finds UserTasks"
+  http: "GET /API/bpm/userTask"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchUserTasks
+- name: get_user_task_by_id
+  category: UserTask
+  description: "Finds the UserTask by ID"
+  http: "GET /API/bpm/userTask/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getUserTaskById
+- name: update_user_task_by_id
+  category: UserTask
+  description: "Update the UserTask by ID"
+  http: "PUT /API/bpm/userTask/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateUserTaskById
+- name: get_contract_by_user_task_id
+  category: UserTask
+  description: "Finds the Contract by UserTask ID"
+  http: "GET /API/bpm/userTask/{id}/contract"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getContractByUserTaskId
+- name: execute_user_task
+  category: UserTask
+  description: "Execute the UserTask"
+  http: "POST /API/bpm/userTask/{id}/execution"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#executeUserTask
+- name: get_context_by_user_task_id
+  category: UserTask
+  description: "Finds the Context by UserTask ID"
+  http: "GET /API/bpm/userTask/{id}/context"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getContextByUserTaskId
+# --- ArchivedHumanTask (2 operations) ---
+- name: search_archived_human_tasks
+  category: ArchivedHumanTask
+  description: "Finds ArchivedHumanTasks"
+  http: "GET /API/bpm/archivedHumanTask"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchArchivedHumanTasks
+- name: get_archived_human_task_by_id
+  category: ArchivedHumanTask
+  description: "Finds the ArchivedHumanTask by ID"
+  http: "GET /API/bpm/archivedHumanTask/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedHumanTaskById
+# --- ArchivedManualTask (2 operations) ---
+- name: search_archived_manual_tasks
+  category: ArchivedManualTask
+  description: "Finds ArchivedManualTasks"
+  http: "GET /API/bpm/archivedManualTask"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchArchivedManualTasks
+- name: get_archived_manual_task_by_id
+  category: ArchivedManualTask
+  description: "Finds the ArchivedManualTask by ID"
+  http: "GET /API/bpm/archivedManualTask/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedManualTaskById
+# --- ArchivedUserTask (2 operations) ---
+- name: search_archived_user_tasks
+  category: ArchivedUserTask
+  description: "Finds ArchivedUserTasks"
+  http: "GET /API/bpm/archivedUserTask"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchArchivedUserTasks
+- name: get_archived_user_task_by_id
+  category: ArchivedUserTask
+  description: "Finds the ArchivedUserTask by ID"
+  http: "GET /API/bpm/archivedUserTask/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedUserTaskById
+# --- ArchivedTask (2 operations) ---
+- name: search_archived_tasks
+  category: ArchivedTask
+  description: "Finds ArchivedTasks"
+  http: "GET /API/bpm/archivedTask"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchArchivedTasks
+- name: get_archived_task_by_id
+  category: ArchivedTask
+  description: "Finds the ArchivedTask by ID"
+  http: "GET /API/bpm/archivedTask/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedTaskById
+# --- ActivityVariable (1 operations) ---
+- name: get_activity_variable_by_id
+  category: ActivityVariable
+  description: "Finds the ActivityVariable by ID"
+  http: "GET /API/bpm/activityVariable/{id}/{variableName}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getActivityVariableById
+# --- ArchivedActivityVariable (1 operations) ---
+- name: get_archived_activity_instance_variable
+  category: ArchivedActivityVariable
+  description: "Finds the ArchivedActivityVariable by case ID and name"
+  http: "GET /API/bpm/archivedActivityVariable/{id}/{variableName}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedActivityInstanceVariable
+# --- ProcessInstanceVariable (3 operations) ---
+- name: search_process_instance_variables
+  category: ProcessInstanceVariable
+  description: "Finds ProcessInstance Variables"
+  http: "GET /API/bpm/caseVariable"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProcessInstanceVariables
+- name: get_variable_by_process_instance_id
+  category: ProcessInstanceVariable
+  description: "Finds the Variable by ProcessInstance ID"
+  http: "GET /API/bpm/caseVariable/{id}/{variableName}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getVariableByProcessInstanceId
+- name: update_variable_by_process_instance_id
+  category: ProcessInstanceVariable
+  description: "Update a Variable by ProcessInstance ID"
+  http: "PUT /API/bpm/caseVariable/{id}/{variableName}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateVariableByProcessInstanceId
+# --- ArchivedProcessInstanceVariable (2 operations) ---
+- name: get_archived_process_instance_variables
+  category: ArchivedProcessInstanceVariable
+  description: "Finds ArchivedProcessInstance Variables"
+  http: "GET /API/bpm/archivedCaseVariable"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedProcessInstanceVariables
+- name: get_archived_variable_by_process_instance
+  category: ArchivedProcessInstanceVariable
+  description: "Finds an archived Variable by ProcessInstance ID and variable name"
+  http: "GET /API/bpm/archivedCaseVariable/{id}/{variableName}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedVariableByProcessInstance
+# --- ProcessInstanceDocument (5 operations) ---
+- name: search_process_instance_documents
+  category: ProcessInstanceDocument
+  description: "Finds ProcessInstanceDocuments"
+  http: "GET /API/bpm/caseDocument"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProcessInstanceDocuments
+- name: create_process_instance_document
+  category: ProcessInstanceDocument
+  description: "Create the ProcessInstanceDocument"
+  http: "POST /API/bpm/caseDocument"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createProcessInstanceDocument
+- name: get_process_instance_document_by_id
+  category: ProcessInstanceDocument
+  description: "Finds the ProcessInstanceDocument by ID"
+  http: "GET /API/bpm/caseDocument/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProcessInstanceDocumentById
+- name: update_process_instance_document_by_id
+  category: ProcessInstanceDocument
+  description: "Update the ProcessInstanceDocument by ID"
+  http: "PUT /API/bpm/caseDocument/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateProcessInstanceDocumentById
+- name: delete_process_instance_document_by_id
+  category: ProcessInstanceDocument
+  description: "Delete the ProcessInstanceDocument by ID"
+  http: "DELETE /API/bpm/caseDocument/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteProcessInstanceDocumentById
+# --- ArchivedProcessInstanceDocument (2 operations) ---
+- name: search_archived_process_instance_documents
+  category: ArchivedProcessInstanceDocument
+  description: "Finds ArchivedProcessInstanceDocuments"
+  http: "GET /API/bpm/archivedCaseDocument"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchArchivedProcessInstanceDocuments
+- name: delete_archived_process_instance_document_by_id
+  category: ArchivedProcessInstanceDocument
+  description: "Delete the ArchivedProcessInstanceDocument by ID"
+  http: "DELETE /API/bpm/archivedCaseDocument/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteArchivedProcessInstanceDocumentById
+# --- Actor (3 operations) ---
+- name: search_actors
+  category: Actor
+  description: "Finds Actors"
+  http: "GET /API/bpm/actor"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchActors
+- name: get_actor_by_id
+  category: Actor
+  description: "Finds the Actor by ID"
+  http: "GET /API/bpm/actor/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getActorById
+- name: update_actor_by_id
+  category: Actor
+  description: "Update the Actor by ID"
+  http: "PUT /API/bpm/actor/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateActorById
+  deprecated: true
+# --- ActorMember (3 operations) ---
+- name: search_actor_members
+  category: ActorMember
+  description: "Finds ActorMembers"
+  http: "GET /API/bpm/actorMember"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchActorMembers
+- name: get_actor_member_by_id
+  category: ActorMember
+  description: "Finds the ActorMember by ID"
+  http: "GET /API/bpm/actorMember/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getActorMemberById
+- name: delete_actor_member_by_id
+  category: ActorMember
+  description: "Delete the ActorMember by ID"
+  http: "DELETE /API/bpm/actorMember/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteActorMemberById
+# --- ProcessInstance (7 operations) ---
+- name: search_process_instances
+  category: ProcessInstance
+  description: "Finds ProcessInstances"
+  http: "GET /API/bpm/case"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProcessInstances
+- name: create_process_instance
+  category: ProcessInstance
+  description: "Create the ProcessInstance"
+  http: "POST /API/bpm/case"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createProcessInstance
+- name: delete_process_instance_by_ids
+  category: ProcessInstance
+  description: "Delete the ProcessInstance by batch"
+  http: "DELETE /API/bpm/case"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteProcessInstanceByIds
+- name: get_process_instance_by_id
+  category: ProcessInstance
+  description: "Finds the ProcessInstance by ID"
+  http: "GET /API/bpm/case/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProcessInstanceById
+- name: update_process_instance_by_id
+  category: ProcessInstance
+  description: "Update the ProcessInstance by ID"
+  http: "PUT /API/bpm/case/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateProcessInstanceById
+- name: delete_process_instance_by_id
+  category: ProcessInstance
+  description: "Delete the ProcessInstance by ID"
+  http: "DELETE /API/bpm/case/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteProcessInstanceById
+- name: get_context_by_process_instance_id
+  category: ProcessInstance
+  description: "Finds the Context by ProcessInstance ID"
+  http: "GET /API/bpm/case/{id}/context"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getContextByProcessInstanceId
+# --- ArchivedProcessInstance (4 operations) ---
+- name: search_archived_process_instances
+  category: ArchivedProcessInstance
+  description: "Finds ArchivedProcessInstances"
+  http: "GET /API/bpm/archivedCase"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchArchivedProcessInstances
+- name: get_archived_process_instance_by_id
+  category: ArchivedProcessInstance
+  description: "Finds the ArchivedProcessInstance by ID"
+  http: "GET /API/bpm/archivedCase/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedProcessInstanceById
+- name: delete_archived_process_instance_by_id
+  category: ArchivedProcessInstance
+  description: "Delete the ArchivedProcessInstance by ID"
+  http: "DELETE /API/bpm/archivedCase/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteArchivedProcessInstanceById
+- name: get_context_by_archived_process_instance_id
+  category: ArchivedProcessInstance
+  description: "Finds the Context by ArchivedProcessInstance ID"
+  http: "GET /API/bpm/archivedCase/{id}/context"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getContextByArchivedProcessInstanceId
+# --- ProcessInstanceInfo (1 operations) ---
+- name: get_process_instance_info_by_id
+  category: ProcessInstanceInfo
+  description: "Finds the ProcessInstanceInfo by ID"
+  http: "GET /API/bpm/caseInfo/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProcessInstanceInfoById
+# --- ProcessInstanceComment (2 operations) ---
+- name: search_process_instance_comments
+  category: ProcessInstanceComment
+  description: "Finds ProcessInstanceComments"
+  http: "GET /API/bpm/comment"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProcessInstanceComments
+- name: create_process_instance_comment
+  category: ProcessInstanceComment
+  description: "Create the ProcessInstanceComment"
+  http: "POST /API/bpm/comment"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createProcessInstanceComment
+# --- ArchivedProcessInstanceComment (1 operations) ---
+- name: search_archived_process_instance_comments
+  category: ArchivedProcessInstanceComment
+  description: "Finds ArchivedProcessInstanceComments"
+  http: "GET /API/bpm/archivedComment"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchArchivedProcessInstanceComments
+# --- Process (12 operations) ---
+- name: search_processes
+  category: Process
+  description: "Finds Processes"
+  http: "GET /API/bpm/process"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProcesses
+- name: create_process
+  category: Process
+  description: "Create the Process"
+  http: "POST /API/bpm/process"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createProcess
+  deprecated: true
+- name: delete_process_by_ids
+  category: Process
+  description: "Delete the Process by IDs"
+  http: "DELETE /API/bpm/process"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteProcessByIds
+- name: get_process_by_id
+  category: Process
+  description: "Finds the Process by ID"
+  http: "GET /API/bpm/process/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProcessById
+- name: update_process_by_id
+  category: Process
+  description: "Update the Process by ID"
+  http: "PUT /API/bpm/process/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateProcessById
+  deprecated: true
+- name: delete_process_by_id
+  category: Process
+  description: "Delete the Process by ID"
+  http: "DELETE /API/bpm/process/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteProcessById
+- name: get_process_design_by_id
+  category: Process
+  description: "Finds the Process design by ID"
+  http: "GET /API/bpm/process/{id}/design"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProcessDesignById
+- name: get_process_contract_by_id
+  category: Process
+  description: "Finds the Process contract by ID"
+  http: "GET /API/bpm/process/{id}/contract"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProcessContractById
+- name: instanciate_process
+  category: Process
+  description: "Instanciate the process"
+  http: "POST /API/bpm/process/{id}/instantiation"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#instanciateProcess
+- name: search_process_names
+  category: Process
+  description: "Search process names"
+  http: "GET /API/bpm/processName"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProcessNames
+- name: update_process_connector_by_process_id
+  category: Process
+  description: "Update the Process Connector by Process ID"
+  http: "PUT /API/bpm/processConnector/{id}/{connectorImplId}/{connectorImplVersion}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateProcessConnectorByProcessId
+  deprecated: true
+- name: upload_process
+  category: Process
+  description: "Upload a bar file"
+  http: "POST /portal/processUpload"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#uploadProcess
+  deprecated: true
+# --- ProcessInfo (1 operations) ---
+- name: get_process_info_by_id
+  category: ProcessInfo
+  description: "Finds the ProcessInfo by ID"
+  http: "GET /API/bpm/processInfo/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProcessInfoById
+# --- Diagram (1 operations) ---
+- name: get_process_diagram_by_id
+  category: Diagram
+  description: "Finds the diagram process by ID"
+  http: "GET /API/bpm/diagram/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProcessDiagramById
+# --- ProcessParameter (3 operations) ---
+- name: search_process_parameters
+  category: ProcessParameter
+  description: "Finds ProcessParameters"
+  http: "GET /API/bpm/processParameter"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProcessParameters
+- name: get_process_parameter_by_id
+  category: ProcessParameter
+  description: "Finds the ProcessParameter by ID"
+  http: "GET /API/bpm/processParameter/{id}/{name}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProcessParameterById
+- name: update_process_parameter_by_id
+  category: ProcessParameter
+  description: "Update the ProcessParameter by ID"
+  http: "PUT /API/bpm/processParameter/{id}/{name}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateProcessParameterById
+  deprecated: true
+# --- ProcessResolutionProblem (1 operations) ---
+- name: search_process_resolution_problems
+  category: ProcessResolutionProblem
+  description: "Finds ProcessResolutionProblems"
+  http: "GET /API/bpm/processResolutionProblem"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProcessResolutionProblems
+# --- ProcessSupervisor (3 operations) ---
+- name: search_process_supervisors
+  category: ProcessSupervisor
+  description: "Finds ProcessSupervisors"
+  http: "GET /API/bpm/processSupervisor"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProcessSupervisors
+- name: create_process_supervisor
+  category: ProcessSupervisor
+  description: "Create the ProcessSupervisor"
+  http: "POST /API/bpm/processSupervisor"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createProcessSupervisor
+- name: delete_process_supervisor_by_id
+  category: ProcessSupervisor
+  description: "Delete the ProcessSupervisor by ID"
+  http: "DELETE /API/bpm/processSupervisor"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteProcessSupervisorById
+# --- ProcessConnectorDependency (1 operations) ---
+- name: search_process_connector_dependencies
+  category: ProcessConnectorDependency
+  description: "Finds ProcessConnectorDependencies"
+  http: "GET /API/bpm/processConnectorDependency"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProcessConnectorDependencies
+# --- ConnectorFailure (1 operations) ---
+- name: get_connector_failure_by_id
+  category: ConnectorFailure
+  description: "Finds the ConnectorFailure by ID"
+  http: "GET /API/bpm/connectorFailure/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getConnectorFailureById
+# --- ConnectorInstance (1 operations) ---
+- name: search_connector_instances
+  category: ConnectorInstance
+  description: "Finds ConnectorInstances"
+  http: "GET /API/bpm/connectorInstance"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchConnectorInstances
+# --- ArchivedConnectorInstance (1 operations) ---
+- name: search_archived_connector_instances
+  category: ArchivedConnectorInstance
+  description: "Finds ArchivedConnectorInstances"
+  http: "GET /API/bpm/archivedConnectorInstance"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchArchivedConnectorInstances
+# --- FlowNode (3 operations) ---
+- name: search_flow_nodes
+  category: FlowNode
+  description: "Finds FlowNodes"
+  http: "GET /API/bpm/flowNode"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchFlowNodes
+- name: get_flow_node_by_id
+  category: FlowNode
+  description: "Finds the FlowNode by ID"
+  http: "GET /API/bpm/flowNode/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getFlowNodeById
+- name: update_flow_node_by_id
+  category: FlowNode
+  description: "Update the FlowNode by ID"
+  http: "PUT /API/bpm/flowNode/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateFlowNodeById
+# --- ArchivedFlowNode (2 operations) ---
+- name: search_archived_flow_nodes
+  category: ArchivedFlowNode
+  description: "Finds ArchivedFlowNodes"
+  http: "GET /API/bpm/archivedFlowNode"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchArchivedFlowNodes
+- name: get_archived_flow_node_by_id
+  category: ArchivedFlowNode
+  description: "Finds the ArchivedFlowNode by ID"
+  http: "GET /API/bpm/archivedFlowNode/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedFlowNodeById
+# --- Failure (5 operations) ---
+- name: get_b_p_m_failures_by_flow_node_instance_id
+  category: Failure
+  description: "Retrieve the failures of a flownode instance by it's ID"
+  http: "GET /API/bpm/failure/flowNode/{flowNodeInstanceId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getBPMFailuresByFlowNodeInstanceId
+- name: get_b_p_m_failures_by_case_id
+  category: Failure
+  description: "Retrieve the failures of a case (process instance) by it's ID"
+  http: "GET /API/bpm/failure/case/{caseId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getBPMFailuresByCaseId
+- name: get_archived_b_p_m_failures_by_case_id
+  category: Failure
+  description: "Retrieve the archived failures of an archived case (process instance) by it's sourceObjectID"
+  http: "GET /API/bpm/achivedFailure/case/{caseId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedBPMFailuresByCaseId
+- name: get_b_p_m_failures_by_root_case_id
+  category: Failure
+  description: "Retrieve the failures of the child cases of a root case (process instance) by it's ID"
+  http: "GET /API/bpm/failure/case/{rootCaseId}/childCases"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getBPMFailuresByRootCaseId
+- name: get_archived_b_p_m_failures_by_root_case_id
+  category: Failure
+  description: "Retrieve the archived failures of the archived child cases of a root case (process instance) by it's ID"
+  http: "GET /API/bpm/achivedFailure/case/{rootCaseId}/childCases"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedBPMFailuresByRootCaseId
+# --- ArchivedFailure (1 operations) ---
+- name: get_archived_b_p_m_failures_by_flow_node_instance_id
+  category: ArchivedFailure
+  description: "Retrieve the archived failures of an archived flownode instance by it's sourceObjectID"
+  http: "GET /API/bpm/achivedFailure/flowNode/{flowNodeInstanceId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getArchivedBPMFailuresByFlowNodeInstanceId
+# --- TimerEventTrigger (3 operations) ---
+- name: search_timer_event_triggers
+  category: TimerEventTrigger
+  description: "Finds TimerEventTriggers"
+  http: "GET /API/bpm/timerEventTrigger"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchTimerEventTriggers
+- name: get_timer_event_trigger_by_id
+  category: TimerEventTrigger
+  description: "Finds the TimerEventTrigger by ID"
+  http: "GET /API/bpm/timerEventTrigger/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getTimerEventTriggerById
+- name: update_timer_event_trigger_by_id
+  category: TimerEventTrigger
+  description: "Update the TimerEventTrigger by ID"
+  http: "PUT /API/bpm/timerEventTrigger/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateTimerEventTriggerById
+# --- Message (1 operations) ---
+- name: create_message
+  category: Message
+  description: "Send BPM message events"
+  http: "POST /API/bpm/message"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createMessage
+# --- Signal (1 operations) ---
+- name: broadcast_signal
+  category: Signal
+  description: "Broadcast BPM signal events"
+  http: "POST /API/bpm/signal"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#broadcastSignal
+# --- CustomUserDefinition (4 operations) ---
+- name: search_custom_user_definitions
+  category: CustomUserDefinition
+  description: "Finds CustomUserDefinitions"
+  http: "GET /API/customuserinfo/definition"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchCustomUserDefinitions
+- name: create_custom_user_definition
+  category: CustomUserDefinition
+  description: "Create the CustomUserDefinition"
+  http: "POST /API/customuserinfo/definition"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createCustomUserDefinition
+- name: get_custom_user_definition_by_id
+  category: CustomUserDefinition
+  description: "Finds the CustomUserDefinition by ID"
+  http: "GET /API/customuserinfo/definition/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getCustomUserDefinitionById
+- name: delete_custom_user_definition_by_id
+  category: CustomUserDefinition
+  description: "Delete the CustomUserDefinition by ID"
+  http: "DELETE /API/customuserinfo/definition/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteCustomUserDefinitionById
+# --- CustomUserValue (2 operations) ---
+- name: search_custom_user_values
+  category: CustomUserValue
+  description: "Finds CustomUserValues"
+  http: "GET /API/customuserinfo/value"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchCustomUserValues
+- name: update_custom_user_value_by_id
+  category: CustomUserValue
+  description: "Update the CustomUserValue by ID"
+  http: "PUT /API/customuserinfo/value/{userId}/{definitionId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateCustomUserValueById
+# --- CustomUser (1 operations) ---
+- name: search_custom_users
+  category: CustomUser
+  description: "Finds CustomUsers"
+  http: "GET /API/customuserinfo/user"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchCustomUsers
+# --- FormMapping (2 operations) ---
+- name: search_form_mappings
+  category: FormMapping
+  description: "Finds FormMappings"
+  http: "GET /API/form/mapping"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchFormMappings
+- name: update_form_mapping_by_id
+  category: FormMapping
+  description: "Update the FormMapping by ID"
+  http: "PUT /API/form/mapping/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateFormMappingById
+  deprecated: true
+# --- ProfessionalContactData (6 operations) ---
+- name: search_professional_contact_datas
+  category: ProfessionalContactData
+  description: "Finds ProfessionalContactData"
+  http: "GET /API/identity/professionalcontactdata"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProfessionalContactDatas
+- name: create_professional_contact_data
+  category: ProfessionalContactData
+  description: "Create the ProfessionalContactData"
+  http: "POST /API/identity/professionalcontactdata"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createProfessionalContactData
+- name: get_professional_contact_data_by_id
+  category: ProfessionalContactData
+  description: "Finds the ProfessionalContactData by ID"
+  http: "GET /API/identity/professionalcontactdata/{userId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProfessionalContactDataById
+- name: update_professional_contact_data_by_id
+  category: ProfessionalContactData
+  description: "Update the ProfessionalContactData by ID"
+  http: "PUT /API/identity/professionalcontactdata/{userId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateProfessionalContactDataById
+- name: get_personal_contact_data_by_id
+  category: ProfessionalContactData
+  description: "Finds the PersonalContactData by ID"
+  http: "GET /API/identity/personalcontactdata/{userId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getPersonalContactDataById
+- name: update_personal_contact_data_by_id
+  category: ProfessionalContactData
+  description: "Update the PersonalContactData by ID"
+  http: "PUT /API/identity/personalcontactdata/{userId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updatePersonalContactDataById
+# --- Group (5 operations) ---
+- name: search_groups
+  category: Group
+  description: "Finds Groups"
+  http: "GET /API/identity/group"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchGroups
+- name: create_group
+  category: Group
+  description: "Create the Group"
+  http: "POST /API/identity/group"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createGroup
+- name: get_group_by_id
+  category: Group
+  description: "Finds the Group by ID"
+  http: "GET /API/identity/group/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getGroupById
+- name: update_group_by_id
+  category: Group
+  description: "Update the Group by ID"
+  http: "PUT /API/identity/group/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateGroupById
+- name: delete_group_by_id
+  category: Group
+  description: "Delete the Group by ID"
+  http: "DELETE /API/identity/group/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteGroupById
+# --- Membership (3 operations) ---
+- name: search_memberships
+  category: Membership
+  description: "Finds Memberships"
+  http: "GET /API/identity/membership"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchMemberships
+- name: create_membership
+  category: Membership
+  description: "Create the Membership"
+  http: "POST /API/identity/membership"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createMembership
+- name: delete_membership_by_id
+  category: Membership
+  description: "Delete the Membership by ID"
+  http: "DELETE /API/identity/membership/{userId}/{groupId}/{roleId}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteMembershipById
+# --- Role (5 operations) ---
+- name: search_roles
+  category: Role
+  description: "Finds Roles"
+  http: "GET /API/identity/role"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchRoles
+- name: create_role
+  category: Role
+  description: "Create the Role"
+  http: "POST /API/identity/role"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createRole
+- name: get_role_by_id
+  category: Role
+  description: "Finds the Role by ID"
+  http: "GET /API/identity/role/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getRoleById
+- name: update_role_by_id
+  category: Role
+  description: "Update the Role by ID"
+  http: "PUT /API/identity/role/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateRoleById
+- name: delete_role_by_id
+  category: Role
+  description: "Delete the Role by ID"
+  http: "DELETE /API/identity/role/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteRoleById
+# --- User (6 operations) ---
+- name: search_users
+  category: User
+  description: "Finds Users"
+  http: "GET /API/identity/user"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchUsers
+- name: create_user
+  category: User
+  description: "Create the User"
+  http: "POST /API/identity/user"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createUser
+- name: get_user_by_id
+  category: User
+  description: "Finds the User by ID"
+  http: "GET /API/identity/user/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getUserById
+- name: update_user_by_id
+  category: User
+  description: "Update the User by ID"
+  http: "PUT /API/identity/user/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateUserById
+- name: delete_user_by_id
+  category: User
+  description: "Delete the User by ID"
+  http: "DELETE /API/identity/user/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteUserById
+- name: search_user_summaries
+  category: User
+  description: "Finds User summaries"
+  http: "GET /API/identity/userSummary"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchUserSummaries
+# --- Platform (4 operations) ---
+- name: platform_login
+  category: Platform
+  description: "Platform Login"
+  http: "POST /platformloginservice"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#platformLogin
+- name: platform_logout
+  category: Platform
+  description: "Platform Logout"
+  http: "POST /platformlogoutservice"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#platformLogout
+- name: get_platform_by_id
+  category: Platform
+  description: "Finds the Platform by ID"
+  http: "GET /API/platform/platform/unusedid"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getPlatformById
+- name: update_platform_by_id
+  category: Platform
+  description: "Update the Platform by ID"
+  http: "PUT /API/platform/platform/unusedid"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updatePlatformById
+# --- License (2 operations) ---
+- name: get_platform_license
+  category: License
+  description: "Get the platform License"
+  http: "GET /API/platform/license"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getPlatformLicense
+  deprecated: true
+- name: get_license
+  category: License
+  description: "Get the current server license"
+  http: "GET /API/system/license/unusedid"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getLicense
+# --- Page (6 operations) ---
+- name: upload_page
+  category: Page
+  description: "Upload a Page"
+  http: "POST /portal/pageUpload"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#uploadPage
+  deprecated: true
+- name: search_pages
+  category: Page
+  description: "Finds Pages"
+  http: "GET /API/portal/page"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchPages
+- name: create_page
+  category: Page
+  description: "Create the Page"
+  http: "POST /API/portal/page"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createPage
+  deprecated: true
+- name: get_page_by_id
+  category: Page
+  description: "Finds the Page by ID"
+  http: "GET /API/portal/page/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getPageById
+- name: update_page_by_id
+  category: Page
+  description: "Update the Page by ID"
+  http: "PUT /API/portal/page/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updatePageById
+  deprecated: true
+- name: delete_page_by_id
+  category: Page
+  description: "Delete the Page by ID"
+  http: "DELETE /API/portal/page/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deletePageById
+# --- Upload (1 operations) ---
+- name: upload_file
+  category: Upload
+  description: "Upload a file"
+  http: "POST /portal/fileUpload"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#uploadFile
+# --- Profile (7 operations) ---
+- name: search_profiles
+  category: Profile
+  description: "Finds Profiles"
+  http: "GET /API/portal/profile"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProfiles
+- name: create_profile
+  category: Profile
+  description: "Create the Profile"
+  http: "POST /API/portal/profile"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createProfile
+  deprecated: true
+- name: get_profile_by_id
+  category: Profile
+  description: "Finds the Profile by ID"
+  http: "GET /API/portal/profile/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProfileById
+- name: update_profile_by_id
+  category: Profile
+  description: "Update the Profile by ID"
+  http: "PUT /API/portal/profile/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateProfileById
+  deprecated: true
+- name: delete_profile_by_id
+  category: Profile
+  description: "Delete the Profile by ID"
+  http: "DELETE /API/portal/profile/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteProfileById
+- name: uploadprofiles
+  category: Profile
+  description: "Upload profiles"
+  http: "POST /portal/profilesUpload"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#uploadprofiles
+  deprecated: true
+- name: import_profiles
+  category: Profile
+  description: "Import profiles"
+  http: "POST /services/profile/import"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#importProfiles
+  deprecated: true
+# --- ProfileEntry (5 operations) ---
+- name: search_profile_entries
+  category: ProfileEntry
+  description: "Finds ProfileEntries"
+  http: "GET /API/portal/profileEntry"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProfileEntries
+  deprecated: true
+- name: create_profile_entry
+  category: ProfileEntry
+  description: "Create the ProfileEntry"
+  http: "POST /API/portal/profileEntry"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createProfileEntry
+  deprecated: true
+- name: get_profile_entry_by_id
+  category: ProfileEntry
+  description: "Finds the ProfileEntry by ID"
+  http: "GET /API/portal/profileEntry/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProfileEntryById
+  deprecated: true
+- name: update_profile_entry_by_id
+  category: ProfileEntry
+  description: "Update the ProfileEntry by ID"
+  http: "PUT /API/portal/profileEntry/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateProfileEntryById
+  deprecated: true
+- name: delete_profile_entry_by_id
+  category: ProfileEntry
+  description: "Delete the ProfileEntry by ID"
+  http: "DELETE /API/portal/profileEntry/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteProfileEntryById
+  deprecated: true
+# --- ProfileMember (4 operations) ---
+- name: search_profile_members
+  category: ProfileMember
+  description: "Finds ProfileMembers"
+  http: "GET /API/portal/profileMember"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchProfileMembers
+- name: create_profile_member
+  category: ProfileMember
+  description: "Create the ProfileMember"
+  http: "POST /API/portal/profileMember"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createProfileMember
+- name: get_profile_member_by_id
+  category: ProfileMember
+  description: "Finds the ProfileMember by ID"
+  http: "GET /API/portal/profileMember/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getProfileMemberById
+- name: delete_profile_member_by_id
+  category: ProfileMember
+  description: "Delete the ProfileMember by ID"
+  http: "DELETE /API/portal/profileMember/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#deleteProfileMemberById
+# --- Theme (2 operations) ---
+- name: create_theme
+  category: Theme
+  description: "Create the Theme"
+  http: "POST /API/portal/theme"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#createTheme
+  deprecated: true
+- name: restore_theme
+  category: Theme
+  description: "Restore default Theme"
+  http: "PUT /API/portal/theme/unusedId"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#restoreTheme
+  deprecated: true
+# --- Log (2 operations) ---
+- name: search_logs
+  category: Log
+  description: "Finds Logs"
+  http: "GET /API/system/log"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchLogs
+- name: get_log_by_id
+  category: Log
+  description: "Finds the Log by ID"
+  http: "GET /API/system/log/{id}"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getLogById
+# --- I18nlocale (1 operations) ---
+- name: search_i18nlocales
+  category: I18nlocale
+  description: "Finds I18nlocales"
+  http: "GET /API/system/i18nlocale"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchI18nlocales
+# --- I18ntranslation (1 operations) ---
+- name: search_i18ntranslations
+  category: I18ntranslation
+  description: "Finds I18ntranslations"
+  http: "GET /API/system/i18ntranslation"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#searchI18ntranslations
+# --- Session (1 operations) ---
+- name: get_session
+  category: Session
+  description: "Get the current user session"
+  http: "GET /API/system/session/unusedId"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getSession
+# --- Maintenance (2 operations) ---
+- name: get_maintenance_details
+  category: Maintenance
+  description: "Get the maintenance details"
+  http: "GET /API/system/maintenance"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getMaintenanceDetails
+- name: update_maintenance_details
+  category: Maintenance
+  description: "Update the maintenance details"
+  http: "PUT /API/system/maintenance"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#updateMaintenanceDetails
+# --- Information (1 operations) ---
+- name: get_system_information
+  category: Information
+  description: "Get the system information"
+  http: "GET /API/system/information"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#getSystemInformation
+# --- Organization (2 operations) ---
+- name: upload_organization
+  category: Organization
+  description: "Import an organization"
+  http: "POST /portal/organizationUpload"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#uploadOrganization
+- name: import_organization
+  category: Organization
+  description: "Import an organization"
+  http: "POST /services/organization/import"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#importOrganization
+# --- FormFileUpload (1 operations) ---
+- name: form_file_upload
+  category: FormFileUpload
+  description: "Upload a file"
+  http: "POST /API/formFileUpload"
+  source_operation: openapi/bonitasoft-bonita-openapi.yml#formFileUpload

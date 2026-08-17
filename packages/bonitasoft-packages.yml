@@ -1,0 +1,281 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  Registry sweeps of Maven Central (search.maven.org/solrsearch), npm
+  (registry.npmjs.org search + per-package metadata), Docker Hub
+  (hub.docker.com/v2/repositories/library/bonita), PyPI, RubyGems, crates.io,
+  NuGet and pkg.go.dev, plus the Bonita OpenAPI description (which names the
+  official Java client) and the github.com/bonitasoft organization (157 public
+  repositories).
+summary:
+  first_party_sdk_count: 1
+  first_party_package_count: 16
+  primary_language: java
+  note: >-
+    Bonitasoft (Ofelia since June 2026) is a Java shop. The one true API client
+    library is org.bonitasoft.web:bonita-java-client on Maven Central — the
+    Bonita OpenAPI document itself names it as "an open source java client
+    implemented above the HTTP API". There is no first-party JavaScript, Python,
+    Go, Ruby, PHP or .NET client for the Bonita Web REST API; non-Java consumers
+    are directed at raw REST plus the published OpenAPI/Postman artifacts, which
+    is stated verbatim in the spec description. The @bonitasoft npm scope is UI
+    Designer widget tooling and web components, not REST clients (see
+    components/bonitasoft-components.yml).
+  currency_note: >-
+    bonita-java-client 3.0.1 was published 2025-03-21, while the API contract it
+    wraps shipped 1.0.9 on 2026-06-19 and the runtime shipped 2026.2 on
+    2026-06-30. The client's develop branch is active (pushed 2026-07-27) but no
+    release has been cut since March 2025, so the published client lags the
+    published contract by roughly fifteen months.
+
+packages:
+- language: java
+  registry: maven
+  name: org.bonitasoft.web:bonita-java-client
+  url: https://central.sonatype.com/artifact/org.bonitasoft.web/bonita-java-client
+  repository: https://github.com/bonitasoft/bonita-java-client
+  install: |-
+    <dependency>
+      <groupId>org.bonitasoft.web</groupId>
+      <artifactId>bonita-java-client</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+  official: true
+  role: rest-client
+  version: 3.0.1
+  published: '2025-03-21'
+  license: GPL-2.0
+  description: >-
+    The official Java client for the Bonita Web REST API. Generated from and kept
+    in step with the bonita-openapi release assets; the OpenAPI document links to
+    it directly as the recommended integration path for Java consumers.
+
+- language: java
+  registry: maven
+  name: org.bonitasoft.maven:bonita-project-maven-plugin
+  url: https://central.sonatype.com/artifact/org.bonitasoft.maven/bonita-project-maven-plugin
+  repository: https://github.com/bonitasoft/bonita-project-maven-plugin
+  install: mvn org.bonitasoft.maven:bonita-project-maven-plugin:2.1.2:<goal>
+  official: true
+  role: build-tooling
+  version: 2.1.2
+  published: '2025-06-30'
+  description: >-
+    Maven plugin that builds, validates and packages a Bonita project (processes,
+    BDM, UI pages, application descriptors) for deployment to a Bonita Runtime.
+    This is the closest thing Bonitasoft ships to a developer CLI — see
+    cli/bonitasoft-cli.yml.
+
+- language: java
+  registry: maven
+  name: org.bonitasoft:bonita-project
+  url: https://central.sonatype.com/artifact/org.bonitasoft/bonita-project
+  repository: https://github.com/bonitasoft/bonita-project
+  official: true
+  role: parent-pom
+  version: 10.2.3
+  published: '2025-06-25'
+  description: Bonita project parent POM and assembly definitions.
+
+- language: java
+  registry: maven
+  name: org.bonitasoft.engine:bpm
+  url: https://central.sonatype.com/artifact/org.bonitasoft.engine/bpm
+  repository: https://github.com/bonitasoft/bonita-engine
+  official: true
+  role: engine-java-api
+  version: 10.2.0
+  published: '2024-10-11'
+  license: LGPL-2.1
+  description: >-
+    The Bonita Engine Java API (the in-JVM/EJB alternative to the Web REST API).
+    Documented at documentation.ofelia.com/bonita/latest/api/engine-api-overview.
+
+- language: java
+  registry: maven
+  name: org.bonitasoft.engine:bonita-server
+  url: https://central.sonatype.com/artifact/org.bonitasoft.engine/bonita-server
+  official: true
+  role: runtime
+  version: 10.2.0
+  published: '2024-10-11'
+  description: Bonita Engine server module.
+
+- language: java
+  registry: maven
+  name: org.bonitasoft.engine:bonita-business-archive
+  url: https://central.sonatype.com/artifact/org.bonitasoft.engine/bonita-business-archive
+  repository: https://github.com/bonitasoft/bonita-artifacts-model
+  official: true
+  role: artifacts-model
+  version: 1.2.2
+  published: '2025-04-11'
+  description: >-
+    Business Archive (.bar) model — the deployable unit a process definition is
+    packaged into. Sibling modules in the same 1.2.2 train cover the application,
+    organization, connector, business-object, profile, form-mapping,
+    process-definition and BDM-access-control models.
+
+- language: java
+  registry: maven
+  name: org.bonitasoft.web:bonita-web-extensions
+  url: https://central.sonatype.com/artifact/org.bonitasoft.web/bonita-web-extensions
+  official: true
+  role: extension-api
+  version: 10.2.0
+  published: '2024-10-11'
+  description: >-
+    Extension point library for Bonita REST API extensions (the supported way to
+    add custom endpoints under /API/extension/). Repository has since been merged
+    into bonita-engine.
+
+- language: java
+  registry: maven
+  name: org.bonitasoft.connectors:bonita-connector-ai
+  url: https://central.sonatype.com/artifact/org.bonitasoft.connectors/bonita-connector-ai
+  repository: https://github.com/bonitasoft/bonita-connector-ai
+  official: true
+  role: connector
+  version: 1.0.0
+  published: '2025-04-25'
+  description: >-
+    First-party AI connector for Bonita processes. Part of a connector line that
+    also covers Slack, Microsoft Teams, Outlook, SharePoint, Jira, ServiceNow,
+    HubSpot, Zendesk, Workday, MS Dynamics, Kafka, S3, Google Drive, Twilio,
+    DocuSign, Adobe Sign, Yousign, Telegram, WhatsApp, Mistral OCR and an
+    ai-agent connector (github.com/bonitasoft/bonita-connector-*). Only the AI
+    connector is currently published to Maven Central.
+
+- language: java
+  registry: maven
+  name: org.bonitasoft.web:ui-designer-artifact-builder
+  url: https://central.sonatype.com/artifact/org.bonitasoft.web/ui-designer-artifact-builder
+  repository: https://github.com/bonitasoft/bonita-ui-designer-artifact-builder
+  official: true
+  role: build-tooling
+  version: 1.0.10
+  published: '2024-11-08'
+  description: Builds UI Designer pages and forms into the Bonita custom-page format.
+
+- language: docker
+  registry: dockerhub
+  name: bonita
+  url: https://hub.docker.com/_/bonita
+  install: docker run --name bonita -p 8080:8080 -d bonita
+  official: true
+  role: runtime-image
+  version: 2026.2-u0
+  published: '2026-06-30'
+  pull_count: 14110801
+  description: >-
+    Docker Official Image for the Bonita Runtime (tags latest, 2026.2-u0, 2026.2,
+    11.1.0, 11.1). This is the fastest route to a callable Bonita REST API and is
+    what sandbox/bonitasoft-sandbox.yml documents.
+
+- language: javascript
+  registry: npm
+  name: '@bonitasoft/custom-widget-builder'
+  url: https://www.npmjs.com/package/@bonitasoft/custom-widget-builder
+  repository: https://github.com/bonitasoft/bonita-ui-designer-sdk
+  install: npm install @bonitasoft/custom-widget-builder
+  official: true
+  role: ui-tooling
+  version: 0.0.13
+  published: '2021-11-29'
+  description: >-
+    UI Designer SDK tool for building custom widgets. Not a REST client. Last
+    published 2021 — dormant.
+
+- language: javascript
+  registry: npm
+  name: '@bonitasoft/ui-designer-context-binding'
+  url: https://www.npmjs.com/package/@bonitasoft/ui-designer-context-binding
+  repository: https://github.com/bonitasoft/bonita-ui-designer-context-binding
+  install: npm install @bonitasoft/ui-designer-context-binding
+  official: true
+  role: ui-tooling
+  version: 0.0.14
+  published: '2022-01-21'
+  description: TypeScript variable-binding mechanism for the UI Designer (proof of concept).
+
+- language: javascript
+  registry: npm
+  name: '@bonitasoft/query-selector'
+  url: https://www.npmjs.com/package/@bonitasoft/query-selector
+  repository: https://github.com/bonitasoft/web-components
+  install: npm install @bonitasoft/query-selector
+  official: true
+  role: web-component
+  version: 1.0.8
+  published: '2020-05-26'
+  description: >-
+    Bonita web component. Superseded by
+    github.com/bonitasoft/bonita-ui-designer-web-components, which is not
+    published to npm.
+
+- language: javascript
+  registry: npm
+  name: '@bonitasoft/search-box'
+  url: https://www.npmjs.com/package/@bonitasoft/search-box
+  repository: https://github.com/bonitasoft/web-components
+  install: npm install @bonitasoft/search-box
+  official: true
+  role: web-component
+  version: 1.0.9
+  published: '2020-05-26'
+
+- language: javascript
+  registry: npm
+  name: '@bonitasoft/pagination-selector'
+  url: https://www.npmjs.com/package/@bonitasoft/pagination-selector
+  repository: https://github.com/bonitasoft/web-components
+  install: npm install @bonitasoft/pagination-selector
+  official: true
+  role: web-component
+  version: 1.0.7
+  published: '2020-05-26'
+
+- language: javascript
+  registry: npm
+  name: '@bonitasoft/uid-*'
+  url: https://www.npmjs.com/search?q=%40bonitasoft%2Fuid
+  install: npm install @bonitasoft/uid-text @bonitasoft/uid-input @bonitasoft/uid-button
+  official: true
+  role: web-component
+  version: null
+  published: null
+  note: >-
+    Family entry, not a single package. Individually: uid-text 1.0.4
+    (2021-12-02), uid-input 1.0.3 (2021-12-02), uid-button 1.0.4 (2022-01-12),
+    uid-title 1.0.3 (2021-12-02), uid-textarea 1.0.1 (2021-12-02). version/
+    published are null because the row covers five packages with different
+    versions; each individual version is recorded in this note and in
+    components/bonitasoft-components.yml.
+
+registries_checked:
+- registry: maven
+  found: true
+  note: 13 artifacts under org.bonitasoft.web, 20 under org.bonitasoft.engine, 3 under org.bonitasoft, plus org.bonitasoft.maven and org.bonitasoft.connectors.
+- registry: npm
+  found: true
+  note: 15 results for "bonitasoft"; 12 in the @bonitasoft scope are first-party UI tooling/web components.
+- registry: dockerhub
+  found: true
+  note: Docker Official Image "bonita".
+- registry: pypi
+  found: false
+- registry: rubygems
+  found: false
+- registry: crates.io
+  found: false
+- registry: nuget
+  found: false
+- registry: go
+  found: false
+
+historical_note: >-
+  Maven Central also carries pre-Bonitasoft lineage under org.ow2.bonita
+  (5.10.2, 2014) and org.objectweb.bonita (2.1, 2006) from the OW2/ObjectWeb
+  era, and a still-live mirror of the OpenAPI repo at
+  gitlab.ow2.org/bonita/bonita-openapi. Those are ancestry, not shipping
+  packages, and are excluded from packages[] above.

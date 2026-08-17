@@ -1,0 +1,150 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  npm registry (@bonitasoft scope, 12 first-party packages),
+  github.com/bonitasoft (bonita-ui-designer, bonita-ui-designer-web-components,
+  bonita-ui-designer-sdk, bonita-web-pages, web-components, widget-builder),
+  https://documentation.ofelia.com/bonita/latest/applications/ and
+  https://documentation.ofelia.com/ui-builder/latest/.
+description: >-
+  Bonita's client-side story is not "embed our widget in your app" — it is "build
+  your app's UI inside our platform". The components below are the building blocks
+  of Bonita pages and forms, rendered by the Bonita Runtime, not a library you drop
+  into an unrelated site. That is the opposite polarity from most Components
+  artifacts in this catalog and it matters for anyone evaluating Bonita as an
+  embeddable surface: there is no hosted iframe widget, no drop-in JS SDK, and no
+  prebuilt dashboard you can mount in your own product.
+polarity: platform-hosted (components run inside Bonita pages, not inside the consumer's app)
+embeddable_in_third_party_app: false
+
+families:
+
+- name: Bonita UI Builder
+  kind: low-code page builder
+  status: current
+  docs: https://documentation.ofelia.com/ui-builder/latest/
+  repository: https://github.com/bonitasoft/bonita-ui-builder-doc
+  introduced: 'Bonita 2024 (announced on the blog as "Meet the Bonita UI Builder")'
+  studio_integration: >-
+    From Bonita 2025.2 the Studio can launch UI Builder directly during
+    development. Production does not use the Studio.
+  note: >-
+    The current-generation UI surface, and where Bonitasoft is investing. Part of
+    the Bonita Fabric bundle on the pricing page.
+
+- name: Bonita UI Designer
+  kind: drag-and-drop page/form designer with a custom widget model
+  status: current (legacy AngularJS runtime, being superseded by UI Builder)
+  repository: https://github.com/bonitasoft/bonita-ui-designer
+  artifact_builder:
+    repository: https://github.com/bonitasoft/bonita-ui-designer-artifact-builder
+    maven: org.bonitasoft.web:ui-designer-artifact-builder 1.0.10 (2024-11-08)
+    purpose: Builds UID pages and forms into the Bonita custom-page format.
+  build_goal: 'mvn bonita-project:uid-page'
+  runtime_note: >-
+    The UI Designer front end is AngularJS-based; the organization maintains its
+    own AngularJS fork (github.com/bonitasoft/angular.js) and the release notes
+    reference an angular-js-uid-fork migration page. That is a long-lived
+    dependency risk worth naming.
+
+- name: UID SDK / custom widgets
+  kind: tooling for authoring custom widgets
+  repository: https://github.com/bonitasoft/bonita-ui-designer-sdk
+  packages:
+  - {registry: npm, name: '@bonitasoft/custom-widget-builder', version: 0.0.13, published: '2021-11-29'}
+  - {registry: npm, name: '@bonitasoft/ui-designer-context-binding', version: 0.0.14, published: '2022-01-21', note: 'TypeScript rewrite of the variable mechanism — a proof of concept, per the repository description.'}
+  also: {repository: 'https://github.com/bonitasoft/widget-builder', purpose: Utility to build widgets for the UI Designer.}
+  currency_warning: >-
+    Both npm packages last published in 2021/2022 and are still at 0.0.x. Anyone
+    planning custom-widget work should check with the vendor whether this path is
+    still supported under UI Builder.
+
+- name: UID widget web components
+  kind: web components
+  repository: https://github.com/bonitasoft/bonita-ui-designer-web-components
+  npm_published: false
+  npm_note: >-
+    This is the CURRENT web-components repository and it is NOT published to npm.
+    The packages that ARE on npm come from the SUPERSEDED
+    github.com/bonitasoft/web-components repository, whose own description says it
+    is "superseded by bonita-ui-designer-web-components". So the npm scope is a
+    trailing snapshot, not the live component set.
+  packages:
+  - {registry: npm, name: '@bonitasoft/uid-text', version: 1.0.4, published: '2021-12-02'}
+  - {registry: npm, name: '@bonitasoft/uid-input', version: 1.0.3, published: '2021-12-02'}
+  - {registry: npm, name: '@bonitasoft/uid-button', version: 1.0.4, published: '2022-01-12'}
+  - {registry: npm, name: '@bonitasoft/uid-title', version: 1.0.3, published: '2021-12-02'}
+  - {registry: npm, name: '@bonitasoft/uid-textarea', version: 1.0.1, published: '2021-12-02'}
+
+- name: Legacy Bonita web components
+  kind: web components
+  repository: https://github.com/bonitasoft/web-components
+  status: superseded
+  packages:
+  - {registry: npm, name: '@bonitasoft/query-selector', version: 1.0.8, published: '2020-05-26'}
+  - {registry: npm, name: '@bonitasoft/search-box', version: 1.0.9, published: '2020-05-26'}
+  - {registry: npm, name: '@bonitasoft/pagination-selector', version: 1.0.7, published: '2020-05-26'}
+
+- name: Provided applications and pages
+  kind: prebuilt, installable application surfaces
+  repository: https://github.com/bonitasoft/bonita-web-pages
+  items:
+  - {name: Bonita User Application, token: userAppBonita, status: superseded by the Enterprise edition app in 2026.2}
+  - {name: Bonita User Application Enterprise, token: userAppEEBonita, status: current, note: 'Adds the user Delegations page (page-user-delegation). Installed automatically on a fresh 2026.2 install; coexists with the old app after an update until removed.'}
+  - {name: Bonita Administrator Application, repository: 'https://github.com/bonitasoft/bonita-admin-application', note: 'Updated in place in 2026.2 to add the admin Delegations page (page-admin-delegation) under BPM.'}
+  - {name: Bonita Super Admin Application, repository: 'https://github.com/bonitasoft/bonita-super-admin-application'}
+  - {name: Bonita Application Directory, repository: 'https://github.com/bonitasoft/bonita-application-directory'}
+  framework_shift:
+    date: '2026-06-30'
+    change: >-
+      The User Application process list page was re-implemented in Svelte,
+      replacing React. Descriptor-level customizations keep working; forked page
+      source must be ported. A "List of Svelte pages dependencies" page documents
+      the new dependency set.
+    significance: >-
+      Three front-end generations are now visible in one product — AngularJS (UI
+      Designer), React (outgoing provided pages) and Svelte (incoming provided
+      pages). An integrator customizing provided pages needs to know which one they
+      are forking.
+
+- name: Bonita Portal look and feel / themes
+  kind: theming
+  repository: https://github.com/bonitasoft/bonita-portal-look-and-feel
+  archetype: https://github.com/bonitasoft/bonita-theme-archetype
+  api_status: >-
+    The Theme REST resource is deprecated — createTheme and restoreTheme both
+    carry `deprecated: true` in the OpenAPI. Theming is moving out of the runtime
+    API.
+
+- name: Bonita Portal (AngularJS)
+  kind: legacy portal front end
+  repository: https://github.com/bonitasoft/bonita-portal-js
+  status: legacy
+
+cdn_distribution:
+  exists: false
+  note: >-
+    No jsDelivr/unpkg loader script, no versioned CDN bundle and no
+    <script src="..."> embed is published. Components are consumed as npm packages
+    (for the dormant subset) or built into Bonita custom pages by the Maven
+    plugin/artifact builder.
+
+marketplace:
+  name: Bonita Marketplace
+  repository: https://github.com/bonitasoft/bonita-marketplace
+  note: >-
+    Provided applications, connectors and extensions are distributed through a
+    Marketplace reachable from Bonita Studio (the 2026.2 migration notes tell users
+    to "install Bonita User Application Enterprise from the Marketplace"). No
+    public web URL for it resolved in this pass — marketplace.bonitasoft.com and
+    marketplace.ofelia.com do not resolve — so it appears to be in-product only.
+  connector_line:
+    note: >-
+      Recorded here because connectors are the other half of Bonita's component
+      story — the integration side rather than the UI side. First-party connector
+      repositories under github.com/bonitasoft cover AI, ai-agent, Mistral OCR,
+      Slack, Microsoft Teams, Outlook, SharePoint, Jira, ServiceNow, HubSpot,
+      Zendesk, Workday, MS Dynamics, Kafka, S3, Google Drive, Twilio, DocuSign,
+      Adobe Sign, Yousign, Telegram, WhatsApp, Excel, email/email-reader, database,
+      REST, web services, JasperReports, document-converter and OpenL Tablets, plus
+      a bonita-connector-template repository for building more.

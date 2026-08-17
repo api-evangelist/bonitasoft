@@ -1,0 +1,260 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  openapi/bonitasoft-bonita-openapi.yml (Bonita API 1.0.9) plus
+  https://documentation.ofelia.com/bonita/latest/api/rest-api-overview,
+  .../identity/single-sign-on-with-oidc, .../identity/rest-api-authorization,
+  .../contributing/vulnerability-reporting-policy,
+  https://www.ofelia.com/about and
+  https://www.ofelia.com/personal-data-processing-agreement.
+summary: >-
+  Bonita's conformance profile is that of a mature, standards-literate BPMN
+  engine with a deliberately plain HTTP surface. It is strong on the process and
+  identity standards that define its category (BPMN 2.0, OIDC/SAML SSO, LDAP)
+  and on the specification format itself (a first-party OpenAPI 3.0.2 kept in a
+  semver train with generated Postman assets). It is weak on the modern HTTP/API
+  conventions an agent depends on: no RFC 9457 problem details, no RFC 9116
+  security.txt, no RFC 8594 sunset headers, no OAuth scopes on its own API, and
+  no /.well-known/ discovery surface anywhere.
+
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: >-
+    First-party OpenAPI 3.0.2 document, 153 paths / 224 operations / 162 schemas,
+    published at https://api-documentation.ofelia.com/latest/openapi.yaml
+    (HTTP 200, application/x-yaml, 482,437 bytes) and as a versioned release
+    asset at github.com/bonitasoft/bonita-openapi/releases. The repository
+    README calls it "the single source of truth for the Bonita features
+    accessible through HTTP".
+
+- id: openapi-3.1
+  conforms: false
+  evidence: Document declares openapi 3.0.2, not 3.1.x.
+
+- id: openapi-extensions
+  conforms: true
+  evidence: >-
+    Uses x-logo and x-codeSamples per the OpenAPI extension mechanism; the
+    x-codeSamples carry runnable curl examples for the authentication flow.
+
+- id: postman-collection-v2.1
+  conforms: true
+  evidence: >-
+    A Postman Collection v2.1.0 document (schema.getpostman.com/json/collection/
+    v2.1.0/collection.json) is generated from the OpenAPI and published every
+    release at https://api-documentation.ofelia.com/latest/postman.json and as
+    bonita-postman-collection-<version>.json on each GitHub release.
+
+- id: bpmn-2.0
+  conforms: true
+  evidence: >-
+    Bonita is a BPMN 2.0 engine; the whole BPM API surface is BPMN vocabulary
+    (process definitions, cases/process instances, flow nodes, human/manual/user
+    tasks, gateways, timer event triggers, messages, signals, actors, actor
+    filters). The Diagram resource serves the process diagram itself.
+
+- id: oidc
+  conforms: true
+  evidence: >-
+    Bonita Enterprise supports OpenID Connect SSO
+    (documentation.ofelia.com/bonita/latest/identity/single-sign-on-with-oidc,
+    plus user account provisioning with SSO). When configured, the REST API
+    accepts an Authorization: Bearer <access_token> header — the bearer_auth
+    securityScheme in the spec.
+  note: >-
+    Bonita is an OIDC RELYING PARTY, not a provider. It consumes a customer's
+    identity provider; it does not publish an /.well-known/openid-configuration
+    of its own.
+
+- id: saml-2.0
+  conforms: true
+  evidence: >-
+    SAML SSO is supported and actively maintained — Bonita 2026.2-u0 shipped
+    security fixes in keycloak-saml-core and keycloak-saml-adapter-core
+    (CVE-2026-7307, CVE-2026-2575) and 2026.2-b5 fixed an OIDC callback failure.
+
+- id: oauth2
+  conforms: partial
+  evidence: >-
+    Two-sided. Bonita's OWN REST API declares NO oauth2 securityScheme — its
+    schemes are apiKey-in-cookie (JSESSIONID), apiKey-in-header
+    (X-Bonita-API-Token) and http bearer. But the Bonita REST CONNECTOR (the
+    outbound side, 2025.2+) implements OAuth2 client-credentials (RFC 6749) and
+    authorization-code with optional PKCE (RFC 7636) plus bearer tokens, so a
+    Bonita process can call an OAuth2-protected API.
+  consequence: >-
+    scopes/ is intentionally absent from this repo: there is no OAuth scope
+    surface on the Bonita API to derive. Authorization is profile/permission
+    based instead.
+
+- id: oauth2-pkce
+  conforms: partial
+  evidence: Supported by the outbound REST connector (RFC 7636), not by Bonita's own API.
+
+- id: ldap
+  conforms: true
+  evidence: >-
+    LDAP directory configuration is documented for Bonita Cloud
+    (documentation.ofelia.com/cloud/latest/manage/ldap-configuration) and the
+    platform.
+
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Zero application/problem+json media types across all 224 operations. Errors
+    are application/json with a single free-text `message` field
+    (components.schemas.Error). See errors/bonitasoft-problem-types.yml.
+
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: >-
+    /.well-known/security.txt returns 404 on www.ofelia.com,
+    documentation.ofelia.com, api-documentation.ofelia.com,
+    community.ofelia.com and the legacy www.bonitasoft.com. A real disclosure
+    policy exists (product-security@ofelia.com) but is not advertised via RFC
+    9116.
+
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: >-
+    No Sunset or Deprecation response header is declared anywhere in the spec and
+    no deprecation policy is published, although 33 of 224 operations do carry
+    OpenAPI `deprecated: true`.
+
+- id: rfc8615-well-known-uris
+  conforms: false
+  evidence: >-
+    No /.well-known/ document is served on any host. See
+    well-known/bonitasoft-well-known.yml — this is partly structural, since the
+    API is served by each customer's own deployment rather than a vendor host.
+
+- id: rfc9728-protected-resource-metadata
+  conforms: false
+  evidence: /.well-known/oauth-protected-resource returns 404 on every host.
+
+- id: rfc7807-superseded
+  conforms: false
+  evidence: Neither RFC 7807 nor its successor RFC 9457 is implemented.
+
+- id: rest-pagination
+  conforms: true
+  evidence: >-
+    Consistent offset pagination on 60 operations via p (page index) and c (page
+    size), with o/f/s for order, filter and search, and pagination state returned
+    in the content-range response header.
+  note: >-
+    Conforms to a CONSISTENT convention, not to a published standard. p and c are
+    declared required, so an unparameterised list call is a 400.
+
+- id: idempotency
+  conforms: false
+  evidence: >-
+    No idempotency-key header, parameter or documented convention anywhere in the
+    API. See conventions/bonitasoft-conventions.yml.
+
+- id: http-conditional-requests
+  conforms: false
+  evidence: >-
+    No ETag / If-Match / If-None-Match convention. Only one operation across the
+    whole API declares 409 Conflict.
+
+- id: rfc6902-json-patch
+  conforms: false
+  evidence: Updates use PUT with a full JSON body; no application/json-patch+json.
+
+- id: mcp
+  conforms: false
+  evidence: >-
+    No Model Context Protocol server, hosted or stdio. 0 matches for "mcp" across
+    the 157 repositories of github.com/bonitasoft and no MCP page in the 3,538-URL
+    documentation sitemaps. See mcp/bonitasoft-mcp.yml.
+
+- id: a2a
+  conforms: false
+  evidence: >-
+    No A2A Agent Card at /.well-known/agent-card.json or the legacy
+    /.well-known/agent.json on any host (all 404).
+
+- id: graphql
+  conforms: false
+  evidence: No GraphQL endpoint documented or discovered.
+
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No AsyncAPI document and no outbound webhook catalog. Bonita's event surface
+    is INTERNAL to the engine — BPMN message and signal events (the Message,
+    Signal and TimerEventTrigger resources), which are triggered by POSTing to
+    the REST API rather than delivered to a subscriber. There is nothing for
+    AsyncAPI to describe, so this is not-applicable rather than a gap.
+
+- id: iso-27001
+  conforms: true
+  evidence: >-
+    Published on the live company page https://www.ofelia.com/about — "ISO 27001
+    certified", audited by Bureau Veritas Certification, obtained in 2022 with a
+    stated scope of Bonita Cloud information security and Bonita Cloud customer
+    development, operations and support. The certification is also referenced on
+    /product/bonita-bpm and /product/ofelia-agentic.
+  caveat: >-
+    The dedicated award/news pages that carried the certificate detail
+    (/awards/iso-27001-bonita-cloud-2022 and /news/bonita-earns-iso) were retired
+    in the June 2026 rebrand and now 301 to /product/bonita-bpm. No certificate
+    number, current validity window or Statement of Applicability is published,
+    and there is no trust centre. The claim is therefore recorded as published but
+    thinly evidenced.
+
+- id: soc2
+  conforms: false
+  evidence: No SOC 2 report or claim found on any Ofelia/Bonitasoft page.
+
+- id: gdpr
+  conforms: true
+  evidence: >-
+    A Personal Data Protection Policy and a Personal Data Processing Agreement
+    (DPA) are published. The DPA names eight authorised sub-processors (including
+    AWS, OpenAI, LangChain/LangSmith, Composio and Zendesk), states EU hosting on
+    AWS Europe for databases and business processes, discloses US processing by
+    Composio and OpenAI under Standard Contractual Clauses, and grants the client
+    audit/verification rights. GDPR is also implemented as a PRODUCT feature:
+    Bonita 2026.1 added BDM data retention with per-object-type retention rules,
+    a scheduled cleanup job and a BUSINESS_DATA_CLEANED_UP audit event.
+  pages:
+  - https://www.ofelia.com/personal-data-protection-policy
+  - https://www.ofelia.com/personal-data-processing-agreement
+
+- id: fhir-r4
+  conforms: false
+- id: fapi
+  conforms: false
+- id: scim-2.0
+  conforms: false
+  evidence: >-
+    Identity provisioning is Bonita's own model (User, Group, Role, Membership,
+    CustomUserDefinition/Value) plus SSO-driven account provisioning, not SCIM.
+- id: odata
+  conforms: false
+- id: psd2
+  conforms: false
+- id: jsonapi
+  conforms: false
+
+open_source:
+  licenses:
+    bonita-openapi: GPL-2.0
+    bonita-java-client: GPL-2.0
+    bonita-engine: LGPL-2.1
+    bonita-rest-documentation-site: GPL-3.0
+  note: >-
+    The API contract itself is open source under GPL-2.0 and the engine under
+    LGPL-2.1, with 157 public repositories under github.com/bonitasoft. The
+    spec's info.license block names GPL-2.0 with a link to gnu.org — unusual and
+    worth noting, since most published OpenAPI documents carry no license at all.
+
+compliance_pointer_basis: >-
+  A `Compliance` pointer IS emitted, to https://www.ofelia.com/about, because
+  that live page publishes a named certification (ISO 27001) with a named
+  auditor (Bureau Veritas). No TrustCenter pointer is emitted: trust.ofelia.com,
+  security.ofelia.com and /trust, /security, /compliance on www.ofelia.com all
+  fail, and no trust portal exists.
