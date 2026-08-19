@@ -19,7 +19,7 @@ image: https://cdn.prod.website-files.com/69babab287a7d4136d9c544a/69babbfcdec6f
 url: https://raw.githubusercontent.com/api-evangelist/bonitasoft/refs/heads/main/apis.yml
 x-type: company
 x-source: serena-portfolio
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-08-17'
 modified: '2026-08-17'
 tags:
