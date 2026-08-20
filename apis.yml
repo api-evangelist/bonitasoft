@@ -24,6 +24,19 @@ created: '2026-08-17'
 modified: '2026-08-17'
 tags:
 - Company
+- Software-as-a-Service
+- Business Process Management
+- Process Automation
+- Workflows
+- BPMN
+- Low-Code
+- Open-Source
+- Orchestration
+- Agentic AI
+- Case Management
+- Java
+tags_raw:
+- Company
 - Saas
 - Business Process Management
 - Process Automation
@@ -67,6 +80,12 @@ apis:
     placeholder defect, so it is left untouched. repair-api-bases.py returns
     verdict `no-usable-base` for this provider by design.
   tags:
+  - BPM
+  - Workflows
+  - Process Automation
+  - Identity
+  - Business Data
+  tags_raw:
   - BPM
   - Workflow
   - Process Automation
