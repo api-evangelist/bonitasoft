@@ -49,59 +49,1463 @@ tags_raw:
 - Case Management
 - Java
 apis:
-- aid: bonitasoft-bonita-web-rest-api
-  name: Bonita Web REST API
-  description: >-
-    The Bonita Web REST API exposes every Bonita Runtime feature reachable over
-    HTTP — BPM (processes, cases, tasks, activities, flow nodes, timers,
-    messages, signals), identity (users, groups, roles, memberships, profiles,
-    custom user information), applications and pages, the Business Data Model
-    and business data queries, documents and comments, and platform/license
-    administration. It is described by a single first-party OpenAPI 3.0.2
-    document (153 paths, 224 operations, 162 schemas) that Bonitasoft treats as
-    the single source of truth for the HTTP surface and publishes as an
-    open-source repository, a versioned GitHub release asset, and a live ReDoc
-    reference at api-documentation.ofelia.com.
+- aid: bonitasoft:bonitasoft-activity-api
+  name: Bonitasoft Activity API
+  description: Activity
   humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
   baseURL: https://{subscription}.bonitacloud.com/bonita
-  x-base-url-note: >-
-    TEMPLATED ON PURPOSE — do not "repair" this to a concrete host. Bonita is
-    self-hosted software, so there is no vendor-operated API host to name. The
-    documented forms are: Bonita Cloud production
-    https://{customer-name}.bonitacloud.com/bonita and non-production
-    https://{customer-name}-integration.bonitacloud.com/bonita
-    (https://documentation.ofelia.com/cloud/latest/manage/url-customization);
-    on premises {scheme}://{host}:{port}/bonita
-    (https://documentation.ofelia.com/bonita/latest/api/rest-api-overview quotes
-    "http://host:port/bonita/API/..."); and local
-    http://localhost:8080/bonita. The OpenAPI servers[] block declares
-    http://localhost:8080/bonita labelled "Sample url for a local development
-    server", which is a true statement about a self-hosted product rather than a
-    placeholder defect, so it is left untouched. repair-api-bases.py returns
-    verdict `no-usable-base` for this provider by design.
   tags:
-  - BPM
-  - Workflows
-  - Process Automation
-  - Identity
-  - Business Data
-  tags_raw:
-  - BPM
-  - Workflow
-  - Process Automation
-  - Identity
-  - Business Data
+  - Activity
   properties:
   - type: OpenAPI
-    url: openapi/bonitasoft-bonita-openapi.yml
+    url: openapi/bonitasoft-activity-api-openapi.yml
   - type: APIReference
     url: https://api-documentation.ofelia.com/latest/
   - type: Documentation
     url: https://documentation.ofelia.com/bonita/latest/api/api-index
   - type: Postman
     url: https://api-documentation.ofelia.com/latest/postman.json
-  - type: Overlay
-    url: overlays/bonitasoft-bonita-overlay.yaml
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-activityvariable-api
+  name: Bonitasoft Activity Variable API
+  description: ActivityVariable
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ActivityVariable
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-activityvariable-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-actor-api
+  name: Bonitasoft Actor API
+  description: Actor
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Actor
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-actor-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-actormember-api
+  name: Bonitasoft Actor Member API
+  description: ActorMember
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ActorMember
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-actormember-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-application-api
+  name: Bonitasoft Application API
+  description: >-
+    Manage applications. This enables you to build a consistent functional applicative environment for
+    users to interact with business processes and business data from one place.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Application
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-application-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-applicationmenu-api
+  name: Bonitasoft Application Menu API
+  description: >-
+    Manage the set of menus in an application. This set of menus enables a user to navigate to the application
+    pages.
+
+
+    There are two types of menu item:
+
+
+    A top-level item appears in the navigation bar of the application. A top-level item can be clickable,
+    leading to a page, or can be a parent for a menu of clickable items.
+
+    A child menu item becomes visible in a menu when the parent is selected. A child menu item is clickable
+    and leads to a page.
+
+    Each menu item has an index that defines the position in the menu. For a top-level menu item, this
+    is the position in the the navigation bar counting from the left. For a child menu item, this is the
+    position in the menu counting from the top.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ApplicationMenu
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-applicationmenu-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-applicationpage-api
+  name: Bonitasoft Application Page API
+  description: >-
+    An application page is a custom page that has been associated with an application. Use this resource
+    to manage application pages and define the paths used to access them. This list of pages will be used
+    to build the application menus.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ApplicationPage
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-applicationpage-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedactivity-api
+  name: Bonitasoft Archived Activity API
+  description: ArchivedActivity
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedActivity
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedactivity-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedactivityvariable-api
+  name: Bonitasoft Archived Activity Variable API
+  description: ArchivedActivityVariable
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedActivityVariable
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedactivityvariable-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedconnectorinstance-api
+  name: Bonitasoft Archived Connector Instance API
+  description: ArchivedConnectorInstance
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedConnectorInstance
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedconnectorinstance-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedfailure-api
+  name: Bonitasoft Archived Failure API
+  description: >-
+    Archived version of the Failure leading a BPM entity instance to a failed state.
+
+    This Web REST API is available in **Enterprise editions only**, since version 10.3 (2025.1).
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedFailure
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedfailure-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedflownode-api
+  name: Bonitasoft Archived Flow Node API
+  description: ArchivedFlowNode
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedFlowNode
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedflownode-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedhumantask-api
+  name: Bonitasoft Archived Human Task API
+  description: ArchivedHumanTask
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedHumanTask
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedhumantask-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedmanualtask-api
+  name: Bonitasoft Archived Manual Task API
+  description: ArchivedManualTask
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedManualTask
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedmanualtask-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedprocessinstance-api
+  name: Bonitasoft Archived Process Instance API
+  description: ArchivedProcessInstance
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedProcessInstance
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedprocessinstance-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedprocessinstancecomment-api
+  name: Bonitasoft Archived Process Instance Comment API
+  description: ArchivedProcessInstanceComment
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedProcessInstanceComment
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedprocessinstancecomment-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedprocessinstancedocument-api
+  name: Bonitasoft Archived Process Instance Document API
+  description: ArchivedProcessInstanceDocument
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedProcessInstanceDocument
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedprocessinstancedocument-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedprocessinstancevariable-api
+  name: Bonitasoft Archived Process Instance Variable API
+  description: ArchivedProcessInstanceVariable
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedProcessInstanceVariable
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedprocessinstancevariable-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedtask-api
+  name: Bonitasoft Archived Task API
+  description: ArchivedTask
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedTask
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedtask-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-archivedusertask-api
+  name: Bonitasoft Archived User Task API
+  description: ArchivedUserTask
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ArchivedUserTask
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-archivedusertask-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-authentication-api
+  name: Bonitasoft Authentication API
+  description: Authentication
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Authentication
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-authentication-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-bdm-api
+  name: Bonitasoft BDM API
+  description: >-
+    Show status or install or update the Business Data Model.
+
+
+    Installing or updating a BDM needs to be done in two successive steps:
+
+
+    1. Upload a BDM file
+
+    2. Install/Update the previously uploaded file
+
+
+    **To do this, the maintenance mode needs to be enabled.**
+
+
+    **In Enterprise editions, if you have an access control file installed, you need to delete it before
+    installing or updating your BDM.**
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - BDM
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-bdm-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-bdmaccesscontrol-api
+  name: Bonitasoft BDM Access Control API
+  description: >-
+    BDM Access control is available to protect the BDM. You can use this API to get the access control
+    status (lastUpdatedBy, lastUpdateDate...).
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - BDMAccessControl
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-bdmaccesscontrol-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-business-data-operations-api
+  name: Bonitasoft Business Data Operations API
+  description: BDM Rest APIs allow to create / update / delete / import in bulk Bonita Business Data.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Business Data Operations
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-business-data-operations-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-businessdataquery-api
+  name: Bonitasoft Business Data Query API
+  description: BDM Rest APIs allow to query Bonita Business Data.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - BusinessDataQuery
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-businessdataquery-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-connectorfailure-api
+  name: Bonitasoft Connector Failure API
+  description: ConnectorFailure
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ConnectorFailure
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-connectorfailure-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-connectorinstance-api
+  name: Bonitasoft Connector Instance API
+  description: ConnectorInstance
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ConnectorInstance
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-connectorinstance-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-customuser-api
+  name: Bonitasoft Custom User API
+  description: CustomUser
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - CustomUser
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-customuser-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-customuserdefinition-api
+  name: Bonitasoft Custom User Definition API
+  description: CustomUserDefinition
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - CustomUserDefinition
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-customuserdefinition-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-customuservalue-api
+  name: Bonitasoft Custom User Value API
+  description: CustomUserValue
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - CustomUserValue
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-customuservalue-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-dataretention-api
+  name: Bonitasoft Data Retention API
+  description: >-
+    Configure how Bonita automatically deletes obsolete business data. A retention rule applies to a specific
+    business object type and defines when its instances become eligible for deletion based on a reference
+    date (creation or last update) and a retention period in days. The data retention service runs on
+    a configurable cron schedule.
+
+
+    This Web REST API is available in **Enterprise editions only**, since version 11.0.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - DataRetention
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-dataretention-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-delegation-api
+  name: Bonitasoft Delegation API
+  description: >-
+    Delegate human tasks from one user (the delegator) to another (the delegate) for a bounded period
+    and a whitelist of processes. Delegation grants the delegate visibility and execution rights on the
+    delegator's tasks without reassigning them: ownership and the audit trail are preserved. A user can
+    hold at most one delegation rule at a time, and a rule's status (scheduled, active, expired) is derived
+    from its date range.
+
+
+    Id fields are sent as numeric `int64` in request bodies but returned as strings in responses, to avoid
+    JavaScript precision loss on large `long` values; this is intentional and documented per field.
+
+
+    There is no `GET /API/delegation/rule/{ruleId}`: the engine does not expose a single-rule read, so
+    fetch a rule through the search endpoint (`GET /API/delegation/rule`) filtered by `id`. This is a
+    known API gap, not a spec omission.
+
+
+    This Web REST API is available in **Enterprise editions only**, since version 2026.2.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Delegation
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-delegation-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-diagram-api
+  name: Bonitasoft Diagram API
+  description: Diagram
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Diagram
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-diagram-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-failure-api
+  name: Bonitasoft Failure API
+  description: >-
+    Failure leading a BPM entity instance to a failed state
+
+    This Web REST API is available in **Enterprise editions only**, since version 10.3 (2025.1).
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Failure
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-failure-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-flownode-api
+  name: Bonitasoft Flow Node API
+  description: FlowNode
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - FlowNode
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-flownode-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-formfileupload-api
+  name: Bonitasoft Form File Upload API
+  description: >-
+    Supports any type of files, used to upload a file before submitting a process or task form with a
+    document in its contract.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - FormFileUpload
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-formfileupload-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-formmapping-api
+  name: Bonitasoft Form Mapping API
+  description: The FormMapping API from Bonitasoft — 2 operation(s) for formmapping.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - FormMapping
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-formmapping-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-group-api
+  name: Bonitasoft Group API
+  description: >-
+    The group a user belongs to. Groups have a hierarchy (subgroups can be created inside a group).
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Group
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-group-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-humantask-api
+  name: Bonitasoft Human Task API
+  description: HumanTask
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - HumanTask
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-humantask-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-i18nlocale-api
+  name: Bonitasoft I18nlocale API
+  description: I18nlocale
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - I18nlocale
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-i18nlocale-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-i18ntranslation-api
+  name: Bonitasoft I18ntranslation API
+  description: I18nTranslation
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - I18ntranslation
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-i18ntranslation-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-information-api
+  name: Bonitasoft Information API
+  description: >-
+    Handle the platform information.
+
+    This Web REST API is available since version 10.2 (2024.3). Most of the information returned is only
+    for Subscription editions.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Information
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-information-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-license-api
+  name: Bonitasoft License API
+  description: >-
+    Handle the license information. This requires a platform session. Log in using the platform login
+    service.
+
+    This Web REST API is available in **Enterprise editions only**, since version 7.11.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - License
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-license-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-log-api
+  name: Bonitasoft Log API
+  description: >-
+    Access log entries recorded by the Bonita Engine during execution. Logs capture actions performed
+    on the platform such as process deployments, task executions, or configuration changes.
+
+    This Web REST API is available in **Enterprise editions only**.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Log
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-log-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-maintenance-api
+  name: Bonitasoft Maintenance API
+  description: The Maintenance API from Bonitasoft — 1 operation(s) for maintenance.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Maintenance
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-maintenance-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-manualtask-api
+  name: Bonitasoft Manual Task API
+  description: ManualTask
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ManualTask
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-manualtask-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-membership-api
+  name: Bonitasoft Membership API
+  description: >-
+    Manage membership of users. There is a membership when a user belongs to a group and a role. Use this
+    resource to add, search, and delete memberships.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Membership
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-membership-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-message-api
+  name: Bonitasoft Message API
+  description: Message
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Message
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-message-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-organization-api
+  name: Bonitasoft Organization API
+  description: The Organization API from Bonitasoft — 2 operation(s) for organization.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Organization
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-organization-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-page-api
+  name: Bonitasoft Page API
+  description: >-
+    Use the page resource to access custom pages, UI Designer pages, layouts or forms and REST API extensions.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Page
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-page-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-platform-api
+  name: Bonitasoft Platform API
+  description: >-
+    The Platform API resources require a platform session. In order to get one, log in as the platform
+    administrator using the platform login service.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Platform
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-platform-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-platformauthentication-api
+  name: Bonitasoft Platform Authentication API
+  description: Platform Authentication
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - PlatformAuthentication
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-platformauthentication-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-process-api
+  name: Bonitasoft Process API
+  description: >-
+    Deploy and manage process definitions. In addition, you can instantiate a process, which will create
+    a new process instance (case).
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Process
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-process-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-processconnectordependency-api
+  name: Bonitasoft Process Connector Dependency API
+  description: ProcessConnectorDependency
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProcessConnectorDependency
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-processconnectordependency-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-processinfo-api
+  name: Bonitasoft Process Info API
+  description: ProcessInfo
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProcessInfo
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-processinfo-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-processinstance-api
+  name: Bonitasoft Process Instance API
+  description: ProcessInstance
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProcessInstance
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-processinstance-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-processinstancecomment-api
+  name: Bonitasoft Process Instance Comment API
+  description: ProcessInstanceComment
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProcessInstanceComment
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-processinstancecomment-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-processinstancedocument-api
+  name: Bonitasoft Process Instance Document API
+  description: ProcessInstanceDocument
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProcessInstanceDocument
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-processinstancedocument-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-processinstanceinfo-api
+  name: Bonitasoft Process Instance Info API
+  description: ProcessInstanceInfo
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProcessInstanceInfo
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-processinstanceinfo-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-processinstancevariable-api
+  name: Bonitasoft Process Instance Variable API
+  description: ProcessInstanceVariable
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProcessInstanceVariable
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-processinstancevariable-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-processparameter-api
+  name: Bonitasoft Process Parameter API
+  description: ProcessParameter
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProcessParameter
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-processparameter-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-processresolutionproblem-api
+  name: Bonitasoft Process Resolution Problem API
+  description: ProcessResolutionProblem
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProcessResolutionProblem
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-processresolutionproblem-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-processsupervisor-api
+  name: Bonitasoft Process Supervisor API
+  description: ProcessSupervisor
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProcessSupervisor
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-processsupervisor-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-professionalcontactdata-api
+  name: Bonitasoft Professional Contact Data API
+  description: ProfessionalContactData
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProfessionalContactData
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-professionalcontactdata-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-profile-api
+  name: Bonitasoft Profile API
+  description: Profile
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Profile
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-profile-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-profileentry-api
+  name: Bonitasoft Profile Entry API
+  description: ProfileEntry
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProfileEntry
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-profileentry-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-profilemember-api
+  name: Bonitasoft Profile Member API
+  description: ProfileMember
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - ProfileMember
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-profilemember-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-role-api
+  name: Bonitasoft Role API
+  description: Role
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Role
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-role-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-session-api
+  name: Bonitasoft Session API
+  description: Session
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Session
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-session-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-signal-api
+  name: Bonitasoft Signal API
+  description: The Signal API from Bonitasoft — 1 operation(s) for signal.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Signal
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-signal-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-task-api
+  name: Bonitasoft Task API
+  description: Task
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Task
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-task-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-theme-api
+  name: Bonitasoft Theme API
+  description: Theme
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Theme
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-theme-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-timereventtrigger-api
+  name: Bonitasoft Timer Event Trigger API
+  description: TimerEventTrigger
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - TimerEventTrigger
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-timereventtrigger-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-upload-api
+  name: Bonitasoft Upload API
+  description: The Upload API from Bonitasoft — 7 operation(s) for upload.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Upload
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-upload-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-user-api
+  name: Bonitasoft User API
+  description: User
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - User
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-user-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-usertask-api
+  name: Bonitasoft User Task API
+  description: UserTask
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - UserTask
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-usertask-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
   - type: SourceCode
     url: https://github.com/bonitasoft/bonita-openapi
 maintainers:
@@ -110,6 +1514,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/bonitasoft-bonita-overlay.yaml
 - type: Website
   url: https://www.ofelia.com/
 - type: DeveloperPortal
