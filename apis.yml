@@ -1527,6 +1527,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/bonitasoft-capability-edges.yml
+  name: Bonitasoft Business Capability Map
 - type: Overlay
   url: overlays/bonitasoft-bonita-overlay.yaml
 - type: Website

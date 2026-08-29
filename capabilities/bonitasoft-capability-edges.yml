@@ -1,0 +1,85 @@
+slug: bonitasoft
+provider: Bonitasoft
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 7
+edges:
+- tag: Activity
+  spec_file: bonitasoft-activity-api-openapi.yml
+  capability_id: BC-930
+  capability_id_l1: BC-930
+  capability_name: Business Process Management
+  confidence: 0.8
+  evidence: GET /API/bpm/activity  searchActivities  Finds Activities; schemas ActivityState, ActivityPriority
+  reason: Bonita is a BPM/process automation platform and this tag exposes running BPMN activity instances
+    with state and priority, which is business process execution/management. L1 only, as runtime task
+    execution does not cleanly match one BC-930 sub-capability.
+- tag: ProcessInstance
+  spec_file: bonitasoft-processinstance-api-openapi.yml
+  capability_id: BC-930
+  capability_id_l1: BC-930
+  capability_name: Business Process Management
+  confidence: 0.75
+  evidence: GET /API/bpm/case searchProcessInstances; POST /API/bpm/case createProcessInstance
+  reason: Runtime cases (process instances) of BPMN processes are created, searched and updated here —
+    core process execution on a BPM platform. No L2 in the list covers instance execution specifically,
+    so L1 only.
+- tag: Process
+  spec_file: bonitasoft-process-api-openapi.yml
+  capability_id: BC-930.20
+  capability_id_l1: BC-930
+  capability_name: Process Modeling and Documentation
+  confidence: 0.72
+  evidence: POST /API/bpm/process createProcess Create the Process; GET /API/bpm/process/{id}/design getProcessDesignById;
+    POST .../instantiation instanciateProcess
+  reason: Bonita is a BPMN process automation platform; this tag manages process definitions/designs and
+    their instantiation, i.e. authoring and deploying process models. Mapped to Business Process Management,
+    modeling/documentation as the closest L2 (execution orchestration is not separately listed).
+- tag: ActivityVariable
+  spec_file: bonitasoft-activityvariable-api-openapi.yml
+  capability_id: BC-930
+  capability_id_l1: BC-930
+  capability_name: Business Process Management
+  confidence: 0.7
+  evidence: GET /API/bpm/activityVariable/{id}/{variableName}  getActivityVariableById
+  reason: Reads process data variables attached to a BPMN activity instance in the Bonita process engine
+    — part of business process execution/management. Thin single-operation surface keeps confidence at
+    0.7.
+- tag: ArchivedProcessInstance
+  spec_file: bonitasoft-archivedprocessinstance-api-openapi.yml
+  capability_id: BC-930
+  capability_id_l1: BC-930
+  capability_name: Business Process Management
+  confidence: 0.7
+  evidence: GET /API/bpm/archivedCase  searchArchivedProcessInstances  Finds ArchivedProcessInstances
+  reason: Query and deletion of completed process (case) instances in the Bonita process engine — clearly
+    business process execution/monitoring history. L1 BPM; specific L2 not evidenced.
+- tag: DataRetention
+  spec_file: bonitasoft-dataretention-api-openapi.yml
+  capability_id: BC-610.10
+  capability_id_l1: BC-610
+  capability_name: Data Governance Management
+  confidence: 0.7
+  evidence: GET /API/retention/object findObjectsWithRetentionRules 'List business object types with their
+    retention rules'; POST /API/retention/rule createRetentionRule
+  reason: CRUD over data retention rules and schedules for business objects is data lifecycle policy administration,
+    i.e. data governance. Could arguably serve privacy compliance, but the operations are about governing
+    business data retention.
+- tag: Diagram
+  spec_file: bonitasoft-diagram-api-openapi.yml
+  capability_id: BC-930.20
+  capability_id_l1: BC-930
+  capability_name: Process Modeling and Documentation
+  confidence: 0.7
+  evidence: GET /API/bpm/diagram/{id} getProcessDiagramById 'Finds the diagram process by ID'
+  reason: Retrieval of the BPMN process diagram artefact — process model documentation retrieval in a
+    process modelling platform.
