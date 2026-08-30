@@ -37,12 +37,12 @@ created: '2026-08-17'
 modified: '2026-08-17'
 tags:
 - Company
-- Software-as-a-Service
+- Saas
 - Business Process Management
 - Process Automation
 - Workflows
 - BPMN
-- Low-Code
+- Low Code
 - Open-Source
 - Orchestration
 - Agentic AI
@@ -657,6 +657,8 @@ apis:
   humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
   baseURL: https://{subscription}.bonitacloud.com/bonita
   tags:
+  - Data Retention
+  tags_raw:
   - DataRetention
   properties:
   - type: OpenAPI
@@ -1095,6 +1097,8 @@ apis:
   humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
   baseURL: https://{subscription}.bonitacloud.com/bonita
   tags:
+  - Processes
+  tags_raw:
   - Process
   properties:
   - type: OpenAPI
