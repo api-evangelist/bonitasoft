@@ -1,0 +1,379 @@
+openapi: 3.2.0
+info:
+  license:
+    name: GPL-v2.0
+    url: http://www.gnu.org/licenses/gpl-2.0.txt
+  version: 1.0.9
+  title: Bonita Platform API
+  description: "<p> \n<a download=\"openapi.yaml\" href=\"./openapi.yaml\" target=\"_blank\" class=\"btn-download\">Download OpenAPI specification</a>\n<a download=\"postman.json\" href=\"./postman.json\" target=\"_blank\" class=\"btn-download\">Download Postman collection</a>\n</p>\n\n<hr>\n\nThe REST API lets you access the data with HTTP requests; it is useful when implementing rich web forms / pages for a good user experience.\n\nAn open source [java client](https://github.com/bonitasoft/bonita-java-client) is implemented above the HTTP API. It is available on [Maven central](https://search.maven.org/search?q=g:%22org.bonitasoft.web%22%20AND%20a:%22bonita-java-client%22).\n\nIf your application is using a technology other than Java, you can integrate it with the Bonita solution using the Web REST API. This API provides\naccess to all Bonita objects (like processes, tasks, users, connectors etc.), to execute operations on them (create, retrieve, update, delete).\nYou can use these operations to create a workflow with Bonita and integrate it into your application. The Bonita Engine remains responsible for executing\nthe workflow logic (connectors, gateways with conditions, messages, timers etc.) while your application gives access to the workflow.\nUsers can manage processes and tasks, and perform administrative activities.\n\n### API Extensions\n\nYou can create [Rest API Extensions](https://documentation.ofelia.com/bonita/latest/api/rest-api-extensions) to extend the Rest API by adding missing resources (not provided by the Rest API).\nIt is possible for an extension to interact with the engine (via the API) or with any other external service (for example a database, a directory, or a web service).\n\n### Create a resource\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/  `|\n|:-|:-|\n| Request Method | POST|\n| Request Payload | an item in JSON|\n| Response | the same item in JSON, containing the values provided in the posted item, completed with default values and identifiers provided by Bonita Engine.|\n\n### Read a resource\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/{id} `|\n|:-|:-|\n| Request Method | GET|\n| Response | an item in JSON|\n\nExample `http://.../API/identity/user/5 `\n\n#### Extend resource response\n\nOn some resources, in GET methods the `d` (deploy) URL query parameter can be used to extend the response objects. The value of this parameter consists of an attribute for which you want to make an extended request (called a deploy) and retrieve attributes of a linked resource.\nThis means that instead of retrieving the ID or a parent or referenced resource, you can retrieve the full object.\n\nFor example, when you retrieve a task, you can also retrieve the process definition attributes in addition to the process definition ID that is already part of the task resource.\nThe supported deploy values for a task include its process (d=processId).\n\nSpecifiy multiple `d` parameter to extend several resources. For instance, to retrieve the flow node of id 143 and the associated process, process instance and assigned user, call `/API/bpm/flowNode/143?d=processId&d=caseId&d=assigned_id`\n\n#### With compound identifier\n\nThe order of the identifier parts for each resource type is given in the table above.\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/{id_part1}/{id_part2} `|\n|:-|:-|\n| Request Method | GET|\n| Response | an item in JSON|\n\nExample `http://.../API/identity/membership/5/12/24 `\n\n### Update a resource\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/{id} `|\n|:-|:-|\n| Request Method | PUT|\n| Request Payload | a map in JSON containing the new values for the attributes you want to change.|\n| Response | the corresponding item in JSON with new values where you requested a modification|\n\nExample `http://.../API/identity/user/5`\n\n#### With compound identifier:\n\nResponse: the corresponding item in JSON with new values where you requested a modification.\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/{id_part1}/{id_part2} `|\n|:-|:-|\n| Request Method | PUT|\n| Request Payload | ` a map in JSON containing the new values for the attributes you want to change `|\n| Response | ` the corresponding item in JSON with new values where you requested a modification`|\n\nExample\n`http://.../API/identity/membership/5/12/24 `\n\n### Delete resources\n\nUse the DELETE request to remove multiple resources.\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/ `|\n|:-|:-|\n| Request Method | DELETE|\n| Request Payload | A list of identifiers in JSON, for example `[\"id1\",\"id2\",\"id3\"]`. Compound identifiers are separated by '/' characters.|\n| Response | `empty `|\n\nExample\n`http://.../API/identity/membership/ `\n\n### Search for a resource\n\nThe required object is specified with a set of filters in the request URL. The URL parameters must be URL-encoded.\n\nResults are returned in a paged list, so you have to specify the page (counting from zero), and the number of results per page (count), additionally you can define a sort key (order). You can see the total number of matching results in the HTTP response header Content-Range.\nIf you are searching for business data using a custom query, there must be a [count query in the BDM](https://documentation.ofelia.com/bonita/latest/data/define-and-deploy-the-bdm). If there is no count query, results from a custom query on business data cannot be paged properly (the header Content-Range will be absent).\nFor business data default queries, the count query is defined automatically.\n\nThe available filters are the attributes of the item plus some specific filters defined by each item.\n\n| Request URL | `http://.../API/{API_name}/{resource_name}?p={page}&c={count}&o={order}&s={query}&f={filter_name}={filter_value}&f=... `|\n|:-|:-|\n| Request Method | GET|\n| Response | an array of items in JSON|\n\nExample\n`/API/identity/user?p=0&c=10&o=firstname&s=test&f=manager_id=3`\n\nFor a GET method that retrieves more than one instance of a resource, you can specify the following request parameters:\n\n* p (Mandatory): index of the page to display\n* c (Mandatory): maximum number of elements to retrieve\n* o: order of presentation of values in response: must be either `attributeName ASC` or `attributeName DESC`. The final order parameter value must be URL encoded.\n* f: list of filters, specified as `attributeName=attributeValue`. To filter on more than one attribute, specify an f parameters for each attribute. The final filter parameter value must be URL encoded.\n  The attributes you can filter on are specific to the resource.\n* s: search on name or search indexes. Before Bonita 2024.1, the matching policy depended on the configuration of [word-based search](https://documentation.ofelia.com/bonita/2023.2/api/using-list-and-search-methods#word_based_search).\n  For example, if word-based search was enabled, `s=Valid` returned matches containing the string \"valid\" at the start of any word in the attribute value word,\n  such as \"Valid address\", \"Not a valid address\", and \"Validated request\" but not \"Invalid request\".\n  If word-based search was disabled, `s=Valid` returned matches containing the string \"valid\" at the start of the attribute value, such as \"Valid address\" or \"Validated request\" but not \"Not a valid address\" or \"Invalid request\".\n  Since Bonita 2024.1, the search mode can no longer be configured and a \"like-based\" algorithm is used. This means all the matching records for which the search term occurs anywhere in a phrase or a word are returned.\n\n### Errors\n\nThe API uses standard HTTP status codes to indicate the success or failure of the API call.\n\nIf you get a `401` response code :\n  - make sure that the cookies have been transfered with the call\n  - make sure that the cookies transfered are the ones generated during the last sucessfull login call\n  - if one of the PUT, DELETE or POST method is used, make sure that the `X-Bonita-API-Token` header is included\n  - if the X-Bonita-API-Token header is included, make sure that the value is the same as the one of the cookie generated during the last login\n  - Maybe a logout was issued or the session has expired; try to log in again, and re run the request with the new cookies and the new value for the `X-Bonita-API-Token` header.\n"
+  x-logo:
+    url: images/ofelia-logo.svg
+    backgroundColor: '#19465f'
+    altText: Bonita API
+    href: /
+servers:
+- url: http://localhost:8080/bonita
+  description: Sample url for a local development server.
+security:
+- bonita_auth: []
+  bonita_token: []
+- bearer_auth: []
+tags:
+- name: Platform
+  x-displayName: Platform
+  description: The Platform API resources require a platform session. In order to get one, log in as the platform administrator using the platform login service.
+paths:
+  /platformloginservice:
+    post:
+      tags:
+      - Platform
+      operationId: platformLogin
+      summary: Platform Login
+      description: 'The username and password are in `bonita-platform-community-custom.properties` file.
+
+        '
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: the username
+                password:
+                  type: string
+                  format: password
+                  description: the password
+                redirect:
+                  type: string
+                  description: '"true" or "false". "false" indicates that the service should not redirect to Bonita Portal (after a successful login) or to the login page (after a login failure).'
+            example:
+              username: install
+              password: install
+              redirect: 'false'
+      responses:
+        '200':
+          description: Login success
+          headers:
+            Set-Cookie:
+              description: Session cookie
+              schema:
+                type: string
+                pattern: ([^;]+);?
+                example: JSESSIONID=C5385BFEE2969D9E46F0160C1952B0F1; Path=/bonita; HttpOnly; SameSite=Lax
+            X-Bonita-API-Token:
+              description: X-Bonita-API-Token - CSRF token (also present in the cookie response)
+              schema:
+                type: string
+                maxLength: 250
+                pattern: ^[A-Za-z0-9\-]{0,250}$
+              example: ed27cbeb-9953-4d77-b5a2-1f62a6c2e0bb
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        5XX:
+          $ref: '#/components/responses/ServerError'
+  /platformlogoutservice:
+    post:
+      tags:
+      - Platform
+      operationId: platformLogout
+      summary: Platform Logout
+      description: ''
+      responses:
+        '200':
+          description: logout success
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        5XX:
+          $ref: '#/components/responses/ServerError'
+  /API/platform/platform/unusedid:
+    get:
+      tags:
+      - Platform
+      summary: Finds the Platform by ID
+      description: 'Returns the current Platform
+
+        '
+      operationId: getPlatformById
+      responses:
+        '200':
+          description: 'Success '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Platform'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        5XX:
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+      - Platform
+      summary: Update the Platform by ID
+      description: 'Start or stop the current node, that is, start or stop all services of the current JVM.
+
+        '
+      operationId: updatePlatformById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlatformUpdateRequest'
+        description: Start or stop all services of the current JVM.
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        5XX:
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
+    OK:
+      description: OK
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+  schemas:
+    PlatformUpdateRequest:
+      type: object
+      properties:
+        state:
+          description: Platform state
+          type: string
+          enum:
+          - start
+          - stop
+      example:
+        state: stop
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
+    Platform:
+      type: object
+      description: The bonita platform
+      properties:
+        state:
+          description: platform state
+          type: string
+          enum:
+          - STARTED
+          - STOPPED
+        version:
+          description: the current version of the platform
+          type: string
+        initialVersion:
+          description: the version in which the platform was created
+          type: string
+        previousVersion:
+          description: the previous version the platform was in or empty if there is none
+          type: string
+        createdBy:
+          description: the user name of the platform administrator
+          type: string
+        created:
+          description: the creation date
+          type: string
+      example:
+        createdBy: platformAdmin
+        created: '2014-12-04 15:46:46.065'
+        initialVersion: 6.4.0
+        state: STARTED
+        previousVersion: ''
+        version: 6.4.0
+  securitySchemes:
+    bonita_auth:
+      name: JSESSIONID
+      description: 'To call the REST API, you must first log on with a user registered in the Engine database. Please refer to the __[Login API](#operation/login)__ operations section.
+
+        '
+      type: apiKey
+      in: cookie
+    bonita_token:
+      name: X-Bonita-API-Token
+      description: 'To call the REST API, you must first log on with a user registered in the Engine database. Please refer to the __[Login API](#operation/login)__ operations section.
+
+        '
+      type: apiKey
+      in: header
+    bearer_auth:
+      description: '![edition](https://img.shields.io/badge/edition-entreprise-blue)
+
+
+        When Bonita runtime is configured for SSO with openID Connect it is possible To call the REST API directly with a Bearer Authorization header containing the access token.
+
+        '
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: Authentication
+  tags:
+  - Authentication
+  - PlatformAuthentication
+- name: Application
+  tags:
+  - Application
+  - ApplicationMenu
+  - ApplicationPage
+  - FormMapping
+- name: BDM
+  tags:
+  - BDM
+  - BusinessDataQuery
+  - Business Data Operations
+  - BDMAccessControl
+  - DataRetention
+- name: BPM
+  tags:
+  - Activity
+  - ArchivedActivity
+  - HumanTask
+  - ManualTask
+  - Task
+  - UserTask
+  - ArchivedHumanTask
+  - ArchivedManualTask
+  - ArchivedTask
+  - ArchivedUserTask
+  - ActivityVariable
+  - ArchivedActivityVariable
+  - ProcessInstanceVariable
+  - ArchivedProcessInstanceVariable
+  - ProcessInstanceDocument
+  - ArchivedProcessInstanceDocument
+  - Actor
+  - ActorMember
+  - ProcessInstance
+  - ArchivedProcessInstance
+  - ProcessInstanceInfo
+  - ProcessInstanceComment
+  - ArchivedProcessInstanceComment
+  - Process
+  - Diagram
+  - ProcessInfo
+  - ProcessParameter
+  - ProcessResolutionProblem
+  - ProcessSupervisor
+  - ProcessConnectorDependency
+  - ConnectorFailure
+  - ConnectorInstance
+  - ArchivedConnectorInstance
+  - FlowNode
+  - ArchivedFlowNode
+  - Failure
+  - ArchivedFailure
+  - TimerEventTrigger
+  - Message
+  - Signal
+  - Delegation
+- name: Custom user info
+  tags:
+  - CustomUserDefinition
+  - CustomUserValue
+  - CustomUser
+- name: Identity
+  tags:
+  - ProfessionalContactData
+  - Group
+  - Membership
+  - Role
+  - User
+  - Authentication
+- name: Platform
+  tags:
+  - PlatformAuthentication
+  - Platform
+  - License
+  - Information
+- name: Portal
+  tags:
+  - Page
+  - Profile
+  - ProfileEntry
+  - ProfileMember
+  - Theme
+  - Upload
+- name: System
+  tags:
+  - I18nlocale
+  - I18ntranslation
+  - Log
+  - Session
+  - Maintenance
+- name: Other
+  tags:
+  - RestAPIextensions
+- name: Upload
+  tags:
+  - FormFileUpload
