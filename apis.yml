@@ -37,12 +37,12 @@ created: '2026-08-17'
 modified: '2026-08-17'
 tags:
 - Company
-- Saas
+- Software-as-a-Service
 - Business Process Management
 - Process Automation
 - Workflows
 - BPMN
-- Low Code
+- Low-Code
 - Open-Source
 - Orchestration
 - Agentic AI
@@ -1531,6 +1531,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: License
+  name: GPL-2.0
+  url: https://github.com/bonitasoft/bonita-openapi/blob/master/LICENSE
 - type: CapabilityMap
   url: capabilities/bonitasoft-capability-edges.yml
   name: Bonitasoft Business Capability Map
