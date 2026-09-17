@@ -660,33 +660,6 @@ apis:
     url: https://api-documentation.ofelia.com/latest/postman.json
   - type: SourceCode
     url: https://github.com/bonitasoft/bonita-openapi
-- aid: bonitasoft:bonitasoft-dataretention-api
-  name: Bonitasoft Data Retention API
-  description: >-
-    Configure how Bonita automatically deletes obsolete business data. A retention rule applies to a specific
-    business object type and defines when its instances become eligible for deletion based on a reference
-    date (creation or last update) and a retention period in days. The data retention service runs on
-    a configurable cron schedule.
-
-
-    This Web REST API is available in **Enterprise editions only**, since version 11.0.
-  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
-  baseURL: https://{subscription}.bonitacloud.com/bonita
-  tags:
-  - Data Retention
-  tags_raw:
-  - DataRetention
-  properties:
-  - type: OpenAPI
-    url: openapi/bonitasoft-dataretention-api-openapi.yml
-  - type: APIReference
-    url: https://api-documentation.ofelia.com/latest/
-  - type: Documentation
-    url: https://documentation.ofelia.com/bonita/latest/api/api-index
-  - type: Postman
-    url: https://api-documentation.ofelia.com/latest/postman.json
-  - type: SourceCode
-    url: https://github.com/bonitasoft/bonita-openapi
 - aid: bonitasoft:bonitasoft-delegation-api
   name: Bonitasoft Delegation API
   description: >-
@@ -1533,6 +1506,31 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/bonitasoft-usertask-api-openapi.yml
+  - type: APIReference
+    url: https://api-documentation.ofelia.com/latest/
+  - type: Documentation
+    url: https://documentation.ofelia.com/bonita/latest/api/api-index
+  - type: Postman
+    url: https://api-documentation.ofelia.com/latest/postman.json
+  - type: SourceCode
+    url: https://github.com/bonitasoft/bonita-openapi
+- aid: bonitasoft:bonitasoft-data-retention-api
+  name: Bonitasoft Data Retention API
+  description: >-
+    Configure how Bonita automatically deletes obsolete business data. A retention rule applies to a specific
+    business object type and defines when its instances become eligible for deletion based on a reference
+    date (creation or last update) and a retention period in days. The data retention service runs on
+    a configurable cron schedule.
+
+
+    This Web REST API is available in **Enterprise editions only**, since version 11.0.
+  humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
+  baseURL: https://{subscription}.bonitacloud.com/bonita
+  tags:
+  - Data Retention
+  properties:
+  - type: OpenAPI
+    url: openapi/bonitasoft-data-retention-api-openapi.yml
   - type: APIReference
     url: https://api-documentation.ofelia.com/latest/
   - type: Documentation
