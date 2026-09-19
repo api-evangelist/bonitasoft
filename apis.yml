@@ -1304,6 +1304,8 @@ apis:
   humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
   baseURL: https://{subscription}.bonitacloud.com/bonita
   tags:
+  - Profiles
+  tags_raw:
   - Profile
   properties:
   - type: OpenAPI
@@ -1376,6 +1378,8 @@ apis:
   humanURL: https://documentation.ofelia.com/bonita/latest/api/rest-api-overview
   baseURL: https://{subscription}.bonitacloud.com/bonita
   tags:
+  - Sessions
+  tags_raw:
   - Session
   properties:
   - type: OpenAPI
