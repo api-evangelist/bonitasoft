@@ -64,7 +64,8 @@ edges:
   reason: Query and deletion of completed process (case) instances in the Bonita process engine — clearly
     business process execution/monitoring history. L1 BPM; specific L2 not evidenced.
 - tag: DataRetention
-  spec_file: bonitasoft-dataretention-api-openapi.yml
+  spec_file: bonitasoft-data-retention-api-openapi.yml
+  reanchored_from: bonitasoft-dataretention-api-openapi.yml
   capability_id: BC-610.10
   capability_id_l1: BC-610
   capability_name: Data Governance Management
