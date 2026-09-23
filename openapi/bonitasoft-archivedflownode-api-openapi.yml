@@ -5,7 +5,12 @@ info:
     url: http://www.gnu.org/licenses/gpl-2.0.txt
   version: 1.0.9
   title: Bonita Archived Flow Node API
-  description: "<p> \n<a download=\"openapi.yaml\" href=\"./openapi.yaml\" target=\"_blank\" class=\"btn-download\">Download OpenAPI specification</a>\n<a download=\"postman.json\" href=\"./postman.json\" target=\"_blank\" class=\"btn-download\">Download Postman collection</a>\n</p>\n\n<hr>\n\nThe REST API lets you access the data with HTTP requests; it is useful when implementing rich web forms / pages for a good user experience.\n\nAn open source [java client](https://github.com/bonitasoft/bonita-java-client) is implemented above the HTTP API. It is available on [Maven central](https://search.maven.org/search?q=g:%22org.bonitasoft.web%22%20AND%20a:%22bonita-java-client%22).\n\nIf your application is using a technology other than Java, you can integrate it with the Bonita solution using the Web REST API. This API provides\naccess to all Bonita objects (like processes, tasks, users, connectors etc.), to execute operations on them (create, retrieve, update, delete).\nYou can use these operations to create a workflow with Bonita and integrate it into your application. The Bonita Engine remains responsible for executing\nthe workflow logic (connectors, gateways with conditions, messages, timers etc.) while your application gives access to the workflow.\nUsers can manage processes and tasks, and perform administrative activities.\n\n### API Extensions\n\nYou can create [Rest API Extensions](https://documentation.ofelia.com/bonita/latest/api/rest-api-extensions) to extend the Rest API by adding missing resources (not provided by the Rest API).\nIt is possible for an extension to interact with the engine (via the API) or with any other external service (for example a database, a directory, or a web service).\n\n### Create a resource\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/  `|\n|:-|:-|\n| Request Method | POST|\n| Request Payload | an item in JSON|\n| Response | the same item in JSON, containing the values provided in the posted item, completed with default values and identifiers provided by Bonita Engine.|\n\n### Read a resource\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/{id} `|\n|:-|:-|\n| Request Method | GET|\n| Response | an item in JSON|\n\nExample `http://.../API/identity/user/5 `\n\n#### Extend resource response\n\nOn some resources, in GET methods the `d` (deploy) URL query parameter can be used to extend the response objects. The value of this parameter consists of an attribute for which you want to make an extended request (called a deploy) and retrieve attributes of a linked resource.\nThis means that instead of retrieving the ID or a parent or referenced resource, you can retrieve the full object.\n\nFor example, when you retrieve a task, you can also retrieve the process definition attributes in addition to the process definition ID that is already part of the task resource.\nThe supported deploy values for a task include its process (d=processId).\n\nSpecifiy multiple `d` parameter to extend several resources. For instance, to retrieve the flow node of id 143 and the associated process, process instance and assigned user, call `/API/bpm/flowNode/143?d=processId&d=caseId&d=assigned_id`\n\n#### With compound identifier\n\nThe order of the identifier parts for each resource type is given in the table above.\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/{id_part1}/{id_part2} `|\n|:-|:-|\n| Request Method | GET|\n| Response | an item in JSON|\n\nExample `http://.../API/identity/membership/5/12/24 `\n\n### Update a resource\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/{id} `|\n|:-|:-|\n| Request Method | PUT|\n| Request Payload | a map in JSON containing the new values for the attributes you want to change.|\n| Response | the corresponding item in JSON with new values where you requested a modification|\n\nExample `http://.../API/identity/user/5`\n\n#### With compound identifier:\n\nResponse: the corresponding item in JSON with new values where you requested a modification.\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/{id_part1}/{id_part2} `|\n|:-|:-|\n| Request Method | PUT|\n| Request Payload | ` a map in JSON containing the new values for the attributes you want to change `|\n| Response | ` the corresponding item in JSON with new values where you requested a modification`|\n\nExample\n`http://.../API/identity/membership/5/12/24 `\n\n### Delete resources\n\nUse the DELETE request to remove multiple resources.\n\n| Request URL | `http://.../API/{API_name}/{resource_name}/ `|\n|:-|:-|\n| Request Method | DELETE|\n| Request Payload | A list of identifiers in JSON, for example `[\"id1\",\"id2\",\"id3\"]`. Compound identifiers are separated by '/' characters.|\n| Response | `empty `|\n\nExample\n`http://.../API/identity/membership/ `\n\n### Search for a resource\n\nThe required object is specified with a set of filters in the request URL. The URL parameters must be URL-encoded.\n\nResults are returned in a paged list, so you have to specify the page (counting from zero), and the number of results per page (count), additionally you can define a sort key (order). You can see the total number of matching results in the HTTP response header Content-Range.\nIf you are searching for business data using a custom query, there must be a [count query in the BDM](https://documentation.ofelia.com/bonita/latest/data/define-and-deploy-the-bdm). If there is no count query, results from a custom query on business data cannot be paged properly (the header Content-Range will be absent).\nFor business data default queries, the count query is defined automatically.\n\nThe available filters are the attributes of the item plus some specific filters defined by each item.\n\n| Request URL | `http://.../API/{API_name}/{resource_name}?p={page}&c={count}&o={order}&s={query}&f={filter_name}={filter_value}&f=... `|\n|:-|:-|\n| Request Method | GET|\n| Response | an array of items in JSON|\n\nExample\n`/API/identity/user?p=0&c=10&o=firstname&s=test&f=manager_id=3`\n\nFor a GET method that retrieves more than one instance of a resource, you can specify the following request parameters:\n\n* p (Mandatory): index of the page to display\n* c (Mandatory): maximum number of elements to retrieve\n* o: order of presentation of values in response: must be either `attributeName ASC` or `attributeName DESC`. The final order parameter value must be URL encoded.\n* f: list of filters, specified as `attributeName=attributeValue`. To filter on more than one attribute, specify an f parameters for each attribute. The final filter parameter value must be URL encoded.\n  The attributes you can filter on are specific to the resource.\n* s: search on name or search indexes. Before Bonita 2024.1, the matching policy depended on the configuration of [word-based search](https://documentation.ofelia.com/bonita/2023.2/api/using-list-and-search-methods#word_based_search).\n  For example, if word-based search was enabled, `s=Valid` returned matches containing the string \"valid\" at the start of any word in the attribute value word,\n  such as \"Valid address\", \"Not a valid address\", and \"Validated request\" but not \"Invalid request\".\n  If word-based search was disabled, `s=Valid` returned matches containing the string \"valid\" at the start of the attribute value, such as \"Valid address\" or \"Validated request\" but not \"Not a valid address\" or \"Invalid request\".\n  Since Bonita 2024.1, the search mode can no longer be configured and a \"like-based\" algorithm is used. This means all the matching records for which the search term occurs anywhere in a phrase or a word are returned.\n\n### Errors\n\nThe API uses standard HTTP status codes to indicate the success or failure of the API call.\n\nIf you get a `401` response code :\n  - make sure that the cookies have been transfered with the call\n  - make sure that the cookies transfered are the ones generated during the last sucessfull login call\n  - if one of the PUT, DELETE or POST method is used, make sure that the `X-Bonita-API-Token` header is included\n  - if the X-Bonita-API-Token header is included, make sure that the value is the same as the one of the cookie generated during the last login\n  - Maybe a logout was issued or the session has expired; try to log in again, and re run the request with the new cookies and the new value for the `X-Bonita-API-Token` header.\n"
+  description: 'Download OpenAPI specification
+
+    Download Postman collection
+
+
+    The REST API lets you access the data with HTTP requests; it is useful when implementing rich web forms / pages for a good user experience.'
   x-logo:
     url: images/ofelia-logo.svg
     backgroundColor: '#19465f'
@@ -35,9 +40,7 @@ paths:
 
         - can search on any field that can be used to order results
 
-        - can filter on `name`, `displayName`, `state`, `stateId`, `kind`, `terminal`, `processDefinitionId`, `parentProcessInstanceId`, `rootProcessInstanceId`, `parentActivityInstanceId`, `archivedDate`, `reachedStateDate`, `sourceObjectId`
-
-        '
+        - can filter on `name`, `displayName`, `state`, `stateId`, `kind`, `terminal`, `processDefinitionId`, `parentProcessInstanceId`, `rootProcessInstanceId`, `parentActivityInstanceId`, `archivedDate`, `reachedStateDate`, `sourceObjectId`'
       operationId: searchArchivedFlowNodes
       parameters:
       - $ref: '#/components/parameters/pageIndex'
@@ -73,9 +76,7 @@ paths:
       tags:
       - ArchivedFlowNode
       summary: Finds the ArchivedFlowNode by ID
-      description: 'Returns the single ArchivedFlowNode for the given ID
-
-        '
+      description: Returns the single ArchivedFlowNode for the given ID
       operationId: getArchivedFlowNodeById
       parameters:
       - description: ID of the ArchivedFlowNode to return
@@ -143,17 +144,6 @@ components:
         default: 0
         format: int32
       style: form
-    pageSearch:
-      description: can search on attributes
-      explode: true
-      in: query
-      name: s
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
     pageFilter:
       description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
       explode: true
@@ -168,15 +158,26 @@ components:
           pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: abc%3d123
+    pageSearch:
+      description: can search on attributes
+      explode: true
+      in: query
+      name: s
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
   responses:
-    ServerError:
-      description: Unexpected error.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
           example:
-            message: An unexpected error occured.
+            message: Unauthorized
     NotFound:
       description: The resource for the specified ID was not found.
       content:
@@ -201,15 +202,30 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Bad request
-    Unauthorized:
-      description: Authorization information is missing or invalid.
+    ServerError:
+      description: Unexpected error.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
           example:
-            message: Unauthorized
+            message: An unexpected error occured.
   schemas:
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
     FlowNode:
       type: object
       description: A flow node (gateway, event, or task) in an open instance of a process.
@@ -315,21 +331,6 @@ components:
             description: the date ('yyyy-MM-dd HH:mm:ss.SSS') when the current task was assigned for example '2014-10-17 16:05:42.626'
             type: string
             pattern: ^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

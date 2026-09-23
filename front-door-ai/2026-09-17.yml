@@ -1,0 +1,29 @@
+# Front Door AI Index — bonitasoft — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: bonitasoft
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.ofelia.com
+  final_host: www.ofelia.com
+  ownership: own
+  owner: bonitasoft
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 8
+  host_score: 8
+  density: 8.44
+  words: 948
+  tiers:
+    agentic: 1
+    core: 7
+    model: 0
+  ambiguous: 3
+  top_terms:
+    AI: 7
+    agent: 1
+    agentic: 1
+    automation: 1
+    intelligence: 1
