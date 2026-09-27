@@ -156,66 +156,7 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  parameters:
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
-      style: form
-    pageIndex:
-      description: index of the page to display
-      explode: true
-      in: query
-      name: p
-      example: '0'
-      required: true
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-        format: int32
-      style: form
-    pageFilter:
-      description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
-      explode: true
-      in: query
-      name: f
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-          maxLength: 250
-          pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-      example: abc%3d123
   responses:
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    OK:
-      description: OK
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
     NotFound:
       description: The resource for the specified ID was not found.
       content:
@@ -224,14 +165,8 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Resource not found.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    OK:
+      description: OK
     ServerError:
       description: Unexpected error.
       content:
@@ -240,22 +175,56 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: An unexpected error occured.
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   schemas:
-    Error:
+    ProfileMember:
       type: object
-      additionalProperties: true
+      description: Profile member
       properties:
-        message:
+        id:
+          description: profile member id
           type: string
-          description: The error message
-        exception:
+        profile_id:
+          description: id of the profile for this mapping
           type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
+        role_id:
+          description: id of role, or -1 if the member type is not role
+          type: string
+        group_id:
+          description: id of group, or -1 if the member type is not group
+          type: string
+        user_id:
+          description: id of user, or -1 if the member type is not user
+          type: string
+      example:
+        id: 204
+        profile_id: 2
+        role_id: -1
+        group_id: -1
+        user_id: 101
     ProfileMemberCreateRequest:
       type: object
       properties:
@@ -282,31 +251,62 @@ components:
         profile_id: '2'
         member_type: USER
         user_id: '101'
-    ProfileMember:
+    Error:
       type: object
-      description: Profile member
+      additionalProperties: true
       properties:
-        id:
-          description: profile member id
+        message:
           type: string
-        profile_id:
-          description: id of the profile for this mapping
+          description: The error message
+        exception:
           type: string
-        role_id:
-          description: id of role, or -1 if the member type is not role
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
+  parameters:
+    pageFilter:
+      description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
+      explode: true
+      in: query
+      name: f
+      required: false
+      schema:
+        type: array
+        items:
           type: string
-        group_id:
-          description: id of group, or -1 if the member type is not group
-          type: string
-        user_id:
-          description: id of user, or -1 if the member type is not user
-          type: string
-      example:
-        id: 204
-        profile_id: 2
-        role_id: -1
-        group_id: -1
-        user_id: 101
+          maxLength: 250
+          pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+      example: abc%3d123
+    pageIndex:
+      description: index of the page to display
+      explode: true
+      in: query
+      name: p
+      example: '0'
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+        format: int32
+      style: form
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

@@ -97,6 +97,39 @@ paths:
           $ref: '#/components/responses/ServerError'
       x-codegen-request-body-name: body
 components:
+  responses:
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   parameters:
     pageOrder:
       description: can order on attributes
@@ -110,17 +143,17 @@ components:
         pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: myProp%20ASC
-    pageCount:
-      description: maximum number of elements to retrieve
+    pageIndex:
+      description: index of the page to display
       explode: true
       in: query
-      name: c
-      example: '10'
+      name: p
+      example: '0'
       required: true
       schema:
         type: integer
-        minimum: 1
-        default: 20
+        minimum: 0
+        default: 0
         format: int32
       style: form
     pageFilter:
@@ -137,17 +170,17 @@ components:
           pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: abc%3d123
-    pageIndex:
-      description: index of the page to display
+    pageCount:
+      description: maximum number of elements to retrieve
       explode: true
       in: query
-      name: p
-      example: '0'
+      name: c
+      example: '10'
       required: true
       schema:
         type: integer
-        minimum: 0
-        default: 0
+        minimum: 1
+        default: 20
         format: int32
       style: form
   schemas:
@@ -163,21 +196,6 @@ components:
       example:
         processInstanceId: '5777042023671752656'
         content: The process instance has been started
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
     ProcessInstanceComment:
       type: object
       description: ''
@@ -203,39 +221,21 @@ components:
         processInstanceId: '1'
         postDate: '2016-06-16 14:51:33.053'
         userId: 9798
-  responses:
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

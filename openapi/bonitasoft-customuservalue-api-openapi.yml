@@ -110,20 +110,50 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
+  responses:
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
+    OK:
+      description: OK
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   parameters:
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
-      style: form
     pageFilter:
       description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
       explode: true
@@ -151,49 +181,19 @@ components:
         default: 0
         format: int32
       style: form
-  responses:
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    OK:
-      description: OK
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
   schemas:
     CustomUserValueUpdateRequest:
       type: object
@@ -203,6 +203,19 @@ components:
           type: string
       example:
         value: My new value
+    CustomUserValue:
+      type: object
+      description: ''
+      properties:
+        userId:
+          description: user id
+          type: string
+        value:
+          description: definition value
+          type: string
+        definitionId:
+          description: definition id
+          type: string
     Error:
       type: object
       additionalProperties: true
@@ -218,19 +231,6 @@ components:
           type: array
           items:
             type: string
-    CustomUserValue:
-      type: object
-      description: ''
-      properties:
-        userId:
-          description: user id
-          type: string
-        value:
-          description: definition value
-          type: string
-        definitionId:
-          description: definition id
-          type: string
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

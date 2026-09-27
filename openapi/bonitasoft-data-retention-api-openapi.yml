@@ -233,6 +233,57 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
+  responses:
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
+    Conflict:
+      description: Conflict, the request could not be completed because it conflicts with the current state of the target resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Conflict
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    NoContent:
+      description: OK (no content).
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   schemas:
     DataRetentionConfig:
       type: object
@@ -275,45 +326,6 @@ components:
         retentionDays: 365
         createdAt: '1777473415401'
         updatedAt: '1777473415401'
-    CompositionNode:
-      type: object
-      description: 'A node in the recursive composition tree of a business object type. Each node holds the
-
-        qualified name of a composed business object type and the list of its own composed children,
-
-        allowing arbitrarily deep composition hierarchies to be expressed.
-
-        '
-      required:
-      - qualifiedName
-      - compositions
-      properties:
-        qualifiedName:
-          description: Fully qualified Java class name of the composed business object type.
-          type: string
-        compositions:
-          description: Direct composition children of this object, or an empty list if none.
-          type: array
-          items:
-            $ref: '#/components/schemas/CompositionNode'
-      example:
-        qualifiedName: com.company.model.Address
-        compositions: []
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
     ReferenceDate:
       type: string
       description: 'Date field on a BDM object instance used as the starting point of the retention period calculation.
@@ -327,77 +339,6 @@ components:
       enum:
       - CREATION
       - LAST_UPDATE
-    RetentionRuleUpdateRequest:
-      type: object
-      description: 'Body of `PUT /API/retention/rule/{ruleId}`. Replaces the mutable fields of an existing
-
-        retention rule. This is a full replacement of `referenceDate` and `retentionDays`, not a
-
-        partial update — both fields must be provided on every call. The `dataClassName` of an
-
-        existing rule cannot be changed.
-
-        '
-      required:
-      - referenceDate
-      - retentionDays
-      properties:
-        referenceDate:
-          $ref: '#/components/schemas/ReferenceDate'
-        retentionDays:
-          description: Duration of the retention period, in days. Must be strictly positive.
-          type: integer
-          format: int32
-          minimum: 1
-      example:
-        referenceDate: CREATION
-        retentionDays: 730
-    RetentionRuleCreateRequest:
-      type: object
-      description: 'Body of `POST /API/retention/rule`. Defines a new data retention rule for the business object
-
-        type identified by `dataClassName`. All three fields are required.
-
-        '
-      required:
-      - dataClassName
-      - referenceDate
-      - retentionDays
-      properties:
-        dataClassName:
-          description: 'Fully qualified Java class name of the business object type this rule applies to. Note the uppercase `N`.
-
-
-            The corresponding field returned in the `DataRetentionConfig` response of this endpoint and of `PUT /API/retention/rule/{ruleId}`, `GET /API/retention/object` is named `dataClassname` (lowercase `n`).
-
-            '
-          type: string
-        referenceDate:
-          $ref: '#/components/schemas/ReferenceDate'
-        retentionDays:
-          description: Duration of the retention period, in days. Must be strictly positive.
-          type: integer
-          format: int32
-          minimum: 1
-      example:
-        dataClassName: com.company.model.ContratClient
-        referenceDate: LAST_UPDATE
-        retentionDays: 365
-    RetentionSchedule:
-      type: object
-      description: 'Schedule on which the data retention service runs. The cron expression is configured via the
-
-        `bonita.runtime.retention.schedule.cron` platform property.
-
-        '
-      required:
-      - cronExpression
-      properties:
-        cronExpression:
-          description: Cron expression that defines when the data retention job is triggered.
-          type: string
-      example:
-        cronExpression: 0 0 2 * * 6
     BusinessObjectWithRetentionRule:
       type: object
       description: 'A business object type defined in the Business Data Model (BDM) along with its optional data
@@ -445,57 +386,116 @@ components:
           retentionDays: 365
           createdAt: '1777473415401'
           updatedAt: '1777473415401'
-  responses:
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    Conflict:
-      description: Conflict, the request could not be completed because it conflicts with the current state of the target resource.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Conflict
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    NoContent:
-      description: OK (no content).
+    RetentionRuleUpdateRequest:
+      type: object
+      description: 'Body of `PUT /API/retention/rule/{ruleId}`. Replaces the mutable fields of an existing
+
+        retention rule. This is a full replacement of `referenceDate` and `retentionDays`, not a
+
+        partial update — both fields must be provided on every call. The `dataClassName` of an
+
+        existing rule cannot be changed.
+
+        '
+      required:
+      - referenceDate
+      - retentionDays
+      properties:
+        referenceDate:
+          $ref: '#/components/schemas/ReferenceDate'
+        retentionDays:
+          description: Duration of the retention period, in days. Must be strictly positive.
+          type: integer
+          format: int32
+          minimum: 1
+      example:
+        referenceDate: CREATION
+        retentionDays: 730
+    RetentionSchedule:
+      type: object
+      description: 'Schedule on which the data retention service runs. The cron expression is configured via the
+
+        `bonita.runtime.retention.schedule.cron` platform property.
+
+        '
+      required:
+      - cronExpression
+      properties:
+        cronExpression:
+          description: Cron expression that defines when the data retention job is triggered.
+          type: string
+      example:
+        cronExpression: 0 0 2 * * 6
+    RetentionRuleCreateRequest:
+      type: object
+      description: 'Body of `POST /API/retention/rule`. Defines a new data retention rule for the business object
+
+        type identified by `dataClassName`. All three fields are required.
+
+        '
+      required:
+      - dataClassName
+      - referenceDate
+      - retentionDays
+      properties:
+        dataClassName:
+          description: 'Fully qualified Java class name of the business object type this rule applies to. Note the uppercase `N`.
+
+
+            The corresponding field returned in the `DataRetentionConfig` response of this endpoint and of `PUT /API/retention/rule/{ruleId}`, `GET /API/retention/object` is named `dataClassname` (lowercase `n`).
+
+            '
+          type: string
+        referenceDate:
+          $ref: '#/components/schemas/ReferenceDate'
+        retentionDays:
+          description: Duration of the retention period, in days. Must be strictly positive.
+          type: integer
+          format: int32
+          minimum: 1
+      example:
+        dataClassName: com.company.model.ContratClient
+        referenceDate: LAST_UPDATE
+        retentionDays: 365
+    CompositionNode:
+      type: object
+      description: 'A node in the recursive composition tree of a business object type. Each node holds the
+
+        qualified name of a composed business object type and the list of its own composed children,
+
+        allowing arbitrarily deep composition hierarchies to be expressed.
+
+        '
+      required:
+      - qualifiedName
+      - compositions
+      properties:
+        qualifiedName:
+          description: Fully qualified Java class name of the composed business object type.
+          type: string
+        compositions:
+          description: Direct composition children of this object, or an empty list if none.
+          type: array
+          items:
+            $ref: '#/components/schemas/CompositionNode'
+      example:
+        qualifiedName: com.company.model.Address
+        compositions: []
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

@@ -227,6 +227,49 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
+  responses:
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
+    OK:
+      description: OK
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   parameters:
     pageOrder:
       description: can order on attributes
@@ -240,17 +283,17 @@ components:
         pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: myProp%20ASC
-    pageCount:
-      description: maximum number of elements to retrieve
+    pageIndex:
+      description: index of the page to display
       explode: true
       in: query
-      name: c
-      example: '10'
+      name: p
+      example: '0'
       required: true
       schema:
         type: integer
-        minimum: 1
-        default: 20
+        minimum: 0
+        default: 0
         format: int32
       style: form
     pageFilter:
@@ -267,127 +310,20 @@ components:
           pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: abc%3d123
-    pageIndex:
-      description: index of the page to display
+    pageCount:
+      description: maximum number of elements to retrieve
       explode: true
       in: query
-      name: p
-      example: '0'
+      name: c
+      example: '10'
       required: true
       schema:
         type: integer
-        minimum: 0
-        default: 0
+        minimum: 1
+        default: 20
         format: int32
       style: form
-  responses:
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    OK:
-      description: OK
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
   schemas:
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
-    ProcessInstanceDocumentCreateRequest:
-      type: object
-      properties:
-        caseId:
-          description: The process instance id
-          type: string
-        file:
-          description: The local file name to upload from (as from the temp upload folder)
-          type: string
-        url:
-          description: The remote url to upload from
-          type: string
-        name:
-          description: The file display name
-          type: string
-        fileName:
-          description: The target file name
-          type: string
-        description:
-          description: The document description
-          type: string
-      example:
-        caseId: '1'
-        file: doc.jpg
-        name: Doc 1
-        fileName: document_1.jpg
-        description: draft
-    ProcessInstanceDocumentUpdateRequest:
-      type: object
-      properties:
-        file:
-          description: The local file name to upload from (as from the temp upload folder)
-          type: string
-        url:
-          description: The remote url to upload from
-          type: string
-        name:
-          description: The file display name
-          type: string
-        fileName:
-          description: The target file name
-          type: string
-        description:
-          description: The document description
-          type: string
-      example:
-        file: Expense policy rev2.pdf
-        description: updated version of document
-        fileName: revision2.pdf
     ProcessInstanceDocument:
       type: object
       description: A document in an active case
@@ -450,6 +386,70 @@ components:
         submittedBy: '1'
         url: documentDownload?fileName=document_1.jpg&contentStorageId=4
         version: '1'
+    ProcessInstanceDocumentUpdateRequest:
+      type: object
+      properties:
+        file:
+          description: The local file name to upload from (as from the temp upload folder)
+          type: string
+        url:
+          description: The remote url to upload from
+          type: string
+        name:
+          description: The file display name
+          type: string
+        fileName:
+          description: The target file name
+          type: string
+        description:
+          description: The document description
+          type: string
+      example:
+        file: Expense policy rev2.pdf
+        description: updated version of document
+        fileName: revision2.pdf
+    ProcessInstanceDocumentCreateRequest:
+      type: object
+      properties:
+        caseId:
+          description: The process instance id
+          type: string
+        file:
+          description: The local file name to upload from (as from the temp upload folder)
+          type: string
+        url:
+          description: The remote url to upload from
+          type: string
+        name:
+          description: The file display name
+          type: string
+        fileName:
+          description: The target file name
+          type: string
+        description:
+          description: The document description
+          type: string
+      example:
+        caseId: '1'
+        file: doc.jpg
+        name: Doc 1
+        fileName: document_1.jpg
+        description: draft
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

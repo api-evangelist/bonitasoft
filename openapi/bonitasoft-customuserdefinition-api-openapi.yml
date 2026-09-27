@@ -151,52 +151,7 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  parameters:
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
-      style: form
-    pageIndex:
-      description: index of the page to display
-      explode: true
-      in: query
-      name: p
-      example: '0'
-      required: true
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-        format: int32
-      style: form
   responses:
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    OK:
-      description: OK
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
     NotFound:
       description: The resource for the specified ID was not found.
       content:
@@ -205,14 +160,8 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Resource not found.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    OK:
+      description: OK
     ServerError:
       description: Unexpected error.
       content:
@@ -221,22 +170,43 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: An unexpected error occured.
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   schemas:
-    Error:
+    CustomUserDefinitionCreateRequest:
       type: object
-      additionalProperties: true
       properties:
-        message:
+        name:
+          description: definition name
           type: string
-          description: The error message
-        exception:
+        description:
+          description: definition description
           type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
+      example:
+        name: skill
+        description: Team player
     CustomUserDefinition:
       type: object
       description: Custom user definition
@@ -254,18 +224,48 @@ components:
         id: 101
         name: skill
         description: Team player
-    CustomUserDefinitionCreateRequest:
+    Error:
       type: object
+      additionalProperties: true
       properties:
-        name:
-          description: definition name
+        message:
           type: string
-        description:
-          description: definition description
+          description: The error message
+        exception:
           type: string
-      example:
-        name: skill
-        description: Team player
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
+  parameters:
+    pageIndex:
+      description: index of the page to display
+      explode: true
+      in: query
+      name: p
+      example: '0'
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+        format: int32
+      style: form
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

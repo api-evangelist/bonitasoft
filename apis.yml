@@ -59,9 +59,9 @@ tags:
 - Workflows
 - BPMN
 - Low-Code
-- Open-Source
+- Open Source
 - Orchestration
-- Agentic AI
+- AI Agents
 - Case Management
 - Java
 tags_raw:
@@ -77,6 +77,7 @@ tags_raw:
 - Agentic AI
 - Case Management
 - Java
+- Open-Source
 apis:
 - aid: bonitasoft:bonitasoft-activity-api
   name: Bonitasoft Activity API

@@ -150,24 +150,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    OK:
-      description: OK
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
     NotFound:
       description: The resource for the specified ID was not found.
       content:
@@ -176,14 +158,8 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Resource not found.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    OK:
+      description: OK
     ServerError:
       description: Unexpected error.
       content:
@@ -192,33 +168,31 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: An unexpected error occured.
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   schemas:
-    PlatformUpdateRequest:
-      type: object
-      properties:
-        state:
-          description: Platform state
-          type: string
-          enum:
-          - start
-          - stop
-      example:
-        state: stop
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
     Platform:
       type: object
       description: The bonita platform
@@ -251,6 +225,32 @@ components:
         state: STARTED
         previousVersion: ''
         version: 6.4.0
+    PlatformUpdateRequest:
+      type: object
+      properties:
+        state:
+          description: Platform state
+          type: string
+          enum:
+          - start
+          - stop
+      example:
+        state: stop
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

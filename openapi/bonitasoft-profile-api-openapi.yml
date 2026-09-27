@@ -283,7 +283,61 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
+  responses:
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
+    OK:
+      description: OK
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   parameters:
+    pageSearch:
+      description: can search on attributes
+      explode: true
+      in: query
+      name: s
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
     pageOrder:
       description: can order on attributes
       explode: true
@@ -296,32 +350,6 @@ components:
         pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: myProp%20ASC
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
-      style: form
-    pageIndex:
-      description: index of the page to display
-      explode: true
-      in: query
-      name: p
-      example: '0'
-      required: true
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-        format: int32
-      style: form
     pageFilter:
       description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
       explode: true
@@ -336,61 +364,40 @@ components:
           pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: abc%3d123
-    pageSearch:
-      description: can search on attributes
+    pageIndex:
+      description: index of the page to display
       explode: true
       in: query
-      name: s
-      required: false
+      name: p
+      example: '0'
+      required: true
       schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
+        type: integer
+        minimum: 0
+        default: 0
+        format: int32
       style: form
-  responses:
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    OK:
-      description: OK
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
   schemas:
+    FileUploadRequest:
+      type: object
+      description: The file to upload
+      properties:
+        file:
+          type: string
+          format: binary
     Profile:
       type: object
       description: Profile
@@ -432,6 +439,18 @@ components:
         is_default: false
         lastUpdateDate: '2014-12-04 16:29:23.434'
         updatedBy: 1
+    ProfileCreateRequest:
+      type: object
+      properties:
+        description:
+          description: a description of the profile
+          type: string
+        name:
+          description: profile name
+          type: string
+      example:
+        name: MyCustomProfile
+        description: This is my custom profile
     ProfileUpdateRequest:
       type: object
       properties:
@@ -459,25 +478,6 @@ components:
           type: array
           items:
             type: string
-    ProfileCreateRequest:
-      type: object
-      properties:
-        description:
-          description: a description of the profile
-          type: string
-        name:
-          description: profile name
-          type: string
-      example:
-        name: MyCustomProfile
-        description: This is my custom profile
-    FileUploadRequest:
-      type: object
-      description: The file to upload
-      properties:
-        file:
-          type: string
-          format: binary
   securitySchemes:
     bonita_auth:
       name: JSESSIONID
