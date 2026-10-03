@@ -140,143 +140,7 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
-    OK:
-      description: OK
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-  parameters:
-    pageSearch:
-      description: can search on attributes
-      explode: true
-      in: query
-      name: s
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-    pageOrder:
-      description: can order on attributes
-      explode: true
-      in: query
-      name: o
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-      example: myProp%20ASC
-    pageFilter:
-      description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
-      explode: true
-      in: query
-      name: f
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-          maxLength: 250
-          pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-      example: abc%3d123
-    pageIndex:
-      description: index of the page to display
-      explode: true
-      in: query
-      name: p
-      example: '0'
-      required: true
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-        format: int32
-      style: form
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
-      style: form
   schemas:
-    HumanTask:
-      allOf:
-      - $ref: '#/components/schemas/AbstractTask'
-      - type: object
-        description: 'A Human task is Manual task or a User task. A User task is a task that can be done by a user.
-
-          A Manual task is a subtask of a user task, and is also done by a user.
-
-          '
-        example:
-          displayDescription: null
-          executedBySubstitute: 0
-          processId: 5826139717723008000
-          state: ready
-          rootContainerId: 1002
-          type: USER_TASK
-          assigned_id: null
-          assigned_date: null
-          id: 20004
-          executedBy: 0
-          caseId: 1002
-          priority: normal
-          actorId: 102
-          description: null
-          name: Analyse case
-          reached_state_date: '2014-09-05 11:11:30.808'
-          displayName: Analyse case
-          dueDate: '2014-09-05 12:11:30.775'
-          last_update_date: '2014-09-05 11:11:30.808'
     AbstractTask:
       type: object
       properties:
@@ -390,18 +254,50 @@ components:
         parentTaskId: 40001
         dueDate: '2014-12-25 00:00:00.000'
         last_update_date: '2014-12-01 17:39:53.784'
-    HumanTaskUpdateRequest:
+    Error:
       type: object
+      additionalProperties: true
       properties:
-        assigned_id:
-          description: The id of the user to assign this Human task to
+        message:
           type: string
-        state:
-          description: state of the HumanTask
+          description: The error message
+        exception:
           type: string
-      example:
-        assigned_id: '1234'
-        state: new_state
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
+    HumanTask:
+      allOf:
+      - $ref: '#/components/schemas/AbstractTask'
+      - type: object
+        description: 'A Human task is Manual task or a User task. A User task is a task that can be done by a user.
+
+          A Manual task is a subtask of a user task, and is also done by a user.
+
+          '
+        example:
+          displayDescription: null
+          executedBySubstitute: 0
+          processId: 5826139717723008000
+          state: ready
+          rootContainerId: 1002
+          type: USER_TASK
+          assigned_id: null
+          assigned_date: null
+          id: 20004
+          executedBy: 0
+          caseId: 1002
+          priority: normal
+          actorId: 102
+          description: null
+          name: Analyse case
+          reached_state_date: '2014-09-05 11:11:30.808'
+          displayName: Analyse case
+          dueDate: '2014-09-05 12:11:30.775'
+          last_update_date: '2014-09-05 11:11:30.808'
     ActivityState:
       type: string
       description: the current state of the activity
@@ -419,21 +315,125 @@ components:
       - cancelling subtasks
       - aborting activity with boundary
       - completing activity with boundary
-    Error:
+    HumanTaskUpdateRequest:
       type: object
-      additionalProperties: true
       properties:
-        message:
+        assigned_id:
+          description: The id of the user to assign this Human task to
           type: string
-          description: The error message
-        exception:
+        state:
+          description: state of the HumanTask
           type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
+      example:
+        assigned_id: '1234'
+        state: new_state
+  parameters:
+    pageFilter:
+      description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
+      explode: true
+      in: query
+      name: f
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          maxLength: 250
+          pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+      example: abc%3d123
+    pageOrder:
+      description: can order on attributes
+      explode: true
+      in: query
+      name: o
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+      example: myProp%20ASC
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
+    pageIndex:
+      description: index of the page to display
+      explode: true
+      in: query
+      name: p
+      example: '0'
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+        format: int32
+      style: form
+    pageSearch:
+      description: can search on attributes
+      explode: true
+      in: query
+      name: s
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+  responses:
+    OK:
+      description: OK
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

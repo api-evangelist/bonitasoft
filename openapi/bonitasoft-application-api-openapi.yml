@@ -352,112 +352,18 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-  parameters:
-    pageSearch:
-      description: can search on attributes
-      explode: true
-      in: query
-      name: s
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-    pageOrder:
-      description: can order on attributes
-      explode: true
-      in: query
-      name: o
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-      example: myProp%20ASC
-    pageFilter:
-      description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
-      explode: true
-      in: query
-      name: f
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-          maxLength: 250
-          pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-      example: abc%3d123
-    pageIndex:
-      description: index of the page to display
-      explode: true
-      in: query
-      name: p
-      example: '0'
-      required: true
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-        format: int32
-      style: form
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
-      style: form
   schemas:
+    Application:
+      oneOf:
+      - $ref: '#/components/schemas/ApplicationLink'
+      - $ref: '#/components/schemas/LegacyApplication'
+    FileUploadRequest:
+      type: object
+      description: The file to upload
+      properties:
+        file:
+          type: string
+          format: binary
     ApplicationUpdateRequest:
       type: object
       properties:
@@ -500,17 +406,36 @@ components:
         description: My application description
         themeId: '2'
         layoutId: '17'
-    FileUploadRequest:
-      type: object
-      description: The file to upload
-      properties:
-        file:
-          type: string
-          format: binary
-    Application:
-      oneOf:
-      - $ref: '#/components/schemas/ApplicationLink'
-      - $ref: '#/components/schemas/LegacyApplication'
+    ApplicationLink:
+      title: Application Link
+      description: Contains the meta information of a Bonita Living Application Link.
+      allOf:
+      - type: object
+        properties:
+          link:
+            description: true for an application link
+            type: boolean
+            enum:
+            - true
+      - $ref: '#/components/schemas/AbstractApplication'
+      - type: object
+        description: Contains the meta information of a Bonita Living Application Link.
+      example:
+        id: '306'
+        link: 'true'
+        creationDate: '1411548289900'
+        icon: ''
+        createdBy": '1'
+        profileId: '2'
+        description: My application link description
+        token: myadvapp
+        state: ACTIVATED
+        displayName: My app link
+        updatedBy: '1'
+        visibility: ALL
+        editable: 'true'
+        lastUpdateDate: '1411548289900'
+        version: '1.0'
     LegacyApplication:
       title: Legacy application
       description: Contains the meta information of a legacy Bonita Living Application.
@@ -560,36 +485,53 @@ components:
         homePageId: '26'
         themeId: '1'
         layoutId: '3'
-    ApplicationLink:
-      title: Application Link
-      description: Contains the meta information of a Bonita Living Application Link.
-      allOf:
-      - type: object
-        properties:
-          link:
-            description: true for an application link
-            type: boolean
-            enum:
-            - true
-      - $ref: '#/components/schemas/AbstractApplication'
-      - type: object
-        description: Contains the meta information of a Bonita Living Application Link.
+    CreateApplicationRequest:
+      type: object
+      properties:
+        link:
+          description: true for an application link, false for a legacy application
+          type: boolean
+          default: 'false'
+          enum:
+          - true
+          - false
+        description:
+          description: description of the application
+          type: string
+        displayName:
+          description: display name of the application
+          type: string
+        profileId:
+          description: profile authorized to access this application
+          type: string
+        token:
+          description: token of the application used to build the application URL
+          type: string
+        version:
+          description: version of the application
+          type: string
       example:
-        id: '306'
-        link: 'true'
-        creationDate: '1411548289900'
-        icon: ''
-        createdBy": '1'
-        profileId: '2'
-        description: My application link description
-        token: myadvapp
-        state: ACTIVATED
-        displayName: My app link
-        updatedBy: '1'
-        visibility: ALL
-        editable: 'true'
-        lastUpdateDate: '1411548289900'
+        link: 'false'
         version: '1.0'
+        profileId: '2'
+        token: myapp
+        displayName: My app
+        description: My application description
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
     AbstractApplication:
       type: object
       properties:
@@ -648,53 +590,111 @@ components:
         editable:
           description: Indicates whether the application can be modified
           type: boolean
-    CreateApplicationRequest:
-      type: object
-      properties:
-        link:
-          description: true for an application link, false for a legacy application
-          type: boolean
-          default: 'false'
-          enum:
-          - true
-          - false
-        description:
-          description: description of the application
+  parameters:
+    pageFilter:
+      description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
+      explode: true
+      in: query
+      name: f
+      required: false
+      schema:
+        type: array
+        items:
           type: string
-        displayName:
-          description: display name of the application
-          type: string
-        profileId:
-          description: profile authorized to access this application
-          type: string
-        token:
-          description: token of the application used to build the application URL
-          type: string
-        version:
-          description: version of the application
-          type: string
-      example:
-        link: 'false'
-        version: '1.0'
-        profileId: '2'
-        token: myapp
-        displayName: My app
-        description: My application description
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
+          maxLength: 250
+          pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+      example: abc%3d123
+    pageOrder:
+      description: can order on attributes
+      explode: true
+      in: query
+      name: o
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+      example: myProp%20ASC
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
+    pageIndex:
+      description: index of the page to display
+      explode: true
+      in: query
+      name: p
+      example: '0'
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+        format: int32
+      style: form
+    pageSearch:
+      description: can search on attributes
+      explode: true
+      in: query
+      name: s
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+  responses:
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

@@ -72,120 +72,7 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-  parameters:
-    pageSearch:
-      description: can search on attributes
-      explode: true
-      in: query
-      name: s
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-    pageOrder:
-      description: can order on attributes
-      explode: true
-      in: query
-      name: o
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-      example: myProp%20ASC
-    pageFilter:
-      description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
-      explode: true
-      in: query
-      name: f
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-          maxLength: 250
-          pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-      example: abc%3d123
-    pageIndex:
-      description: index of the page to display
-      explode: true
-      in: query
-      name: p
-      example: '0'
-      required: true
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-        format: int32
-      style: form
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
-      style: form
   schemas:
-    ArchivedProcessInstanceComment:
-      allOf:
-      - $ref: '#/components/schemas/ProcessInstanceComment'
-      - type: object
-        description: Information about the comment of an archived process instances.
-        properties:
-          archivedDate:
-            description: the date set when the process instance comment was archived
-            type: string
-        example:
-          id: 20005
-          content: Need to review the last inputs of this case
-          processInstanceId: 1
-          postDate: '2016-06-16 14:51:33.053'
-          archivedDate: '2016-06-17 10:18:24.723'
-          userId: 30
     ProcessInstanceComment:
       type: object
       description: ''
@@ -226,6 +113,119 @@ components:
           type: array
           items:
             type: string
+    ArchivedProcessInstanceComment:
+      allOf:
+      - $ref: '#/components/schemas/ProcessInstanceComment'
+      - type: object
+        description: Information about the comment of an archived process instances.
+        properties:
+          archivedDate:
+            description: the date set when the process instance comment was archived
+            type: string
+        example:
+          id: 20005
+          content: Need to review the last inputs of this case
+          processInstanceId: 1
+          postDate: '2016-06-16 14:51:33.053'
+          archivedDate: '2016-06-17 10:18:24.723'
+          userId: 30
+  parameters:
+    pageFilter:
+      description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
+      explode: true
+      in: query
+      name: f
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          maxLength: 250
+          pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+      example: abc%3d123
+    pageOrder:
+      description: can order on attributes
+      explode: true
+      in: query
+      name: o
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+      example: myProp%20ASC
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
+    pageIndex:
+      description: index of the page to display
+      explode: true
+      in: query
+      name: p
+      example: '0'
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+        format: int32
+      style: form
+    pageSearch:
+      description: can search on attributes
+      explode: true
+      in: query
+      name: s
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+  responses:
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

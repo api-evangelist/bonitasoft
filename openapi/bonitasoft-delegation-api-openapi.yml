@@ -256,163 +256,125 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
-    NoContent:
-      description: OK (no content).
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
   schemas:
-    DelegationRule:
+    DelegationStatus:
+      type: string
+      description: 'Lifecycle status of a delegation rule, derived at query time from the rule''s `startDate` /
+
+        `endDate` compared against the current time. There is no stored activation flag.
+
+
+        - `scheduled`: `startDate` is in the future. The delegate does not yet have access.
+
+        - `active`: the current time is within `[startDate, endDate]`. The delegate has access.
+
+        - `expired`: `endDate` is in the past. The delegate no longer has access.
+
+
+        Serialized in lowercase.
+
+        '
+      enum:
+      - scheduled
+      - active
+      - expired
+    ConfigurationState:
+      description: the configuration state of the process (UNRESOLVED or RESOLVED)
+      type: string
+      enum:
+      - RESOLVED
+      - UNRESOLVED
+    DelegationUser:
       type: object
-      description: 'A task delegation rule: a user (the delegator) grants another user (the delegate) the ability
-
-        to see and execute the delegator''s human tasks during a bounded period, for a whitelist of
-
-        processes.
+      description: 'User embedded in a delegation rule or a delegated task (delegator, delegate or last updater).
 
 
-        Delegation is not reassignment: tasks stay assigned to the delegator, and the delegate only
+        This is the engine `User` model serialized directly, so its field names (`userName`,
 
-        gains visibility and execution rights through dedicated views. A user can hold at most one
+        `managerUserId`, `creationDate`, ...) differ from the legacy snake_case `User` schema returned
 
-        delegation rule at a time.
+        by the `/API/identity/user` endpoints. The long id fields (`id`, `createdBy`, `managerUserId`)
+
+        are serialized as strings to avoid JavaScript precision loss, while the date fields
+
+        (`creationDate`, `lastUpdate`, `lastConnection`) are serialized as numeric epoch milliseconds.
 
         '
       required:
       - id
-      - delegator
-      - delegate
-      - startDate
-      - endDate
-      - processes
-      - status
-      - lastUpdatedBy
-      - lastUpdatedAt
+      - userName
+      - firstName
+      - lastName
+      - enabled
       properties:
         id:
-          description: Identifier of the delegation rule. Serialized as a string to avoid JavaScript precision loss on large `long` values.
+          description: User id. Serialized as a string to avoid JavaScript precision loss on large `long` values.
           type: string
-        delegator:
-          description: The user whose tasks are delegated.
-          $ref: '#/components/schemas/DelegationUser'
-        delegate:
-          description: The user receiving visibility and execution rights on the delegator's tasks.
-          $ref: '#/components/schemas/DelegationUser'
-        startDate:
-          description: Start of the delegation period, inclusive, in milliseconds since epoch.
+        userName:
+          description: Login name of the user.
+          type: string
+        firstName:
+          description: First name of the user.
+          type:
+          - string
+          - 'null'
+        lastName:
+          description: Last name of the user.
+          type:
+          - string
+          - 'null'
+        title:
+          description: Civility title of the user.
+          type:
+          - string
+          - 'null'
+        jobTitle:
+          description: Job title of the user.
+          type:
+          - string
+          - 'null'
+        iconId:
+          description: Id of the icon row used as avatar, or `null` when no icon is set. Serialized as a string when present.
+          type:
+          - string
+          - 'null'
+        managerUserId:
+          description: Id of this user's manager, or `0` when none. Serialized as a string.
+          type: string
+        createdBy:
+          description: Id of the user who created this account (`-1` for system-created accounts). Serialized as a string.
+          type: string
+        creationDate:
+          description: Creation timestamp of the user account, in epoch milliseconds.
           type: integer
           format: int64
-        endDate:
-          description: End of the delegation period, inclusive, in milliseconds since epoch.
+        lastUpdate:
+          description: Last update timestamp of the user account, in epoch milliseconds.
           type: integer
           format: int64
-        processes:
-          description: 'Process whitelist for this rule. Each entry is a process name; a name covers every deployed
-
-            version of that process. Always contains at least one entry.
-
-            '
-          type: array
-          minItems: 1
-          items:
-            type: string
-        status:
-          $ref: '#/components/schemas/DelegationStatus'
-        lastUpdatedBy:
-          description: The user who last created or modified this rule (the delegator on self-service, or an administrator).
-          $ref: '#/components/schemas/DelegationUser'
-        lastUpdatedAt:
-          description: Timestamp of the last modification, in milliseconds since epoch.
-          type: integer
+        lastConnection:
+          description: Last connection timestamp, in epoch milliseconds, or `null` if the user never logged in.
+          type:
+          - integer
+          - 'null'
           format: int64
+        enabled:
+          description: Whether the user account is enabled.
+          type: boolean
       example:
-        id: '1'
-        delegator:
-          id: '1'
-          firstName: Walter
-          lastName: Bates
-          userName: walter.bates
-          iconId: null
-          title: null
-          jobTitle: null
-          creationDate: 1780477756657
-          createdBy: '-1'
-          lastUpdate: 1780477756657
-          lastConnection: 1780576504806
-          managerUserId: '0'
-          enabled: true
-        delegate:
-          id: '2'
-          firstName: Michael
-          lastName: Scott
-          userName: michael.scott
-          iconId: null
-          title: null
-          jobTitle: null
-          creationDate: 1780477806557
-          createdBy: '-1'
-          lastUpdate: 1780477806557
-          lastConnection: null
-          managerUserId: '0'
-          enabled: true
-        startDate: 1780524000000
-        endDate: 1780696799999
-        processes:
-        - Vacation request
-        status: active
-        lastUpdatedBy:
-          id: '1'
-          firstName: Walter
-          lastName: Bates
-          userName: walter.bates
-          iconId: null
-          title: null
-          jobTitle: null
-          creationDate: 1780477756657
-          createdBy: '-1'
-          lastUpdate: 1780477756657
-          lastConnection: 1780576504806
-          managerUserId: '0'
-          enabled: true
-        lastUpdatedAt: 1780576300586
+        id: '2'
+        firstName: Michael
+        lastName: Scott
+        userName: michael.scott
+        iconId: null
+        title: null
+        jobTitle: null
+        creationDate: 1780477806557
+        createdBy: '-1'
+        lastUpdate: 1780477806557
+        lastConnection: null
+        managerUserId: '0'
+        enabled: true
     DelegationRuleCreateRequest:
       type: object
       description: 'Body of `POST /API/delegation/rule`. Defines a new delegation rule.
@@ -679,145 +641,125 @@ components:
           lastUpdateDate: 1780576574182
           iconPath: null
           description: ''
-    DelegationStatus:
-      type: string
-      description: 'Lifecycle status of a delegation rule, derived at query time from the rule''s `startDate` /
-
-        `endDate` compared against the current time. There is no stored activation flag.
-
-
-        - `scheduled`: `startDate` is in the future. The delegate does not yet have access.
-
-        - `active`: the current time is within `[startDate, endDate]`. The delegate has access.
-
-        - `expired`: `endDate` is in the past. The delegate no longer has access.
-
-
-        Serialized in lowercase.
-
-        '
-      enum:
-      - scheduled
-      - active
-      - expired
-    DelegationUser:
-      type: object
-      description: 'User embedded in a delegation rule or a delegated task (delegator, delegate or last updater).
-
-
-        This is the engine `User` model serialized directly, so its field names (`userName`,
-
-        `managerUserId`, `creationDate`, ...) differ from the legacy snake_case `User` schema returned
-
-        by the `/API/identity/user` endpoints. The long id fields (`id`, `createdBy`, `managerUserId`)
-
-        are serialized as strings to avoid JavaScript precision loss, while the date fields
-
-        (`creationDate`, `lastUpdate`, `lastConnection`) are serialized as numeric epoch milliseconds.
-
-        '
-      required:
-      - id
-      - userName
-      - firstName
-      - lastName
-      - enabled
-      properties:
-        id:
-          description: User id. Serialized as a string to avoid JavaScript precision loss on large `long` values.
-          type: string
-        userName:
-          description: Login name of the user.
-          type: string
-        firstName:
-          description: First name of the user.
-          type:
-          - string
-          - 'null'
-        lastName:
-          description: Last name of the user.
-          type:
-          - string
-          - 'null'
-        title:
-          description: Civility title of the user.
-          type:
-          - string
-          - 'null'
-        jobTitle:
-          description: Job title of the user.
-          type:
-          - string
-          - 'null'
-        iconId:
-          description: Id of the icon row used as avatar, or `null` when no icon is set. Serialized as a string when present.
-          type:
-          - string
-          - 'null'
-        managerUserId:
-          description: Id of this user's manager, or `0` when none. Serialized as a string.
-          type: string
-        createdBy:
-          description: Id of the user who created this account (`-1` for system-created accounts). Serialized as a string.
-          type: string
-        creationDate:
-          description: Creation timestamp of the user account, in epoch milliseconds.
-          type: integer
-          format: int64
-        lastUpdate:
-          description: Last update timestamp of the user account, in epoch milliseconds.
-          type: integer
-          format: int64
-        lastConnection:
-          description: Last connection timestamp, in epoch milliseconds, or `null` if the user never logged in.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        enabled:
-          description: Whether the user account is enabled.
-          type: boolean
-      example:
-        id: '2'
-        firstName: Michael
-        lastName: Scott
-        userName: michael.scott
-        iconId: null
-        title: null
-        jobTitle: null
-        creationDate: 1780477806557
-        createdBy: '-1'
-        lastUpdate: 1780477806557
-        lastConnection: null
-        managerUserId: '0'
-        enabled: true
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
     ActivationState:
       description: the state of the process definition (ENABLED or DISABLED)
       type: string
       enum:
       - ENABLED
       - DISABLED
-    ConfigurationState:
-      description: the configuration state of the process (UNRESOLVED or RESOLVED)
-      type: string
-      enum:
-      - RESOLVED
-      - UNRESOLVED
+    DelegationRule:
+      type: object
+      description: 'A task delegation rule: a user (the delegator) grants another user (the delegate) the ability
+
+        to see and execute the delegator''s human tasks during a bounded period, for a whitelist of
+
+        processes.
+
+
+        Delegation is not reassignment: tasks stay assigned to the delegator, and the delegate only
+
+        gains visibility and execution rights through dedicated views. A user can hold at most one
+
+        delegation rule at a time.
+
+        '
+      required:
+      - id
+      - delegator
+      - delegate
+      - startDate
+      - endDate
+      - processes
+      - status
+      - lastUpdatedBy
+      - lastUpdatedAt
+      properties:
+        id:
+          description: Identifier of the delegation rule. Serialized as a string to avoid JavaScript precision loss on large `long` values.
+          type: string
+        delegator:
+          description: The user whose tasks are delegated.
+          $ref: '#/components/schemas/DelegationUser'
+        delegate:
+          description: The user receiving visibility and execution rights on the delegator's tasks.
+          $ref: '#/components/schemas/DelegationUser'
+        startDate:
+          description: Start of the delegation period, inclusive, in milliseconds since epoch.
+          type: integer
+          format: int64
+        endDate:
+          description: End of the delegation period, inclusive, in milliseconds since epoch.
+          type: integer
+          format: int64
+        processes:
+          description: 'Process whitelist for this rule. Each entry is a process name; a name covers every deployed
+
+            version of that process. Always contains at least one entry.
+
+            '
+          type: array
+          minItems: 1
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/DelegationStatus'
+        lastUpdatedBy:
+          description: The user who last created or modified this rule (the delegator on self-service, or an administrator).
+          $ref: '#/components/schemas/DelegationUser'
+        lastUpdatedAt:
+          description: Timestamp of the last modification, in milliseconds since epoch.
+          type: integer
+          format: int64
+      example:
+        id: '1'
+        delegator:
+          id: '1'
+          firstName: Walter
+          lastName: Bates
+          userName: walter.bates
+          iconId: null
+          title: null
+          jobTitle: null
+          creationDate: 1780477756657
+          createdBy: '-1'
+          lastUpdate: 1780477756657
+          lastConnection: 1780576504806
+          managerUserId: '0'
+          enabled: true
+        delegate:
+          id: '2'
+          firstName: Michael
+          lastName: Scott
+          userName: michael.scott
+          iconId: null
+          title: null
+          jobTitle: null
+          creationDate: 1780477806557
+          createdBy: '-1'
+          lastUpdate: 1780477806557
+          lastConnection: null
+          managerUserId: '0'
+          enabled: true
+        startDate: 1780524000000
+        endDate: 1780696799999
+        processes:
+        - Vacation request
+        status: active
+        lastUpdatedBy:
+          id: '1'
+          firstName: Walter
+          lastName: Bates
+          userName: walter.bates
+          iconId: null
+          title: null
+          jobTitle: null
+          creationDate: 1780477756657
+          createdBy: '-1'
+          lastUpdate: 1780477756657
+          lastConnection: 1780576504806
+          managerUserId: '0'
+          enabled: true
+        lastUpdatedAt: 1780576300586
     ProcessDeploymentInfo:
       type: object
       description: 'Deployment information of a process: its name, version, activation and configuration state,
@@ -900,6 +842,21 @@ components:
         lastUpdateDate: 1780576574182
         iconPath: null
         description: ''
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
     DelegationRuleUpdateRequest:
       type: object
       description: 'Body of `PUT /API/delegation/rule/{ruleId}`. Replaces the mutable fields of an existing
@@ -945,30 +902,6 @@ components:
         processes:
         - Vacation request
   parameters:
-    pageIndex:
-      description: index of the page to display
-      explode: true
-      in: query
-      name: p
-      example: '0'
-      required: true
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-        format: int32
-      style: form
-    pageSearch:
-      description: can search on attributes
-      explode: true
-      in: query
-      name: s
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
     pageFilter:
       description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
       explode: true
@@ -983,6 +916,19 @@ components:
           pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: abc%3d123
+    pageIndex:
+      description: index of the page to display
+      explode: true
+      in: query
+      name: p
+      example: '0'
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+        format: int32
+      style: form
     pageOrder:
       description: can order on attributes
       explode: true
@@ -1008,6 +954,60 @@ components:
         default: 20
         format: int32
       style: form
+    pageSearch:
+      description: can search on attributes
+      explode: true
+      in: query
+      name: s
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+  responses:
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    NoContent:
+      description: OK (no content).
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

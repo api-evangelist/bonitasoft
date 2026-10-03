@@ -63,14 +63,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
     Forbidden:
       description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
       content:
@@ -87,6 +79,14 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Unauthorized
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
     BadRequest:
       description: Bad request.
       content:
@@ -123,19 +123,6 @@ components:
         format: int32
       style: form
   schemas:
-    I18nlocale:
-      type: object
-      description: ''
-      properties:
-        name:
-          description: Name of the language
-          type: string
-        locale:
-          description: code of the locale
-          type: string
-      example:
-        name: English
-        locale: en
     Error:
       type: object
       additionalProperties: true
@@ -151,6 +138,19 @@ components:
           type: array
           items:
             type: string
+    I18nlocale:
+      type: object
+      description: ''
+      properties:
+        name:
+          description: Name of the language
+          type: string
+        locale:
+          description: code of the locale
+          type: string
+      example:
+        name: English
+        locale: en
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

@@ -267,56 +267,7 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
-    OK:
-      description: OK
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
   schemas:
-    TenantResourceState:
-      description: Tenant resource state (BDM, BDM access control, ...)
-      type: string
-      enum:
-      - INSTALLING
-      - INSTALLED
     FileUploadRequest:
       type: object
       description: The file to upload
@@ -324,6 +275,12 @@ components:
         file:
           type: string
           format: binary
+    TenantResourceState:
+      description: Tenant resource state (BDM, BDM access control, ...)
+      type: string
+      enum:
+      - INSTALLING
+      - INSTALLED
     Bdm:
       type: object
       description: ''
@@ -353,6 +310,29 @@ components:
         state: INSTALLED
         lastUpdatedBy: -1
         lastUpdateDate: '2018-01-17T17:05:36.671Z'
+    BDMInstallRequest:
+      type: object
+      properties:
+        fileUpload:
+          type: string
+          description: the temporary file name once uploaded on the server
+      example:
+        fileUpload: tmp_uploaded_bdm.zip
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
     BusinessData:
       type: object
       additionalProperties: true
@@ -397,29 +377,49 @@ components:
             persistenceVersion: 0
             persistenceVersion_string: '0'
             industryName: Software
-    BDMInstallRequest:
-      type: object
-      properties:
-        fileUpload:
-          type: string
-          description: the temporary file name once uploaded on the server
-      example:
-        fileUpload: tmp_uploaded_bdm.zip
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
+  responses:
+    OK:
+      description: OK
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
   securitySchemes:
     bonita_auth:
       name: JSESSIONID
