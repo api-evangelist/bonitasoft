@@ -226,21 +226,31 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  parameters:
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
-      style: form
   responses:
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
     NotFound:
       description: The resource for the specified ID was not found.
       content:
@@ -257,91 +267,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Unauthorized
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
   schemas:
-    BPMFailure:
-      type: object
-      description: A failure that happened during a BPM instance (flow node, process) execution that led to the instance being in a failed state.
-      properties:
-        caseId:
-          description: the id of the process instance in which that failure occurred
-          type: string
-        rootCaseId:
-          description: the id of the root process instance in which that failure occurred
-          type: string
-        context:
-          description: Context of the failure
-          type: string
-        errorMessage:
-          description: the message of the exception
-          type: string
-        failureDate:
-          description: the date when the failure occurred in milliseconds since epoch
-          type: string
-        flowNodeInstanceId:
-          description: the id of the flow node instance in which the failure occurred
-          type: string
-        id:
-          description: the failure id
-          type: string
-        processDefinitionId:
-          description: the process id that is associated with the flow node or case instance of the failure
-          type: string
-        scope:
-          description: the scope of the failure (General information, Operation, Event, Iteration, Connector, Data initialization, Actor mapping, Outgoing transition, or UNKNOWN)
-          type: string
-        stackTrace:
-          description: the stack trace of the exception
-          type: string
-      example:
-        caseId: '2'
-        rootCaseId: '1'
-        context: expression::setvariable_decision
-        errorMessage: Error while executing operations
-        failureDate: '1732564534177'
-        flowNodeInstanceId: '70'
-        id: '456'
-        processDefinitionId: '45'
-        scope: Operation
-        stackTrace: Exception in thread 'main' org.bonitasoft.engine.core.process.instance.api.exceptions.SActivityStateExecutionException
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
     ArchivedBPMFailure:
       type: object
       description: The archived version of a failure that happened during a BPM instance (flow node, process) execution that led to the instance being in a failed state.
@@ -395,6 +321,80 @@ components:
         scope: Operation
         sourceObjectId: '23'
         stackTrace: Exception in thread 'main' org.bonitasoft.engine.core.process.instance.api.exceptions.SActivityStateExecutionException
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
+    BPMFailure:
+      type: object
+      description: A failure that happened during a BPM instance (flow node, process) execution that led to the instance being in a failed state.
+      properties:
+        caseId:
+          description: the id of the process instance in which that failure occurred
+          type: string
+        rootCaseId:
+          description: the id of the root process instance in which that failure occurred
+          type: string
+        context:
+          description: Context of the failure
+          type: string
+        errorMessage:
+          description: the message of the exception
+          type: string
+        failureDate:
+          description: the date when the failure occurred in milliseconds since epoch
+          type: string
+        flowNodeInstanceId:
+          description: the id of the flow node instance in which the failure occurred
+          type: string
+        id:
+          description: the failure id
+          type: string
+        processDefinitionId:
+          description: the process id that is associated with the flow node or case instance of the failure
+          type: string
+        scope:
+          description: the scope of the failure (General information, Operation, Event, Iteration, Connector, Data initialization, Actor mapping, Outgoing transition, or UNKNOWN)
+          type: string
+        stackTrace:
+          description: the stack trace of the exception
+          type: string
+      example:
+        caseId: '2'
+        rootCaseId: '1'
+        context: expression::setvariable_decision
+        errorMessage: Error while executing operations
+        failureDate: '1732564534177'
+        flowNodeInstanceId: '70'
+        id: '456'
+        processDefinitionId: '45'
+        scope: Operation
+        stackTrace: Exception in thread 'main' org.bonitasoft.engine.core.process.instance.api.exceptions.SActivityStateExecutionException
+  parameters:
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

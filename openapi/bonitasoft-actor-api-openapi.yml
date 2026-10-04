@@ -190,8 +190,32 @@ components:
         format: int32
       style: form
   responses:
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
     OK:
       description: OK
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
     NotFound:
       description: The resource for the specified ID was not found.
       content:
@@ -208,58 +232,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Unauthorized
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
   schemas:
-    ActorUpdateRequest:
-      type: object
-      properties:
-        displayName:
-          description: display name of the Actor
-          type: string
-        description:
-          description: description of the Actor
-          type: string
-      example:
-        displayName: My actor
-        description: My actor description
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
     Actor:
       type: object
       description: ''
@@ -287,6 +260,33 @@ components:
         description: null
         name: employee
         displayName: Employee actor
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
+    ActorUpdateRequest:
+      type: object
+      properties:
+        displayName:
+          description: display name of the Actor
+          type: string
+        description:
+          description: description of the Actor
+          type: string
+      example:
+        displayName: My actor
+        description: My actor description
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

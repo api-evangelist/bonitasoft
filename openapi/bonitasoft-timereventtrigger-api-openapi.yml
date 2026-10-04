@@ -152,69 +152,6 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  schemas:
-    TimerEventTriggerUpdateRequest:
-      type: object
-      properties:
-        executionDate:
-          description: executionDate of the TimerEventTrigger
-          type: integer
-          format: int64
-      example:
-        executionDate: 1433980484194
-    TimerEventTriggerUpdateResponse:
-      type: object
-      properties:
-        executionDate:
-          description: executionDate of the TimerEventTrigger
-          type: integer
-          format: int64
-      example:
-        executionDate: 1433980484194
-    TimerEventTrigger:
-      type: object
-      description: BPM timer event triggers
-      properties:
-        id:
-          description: the ID of the timer returned
-          type: string
-        id_string:
-          description: the ID of the timer returned
-          type: string
-        eventInstanceId:
-          description: the ID of the event instance to which this trigger is related
-          type: string
-        eventInstanceId_string:
-          description: the ID of the event instance to which this trigger is related
-          type: string
-        executionDate:
-          description: the long value of the next execution date (number of milliseconds from January 1st, 1970 00:00:00)
-          type: string
-        eventInstanceName:
-          description: the name of the event instance to which this trigger is related
-          type: string
-      example:
-        id: 4015
-        id_string: '4015'
-        eventInstanceId: 2
-        eventInstanceId_string: '2'
-        executionDate: 1413980484194
-        eventInstanceName: Timer1
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
   parameters:
     pageFilter:
       description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
@@ -230,6 +167,17 @@ components:
           pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: abc%3d123
+    pageSearch:
+      description: can search on attributes
+      explode: true
+      in: query
+      name: s
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
     pageOrder:
       description: can order on attributes
       explode: true
@@ -268,18 +216,31 @@ components:
         default: 0
         format: int32
       style: form
-    pageSearch:
-      description: can search on attributes
-      explode: true
-      in: query
-      name: s
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
   responses:
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
     NotFound:
       description: The resource for the specified ID was not found.
       content:
@@ -296,30 +257,69 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Unauthorized
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
+  schemas:
+    TimerEventTrigger:
+      type: object
+      description: BPM timer event triggers
+      properties:
+        id:
+          description: the ID of the timer returned
+          type: string
+        id_string:
+          description: the ID of the timer returned
+          type: string
+        eventInstanceId:
+          description: the ID of the event instance to which this trigger is related
+          type: string
+        eventInstanceId_string:
+          description: the ID of the event instance to which this trigger is related
+          type: string
+        executionDate:
+          description: the long value of the next execution date (number of milliseconds from January 1st, 1970 00:00:00)
+          type: string
+        eventInstanceName:
+          description: the name of the event instance to which this trigger is related
+          type: string
+      example:
+        id: 4015
+        id_string: '4015'
+        eventInstanceId: 2
+        eventInstanceId_string: '2'
+        executionDate: 1413980484194
+        eventInstanceName: Timer1
+    TimerEventTriggerUpdateResponse:
+      type: object
+      properties:
+        executionDate:
+          description: executionDate of the TimerEventTrigger
+          type: integer
+          format: int64
+      example:
+        executionDate: 1433980484194
+    TimerEventTriggerUpdateRequest:
+      type: object
+      properties:
+        executionDate:
+          description: executionDate of the TimerEventTrigger
+          type: integer
+          format: int64
+      example:
+        executionDate: 1433980484194
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

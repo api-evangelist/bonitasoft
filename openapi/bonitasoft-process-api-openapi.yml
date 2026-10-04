@@ -550,7 +550,111 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
+  responses:
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
+    OK:
+      description: OK
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
   schemas:
+    ContractInputType:
+      type: string
+      description: the contract input type (string)
+      enum:
+      - TEXT
+      - BOOLEAN
+      - DATE
+      - INTEGER
+      - DECIMAL
+      - BYTE_ARRAY
+      - FILE
+      - LONG
+      - LOCALDATE
+      - LOCALDATETIME
+      - OFFSETDATETIME
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
+    ProcessUpdateRequest:
+      type: object
+      properties:
+        displaydescription:
+          description: description of the Process
+          type: string
+        displayName:
+          description: display name of the Process
+          type: string
+        activationState:
+          $ref: '#/components/schemas/ActivationState'
+      example:
+        displayName: Leave booking process
+    ContractInput:
+      type: object
+      properties:
+        description:
+          description: input description
+          type: string
+        name:
+          description: input name
+          type: string
+        multiple:
+          description: true if input contains multiple values
+          type: string
+        type:
+          $ref: '#/components/schemas/ContractInputType'
+        inputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractInput'
     Expression:
       type: object
       properties:
@@ -577,109 +681,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Expression'
-    DesignProcessDefinitionParamater:
+    ProcessInstantiationResponse:
       type: object
       properties:
-        type:
-          description: the parameter type
+        caseId:
           type: string
-        description:
-          description: the parameter description
-          type: string
-        name:
-          description: the parameter name
-          type: string
-    ActorDefinition:
-      type: object
-      description: Actor definition
-      properties:
-        name:
-          description: the actor name
-          type: string
-        description:
-          description: the actor description
-          type: string
-        initiator:
-          description: true, if this actor can start the process
-          type: boolean
-    ProcessName:
-      type: object
-      description: 'A group of deployed processes that share the same `(name, displayName)` pair, with the list of
-
-        their deployed versions. Returned by `GET /API/bpm/processName`, which collapses the process
-
-        deployment information into one entry per distinct name and display name.
-
-        '
-      required:
-      - name
-      - displayName
-      - versions
-      properties:
-        name:
-          description: Technical name shared by every version in this group.
-          type: string
-        displayName:
-          description: Human-readable name shared by every version in this group. Defaults to the process technical name when no display name was set at deployment.
-          type: string
-        versions:
-          description: 'Deployed versions of the process sharing this name and display name. When an `activationState`
-
-            filter is supplied, only the versions in that state are listed. Always contains at least one entry.
-
-            '
-          type: array
-          minItems: 1
-          items:
-            type: string
       example:
-        name: InvoiceApproval
-        displayName: Invoice Approval
-        versions:
-        - '1.0'
-        - '1.1'
-        - '2.0'
-    ConfigurationState:
-      description: the configuration state of the process (UNRESOLVED or RESOLVED)
-      type: string
-      enum:
-      - RESOLVED
-      - UNRESOLVED
-    ProcessUpdateRequest:
+        caseId: '12345678'
+    ProcessCreateRequest:
       type: object
       properties:
-        displaydescription:
-          description: description of the Process
+        fileupload:
+          description: the bar file to deploy (previously uploaded in tmp folder)
           type: string
-        displayName:
-          description: display name of the Process
-          type: string
-        activationState:
-          $ref: '#/components/schemas/ActivationState'
       example:
-        displayName: Leave booking process
-    ContractConstraint:
-      type: object
-      properties:
-        name:
-          description: constraint name
-          type: string
-        expression:
-          description: constraint expression
-          type: string
-        explanation:
-          description: constraint explanation
-          type: string
-        inputNames:
-          type: array
-          items:
-            type: string
-    ActivationState:
-      description: the state of the process definition (ENABLED or DISABLED)
-      type: string
-      enum:
-      - ENABLED
-      - DISABLED
+        fileupload: tmp_4431838172282406107.bar
     FlowElementContainerDefinition:
       type: object
       description: Allows to access all flow elements (activities, gateways, events and transitions) of a process or sub-process.
@@ -744,114 +760,18 @@ components:
           items:
             type: object
             additionalProperties: true
-    FileUploadRequest:
+    UpdateProcessConnectorByProcessIdRequest:
       type: object
-      description: The file to upload
-      properties:
-        file:
-          type: string
-          format: binary
-    ProcessCreateRequest:
-      type: object
-      properties:
-        fileupload:
-          description: the bar file to deploy (previously uploaded in tmp folder)
-          type: string
-      example:
-        fileupload: tmp_4431838172282406107.bar
-    ContractInputType:
-      type: string
-      description: the contract input type (string)
-      enum:
-      - TEXT
-      - BOOLEAN
-      - DATE
-      - INTEGER
-      - DECIMAL
-      - BYTE_ARRAY
-      - FILE
-      - LONG
-      - LOCALDATE
-      - LOCALDATETIME
-      - OFFSETDATETIME
-    Contract:
-      type: object
-      properties:
-        constraints:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContractConstraint'
-        inputs:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContractInput'
-    ContractInput:
-      type: object
-      properties:
-        description:
-          description: input description
-          type: string
-        name:
-          description: input name
-          type: string
-        multiple:
-          description: true if input contains multiple values
-          type: string
-        type:
-          $ref: '#/components/schemas/ContractInputType'
-        inputs:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContractInput'
-    DesignProcessDefinitionContext:
-      type: object
-      description: The process definition expressions
-      properties:
-        key:
-          type: string
-        expression:
-          $ref: '#/components/schemas/Expression'
-    ProcessDefinition:
-      type: object
-      description: ''
       properties:
         id:
-          description: the identifier of the process definition (long)
+          description: Id of the process for which to update the connector, combined with connector name and version separated by slashes (x/y/z)
           type: string
-        icon:
-          description: icon path
+        implementation:
+          description: Previously uploaded temp file name of the updated version of the connector (returned by the  [upload file api](#operation/uploadFile))
           type: string
-        displayDescription:
-          description: the human readable activity description
-          type: string
-        deploymentDate:
-          description: the date when the process definition was deployed
-          type: string
-        description:
-          description: the process description
-          type: string
-        activationState:
-          $ref: '#/components/schemas/ActivationState'
-        name:
-          description: the process name
-          type: string
-        deployedBy:
-          description: the id of the user who deployed the process
-          type: string
-        displayName:
-          description: the human readable process description
-          type: string
-        actorinitiatorid:
-          description: the id of the actor that can initiate process instances of the process
-          type: string
-        last_update_date:
-          description: the date when the process definition was last updated
-          type: string
-        configurationState:
-          $ref: '#/components/schemas/ConfigurationState'
-        version:
-          description: the version of the process
-          type: string
+      example:
+        id: 8491796209115952722/scripting-groovy-script/1.0.1
+        implementation: tmp_7006630415905915150.zip
     DesignProcessDefinition:
       type: object
       description: Represents the Design Definition of a process. It gives access to process attributes.
@@ -894,41 +814,189 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DesignProcessDefinitionContext'
-    Error:
+    ActorDefinition:
       type: object
-      additionalProperties: true
+      description: Actor definition
       properties:
-        message:
+        name:
+          description: the actor name
           type: string
-          description: The error message
-        exception:
+        description:
+          description: the actor description
           type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
+        initiator:
+          description: true, if this actor can start the process
+          type: boolean
+    DesignProcessDefinitionContext:
+      type: object
+      description: The process definition expressions
+      properties:
+        key:
+          type: string
+        expression:
+          $ref: '#/components/schemas/Expression'
+    ConfigurationState:
+      description: the configuration state of the process (UNRESOLVED or RESOLVED)
+      type: string
+      enum:
+      - RESOLVED
+      - UNRESOLVED
+    ProcessDefinition:
+      type: object
+      description: ''
+      properties:
+        id:
+          description: the identifier of the process definition (long)
+          type: string
+        icon:
+          description: icon path
+          type: string
+        displayDescription:
+          description: the human readable activity description
+          type: string
+        deploymentDate:
+          description: the date when the process definition was deployed
+          type: string
+        description:
+          description: the process description
+          type: string
+        activationState:
+          $ref: '#/components/schemas/ActivationState'
+        name:
+          description: the process name
+          type: string
+        deployedBy:
+          description: the id of the user who deployed the process
+          type: string
+        displayName:
+          description: the human readable process description
+          type: string
+        actorinitiatorid:
+          description: the id of the actor that can initiate process instances of the process
+          type: string
+        last_update_date:
+          description: the date when the process definition was last updated
+          type: string
+        configurationState:
+          $ref: '#/components/schemas/ConfigurationState'
+        version:
+          description: the version of the process
+          type: string
+    Contract:
+      type: object
+      properties:
+        constraints:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractConstraint'
+        inputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractInput'
+    ProcessName:
+      type: object
+      description: 'A group of deployed processes that share the same `(name, displayName)` pair, with the list of
+
+        their deployed versions. Returned by `GET /API/bpm/processName`, which collapses the process
+
+        deployment information into one entry per distinct name and display name.
+
+        '
+      required:
+      - name
+      - displayName
+      - versions
+      properties:
+        name:
+          description: Technical name shared by every version in this group.
+          type: string
+        displayName:
+          description: Human-readable name shared by every version in this group. Defaults to the process technical name when no display name was set at deployment.
+          type: string
+        versions:
+          description: 'Deployed versions of the process sharing this name and display name. When an `activationState`
+
+            filter is supplied, only the versions in that state are listed. Always contains at least one entry.
+
+            '
+          type: array
+          minItems: 1
+          items:
+            type: string
+      example:
+        name: InvoiceApproval
+        displayName: Invoice Approval
+        versions:
+        - '1.0'
+        - '1.1'
+        - '2.0'
+    ActivationState:
+      description: the state of the process definition (ENABLED or DISABLED)
+      type: string
+      enum:
+      - ENABLED
+      - DISABLED
+    FileUploadRequest:
+      type: object
+      description: The file to upload
+      properties:
+        file:
+          type: string
+          format: binary
+    ContractConstraint:
+      type: object
+      properties:
+        name:
+          description: constraint name
+          type: string
+        expression:
+          description: constraint expression
+          type: string
+        explanation:
+          description: constraint explanation
+          type: string
+        inputNames:
           type: array
           items:
             type: string
-    UpdateProcessConnectorByProcessIdRequest:
+    DesignProcessDefinitionParamater:
       type: object
       properties:
-        id:
-          description: Id of the process for which to update the connector, combined with connector name and version separated by slashes (x/y/z)
+        type:
+          description: the parameter type
           type: string
-        implementation:
-          description: Previously uploaded temp file name of the updated version of the connector (returned by the  [upload file api](#operation/uploadFile))
+        description:
+          description: the parameter description
           type: string
-      example:
-        id: 8491796209115952722/scripting-groovy-script/1.0.1
-        implementation: tmp_7006630415905915150.zip
-    ProcessInstantiationResponse:
-      type: object
-      properties:
-        caseId:
+        name:
+          description: the parameter name
           type: string
-      example:
-        caseId: '12345678'
   parameters:
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
+    pageOrder:
+      description: can order on attributes
+      explode: true
+      in: query
+      name: o
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+      example: myProp%20ASC
     pageFilter:
       description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
       explode: true
@@ -943,30 +1011,16 @@ components:
           pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: abc%3d123
-    pageOrder:
-      description: can order on attributes
+    pageSearch:
+      description: can search on attributes
       explode: true
       in: query
-      name: o
+      name: s
       required: false
       schema:
         type: string
         maxLength: 250
         pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-      example: myProp%20ASC
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
       style: form
     pageIndex:
       description: index of the page to display
@@ -981,60 +1035,6 @@ components:
         default: 0
         format: int32
       style: form
-    pageSearch:
-      description: can search on attributes
-      explode: true
-      in: query
-      name: s
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-  responses:
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    OK:
-      description: OK
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

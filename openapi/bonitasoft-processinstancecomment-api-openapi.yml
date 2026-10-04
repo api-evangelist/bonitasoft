@@ -98,31 +98,6 @@ paths:
       x-codegen-request-body-name: body
 components:
   schemas:
-    ProcessInstanceComment:
-      type: object
-      description: ''
-      properties:
-        id:
-          description: the comment id
-          type: string
-        content:
-          description: the comment content
-          type: string
-        processInstanceId:
-          description: the process instance (case) the comment is associated to
-          type: string
-        postDate:
-          description: the comment creation date
-          type: string
-        userId:
-          description: the user that created the comment
-          type: string
-      example:
-        content: Need to review the last inputs of this case
-        id: '20005'
-        processInstanceId: '1'
-        postDate: '2016-06-16 14:51:33.053'
-        userId: 9798
     ProcessInstanceCommentCreateRequest:
       type: object
       properties:
@@ -150,6 +125,31 @@ components:
           type: array
           items:
             type: string
+    ProcessInstanceComment:
+      type: object
+      description: ''
+      properties:
+        id:
+          description: the comment id
+          type: string
+        content:
+          description: the comment content
+          type: string
+        processInstanceId:
+          description: the process instance (case) the comment is associated to
+          type: string
+        postDate:
+          description: the comment creation date
+          type: string
+        userId:
+          description: the user that created the comment
+          type: string
+      example:
+        content: Need to review the last inputs of this case
+        id: '20005'
+        processInstanceId: '1'
+        postDate: '2016-06-16 14:51:33.053'
+        userId: 9798
   parameters:
     pageFilter:
       description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
@@ -204,14 +204,6 @@ components:
         format: int32
       style: form
   responses:
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
     Forbidden:
       description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
       content:
@@ -220,14 +212,6 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
     BadRequest:
       description: Bad request.
       content:
@@ -236,6 +220,22 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Bad request
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

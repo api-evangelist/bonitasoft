@@ -236,78 +236,6 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  schemas:
-    PageCreateRequest:
-      type: object
-      properties:
-        pageZip:
-          description: Zip name as named in the temp folder after upload
-          type: string
-      example:
-        pageZip: tmp_4338264789005487499.zip:new-bonita-angular-dashboard.zip
-    FileUploadRequest:
-      type: object
-      description: The file to upload
-      properties:
-        file:
-          type: string
-          format: binary
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
-    Page:
-      type: object
-      properties:
-        id:
-          description: page id
-          type: string
-        creationDate:
-          description: date and time
-          type: string
-        createdBy:
-          description: created by user id
-          type: string
-        isProvided:
-          description: is provided
-          type: boolean
-        description:
-          description: description
-          type: string
-        contentName:
-          description: content name
-          type: string
-        displayName:
-          description: custom page display name
-          type: string
-        updatedBy:
-          description: updated by user id
-          type: string
-        lastUpdateDate:
-          description: date and time
-          type: string
-        urlToken:
-          description: custom page urlToken
-          type: string
-    PageUpdateRequest:
-      type: object
-      properties:
-        pageZip:
-          description: pageZip as named in the temp folder after upload
-          type: string
-      example:
-        pageZip: tmp_4338264789005487499.zip:new-bonita-angular-dashboard.zip
   parameters:
     pageFilter:
       description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
@@ -323,6 +251,17 @@ components:
           pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: abc%3d123
+    pageSearch:
+      description: can search on attributes
+      explode: true
+      in: query
+      name: s
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
     pageOrder:
       description: can order on attributes
       explode: true
@@ -361,20 +300,33 @@ components:
         default: 0
         format: int32
       style: form
-    pageSearch:
-      description: can search on attributes
-      explode: true
-      in: query
-      name: s
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
   responses:
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
     OK:
       description: OK
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
     NotFound:
       description: The resource for the specified ID was not found.
       content:
@@ -391,30 +343,78 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Unauthorized
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
+  schemas:
+    PageUpdateRequest:
+      type: object
+      properties:
+        pageZip:
+          description: pageZip as named in the temp folder after upload
+          type: string
+      example:
+        pageZip: tmp_4338264789005487499.zip:new-bonita-angular-dashboard.zip
+    FileUploadRequest:
+      type: object
+      description: The file to upload
+      properties:
+        file:
+          type: string
+          format: binary
+    PageCreateRequest:
+      type: object
+      properties:
+        pageZip:
+          description: Zip name as named in the temp folder after upload
+          type: string
+      example:
+        pageZip: tmp_4338264789005487499.zip:new-bonita-angular-dashboard.zip
+    Page:
+      type: object
+      properties:
+        id:
+          description: page id
+          type: string
+        creationDate:
+          description: date and time
+          type: string
+        createdBy:
+          description: created by user id
+          type: string
+        isProvided:
+          description: is provided
+          type: boolean
+        description:
+          description: description
+          type: string
+        contentName:
+          description: content name
+          type: string
+        displayName:
+          description: custom page display name
+          type: string
+        updatedBy:
+          description: updated by user id
+          type: string
+        lastUpdateDate:
+          description: date and time
+          type: string
+        urlToken:
+          description: custom page urlToken
+          type: string
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

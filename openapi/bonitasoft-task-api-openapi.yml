@@ -140,6 +140,16 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
+    UpdateTaskByIdRequest:
+      type: object
+      additionalProperties: true
+      properties:
+        state:
+          description: state of the Task (completed)
+          type: string
+        displayName:
+          description: display name of the Task
+          type: string
     AbstractTask:
       type: object
       properties:
@@ -253,31 +263,6 @@ components:
         parentTaskId: 40001
         dueDate: '2014-12-25 00:00:00.000'
         last_update_date: '2014-12-01 17:39:53.784'
-    UpdateTaskByIdRequest:
-      type: object
-      additionalProperties: true
-      properties:
-        state:
-          description: state of the Task (completed)
-          type: string
-        displayName:
-          description: display name of the Task
-          type: string
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
     ActivityState:
       type: string
       description: the current state of the activity
@@ -295,6 +280,21 @@ components:
       - cancelling subtasks
       - aborting activity with boundary
       - completing activity with boundary
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
     Task:
       allOf:
       - $ref: '#/components/schemas/AbstractTask'
@@ -376,8 +376,32 @@ components:
         format: int32
       style: form
   responses:
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
     OK:
       description: OK
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
     NotFound:
       description: The resource for the specified ID was not found.
       content:
@@ -394,30 +418,6 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Unauthorized
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

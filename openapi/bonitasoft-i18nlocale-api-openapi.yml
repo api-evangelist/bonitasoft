@@ -71,22 +71,6 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
     BadRequest:
       description: Bad request.
       content:
@@ -95,34 +79,36 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Bad request
-  parameters:
-    pageIndex:
-      description: index of the page to display
-      explode: true
-      in: query
-      name: p
-      example: '0'
-      required: true
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-        format: int32
-      style: form
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
-      style: form
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
   schemas:
+    I18nlocale:
+      type: object
+      description: ''
+      properties:
+        name:
+          description: Name of the language
+          type: string
+        locale:
+          description: code of the locale
+          type: string
+      example:
+        name: English
+        locale: en
     Error:
       type: object
       additionalProperties: true
@@ -138,19 +124,33 @@ components:
           type: array
           items:
             type: string
-    I18nlocale:
-      type: object
-      description: ''
-      properties:
-        name:
-          description: Name of the language
-          type: string
-        locale:
-          description: code of the locale
-          type: string
-      example:
-        name: English
-        locale: en
+  parameters:
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
+    pageIndex:
+      description: index of the page to display
+      explode: true
+      in: query
+      name: p
+      example: '0'
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+        format: int32
+      style: form
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

@@ -289,48 +289,23 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
   schemas:
+    BusinessDataCreationResult:
+      type: object
+      description: "An object containing: \n* the ID of the newly created Business Data, under the name of \"newBusinessDataId\"\n* any unknown fields, provided as an array of names, under the name of \"unknownFields\"\n"
+      properties:
+        newBusinessDataId:
+          description: ID of the newly created Business Data
+          type: number
+        unknownFields:
+          description: list of unknown input fields that are not declared in the Business Data type
+          items:
+            type: string
+          type: array
+      example:
+        newBusinessDataId: 1988
+        unknownFields:
+        - notAValidField
     Error:
       type: object
       additionalProperties: true
@@ -358,22 +333,6 @@ components:
       example:
         unknownFields:
         - notAValidField
-    BusinessDataCreationResult:
-      type: object
-      description: "An object containing: \n* the ID of the newly created Business Data, under the name of \"newBusinessDataId\"\n* any unknown fields, provided as an array of names, under the name of \"unknownFields\"\n"
-      properties:
-        newBusinessDataId:
-          description: ID of the newly created Business Data
-          type: number
-        unknownFields:
-          description: list of unknown input fields that are not declared in the Business Data type
-          items:
-            type: string
-          type: array
-      example:
-        newBusinessDataId: 1988
-        unknownFields:
-        - notAValidField
     BusinessDataImportResult:
       type: object
       description: "An object containing: \n* the list of IDs of all the newly created Business Data, under the name of \"createdIds\"\n* the list of unknown fields, provided as an array of names, under the name of \"unknownFields\"\n"
@@ -394,6 +353,47 @@ components:
         - 199
         unknownFields:
         - department
+  responses:
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
   securitySchemes:
     bonita_auth:
       name: JSESSIONID
