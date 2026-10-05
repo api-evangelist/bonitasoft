@@ -1,0 +1,12 @@
+{
+ "url": "https://api-documentation.ofelia.com/latest/openapi.yaml",
+ "requested_url": "https://api-documentation.ofelia.com/latest/openapi.yaml",
+ "status": 200,
+ "content_type": "application/x-yaml",
+ "bytes": 482437,
+ "sha256": "f6af72a9cfa4fb4ca0681c5554b692890ca2c246556596df5dcb09f121fba577",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
