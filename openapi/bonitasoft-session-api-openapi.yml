@@ -58,30 +58,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
     Unauthorized:
       description: Authorization information is missing or invalid.
       content:
@@ -90,6 +66,30 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Unauthorized
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
   schemas:
     Session:
       type: object

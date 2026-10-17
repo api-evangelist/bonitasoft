@@ -62,30 +62,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
     Unauthorized:
       description: Authorization information is missing or invalid.
       content:
@@ -94,22 +70,31 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Unauthorized
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
   schemas:
-    Error:
-      type: object
-      additionalProperties: true
-      properties:
-        message:
-          type: string
-          description: The error message
-        exception:
-          type: string
-          description: The exception type
-        explanations:
-          description: Further details on the error
-          type: array
-          items:
-            type: string
     SystemInformation:
       type: object
       description: ''
@@ -169,6 +154,21 @@ components:
           description: number of consumed process instances - Community & Subscription editions
           type: integer
           format: int64
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        message:
+          type: string
+          description: The error message
+        exception:
+          type: string
+          description: The exception type
+        explanations:
+          description: Further details on the error
+          type: array
+          items:
+            type: string
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

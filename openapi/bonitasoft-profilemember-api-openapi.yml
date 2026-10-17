@@ -156,7 +156,63 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
+  responses:
+    Unauthorized:
+      description: Authorization information is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthorized
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
+    OK:
+      description: OK
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
   parameters:
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
     pageFilter:
       description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
       explode: true
@@ -171,19 +227,6 @@ components:
           pattern: ^[A-Za-z0-9%]{0,250}$
       style: form
       example: abc%3d123
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
-      style: form
     pageIndex:
       description: index of the page to display
       explode: true
@@ -197,75 +240,7 @@ components:
         default: 0
         format: int32
       style: form
-  responses:
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-    OK:
-      description: OK
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
   schemas:
-    ProfileMember:
-      type: object
-      description: Profile member
-      properties:
-        id:
-          description: profile member id
-          type: string
-        profile_id:
-          description: id of the profile for this mapping
-          type: string
-        role_id:
-          description: id of role, or -1 if the member type is not role
-          type: string
-        group_id:
-          description: id of group, or -1 if the member type is not group
-          type: string
-        user_id:
-          description: id of user, or -1 if the member type is not user
-          type: string
-      example:
-        id: 204
-        profile_id: 2
-        role_id: -1
-        group_id: -1
-        user_id: 101
     ProfileMemberCreateRequest:
       type: object
       properties:
@@ -307,6 +282,31 @@ components:
           type: array
           items:
             type: string
+    ProfileMember:
+      type: object
+      description: Profile member
+      properties:
+        id:
+          description: profile member id
+          type: string
+        profile_id:
+          description: id of the profile for this mapping
+          type: string
+        role_id:
+          description: id of role, or -1 if the member type is not role
+          type: string
+        group_id:
+          description: id of group, or -1 if the member type is not group
+          type: string
+        user_id:
+          description: id of user, or -1 if the member type is not user
+          type: string
+      example:
+        id: 204
+        profile_id: 2
+        role_id: -1
+        group_id: -1
+        user_id: 101
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

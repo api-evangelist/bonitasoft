@@ -151,94 +151,7 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  parameters:
-    pageFilter:
-      description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
-      explode: true
-      in: query
-      name: f
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-          maxLength: 250
-          pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-      example: abc%3d123
-    pageOrder:
-      description: can order on attributes
-      explode: true
-      in: query
-      name: o
-      required: false
-      schema:
-        type: string
-        maxLength: 250
-        pattern: ^[A-Za-z0-9%]{0,250}$
-      style: form
-      example: myProp%20ASC
-    pageCount:
-      description: maximum number of elements to retrieve
-      explode: true
-      in: query
-      name: c
-      example: '10'
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-        default: 20
-        format: int32
-      style: form
-    pageIndex:
-      description: index of the page to display
-      explode: true
-      in: query
-      name: p
-      example: '0'
-      required: true
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-        format: int32
-      style: form
   responses:
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Bad request
-    OK:
-      description: OK
-    ServerError:
-      description: Unexpected error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occured.
-    NotFound:
-      description: The resource for the specified ID was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found.
     Unauthorized:
       description: Authorization information is missing or invalid.
       content:
@@ -247,6 +160,40 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Unauthorized
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
+    OK:
+      description: OK
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Bad request
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    NotFound:
+      description: The resource for the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
   schemas:
     ProcessInstanceVariable:
       type: object
@@ -273,6 +220,18 @@ components:
         value: '14.2'
         case_id: 1
         type: java.lang.Float
+    ProcessInstanceVariableUpdateRequest:
+      type: object
+      properties:
+        type:
+          description: the java class name
+          type: string
+        value:
+          description: the new value
+          type: string
+      example:
+        type: java.lang.String
+        value: My new value
     Error:
       type: object
       additionalProperties: true
@@ -288,18 +247,59 @@ components:
           type: array
           items:
             type: string
-    ProcessInstanceVariableUpdateRequest:
-      type: object
-      properties:
-        type:
-          description: the java class name
+  parameters:
+    pageCount:
+      description: maximum number of elements to retrieve
+      explode: true
+      in: query
+      name: c
+      example: '10'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+        format: int32
+      style: form
+    pageOrder:
+      description: can order on attributes
+      explode: true
+      in: query
+      name: o
+      required: false
+      schema:
+        type: string
+        maxLength: 250
+        pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+      example: myProp%20ASC
+    pageFilter:
+      description: can filter on attributes with the format f={filter\_name}={filter\_value} with the name/value pair as url encoded string.
+      explode: true
+      in: query
+      name: f
+      required: false
+      schema:
+        type: array
+        items:
           type: string
-        value:
-          description: the new value
-          type: string
-      example:
-        type: java.lang.String
-        value: My new value
+          maxLength: 250
+          pattern: ^[A-Za-z0-9%]{0,250}$
+      style: form
+      example: abc%3d123
+    pageIndex:
+      description: index of the page to display
+      explode: true
+      in: query
+      name: p
+      example: '0'
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+        format: int32
+      style: form
   securitySchemes:
     bonita_auth:
       name: JSESSIONID

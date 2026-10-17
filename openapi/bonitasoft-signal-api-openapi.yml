@@ -57,14 +57,22 @@ paths:
       x-codegen-request-body-name: body
 components:
   responses:
-    Forbidden:
-      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+    Unauthorized:
+      description: Authorization information is missing or invalid.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
           example:
-            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
+            message: Unauthorized
+    ServerError:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occured.
     NoContent:
       description: OK (no content).
     BadRequest:
@@ -75,22 +83,14 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Bad request
-    ServerError:
-      description: Unexpected error.
+    Forbidden:
+      description: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
           example:
-            message: An unexpected error occured.
-    Unauthorized:
-      description: Authorization information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Unauthorized
+            message: Forbidden, The request contained valid data and was understood by the server, but the server is refusing action.
   schemas:
     Signal:
       type: object
