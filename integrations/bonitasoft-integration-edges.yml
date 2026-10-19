@@ -1,0 +1,85 @@
+edges:
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/@bonitasoft/custom-widget-builder
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@bonitasoft/custom-widget-builder'
+      version: 0.0.13
+      released: '2024-06-18'
+      released_field: modified
+      lapsed: true
+      page: https://www.npmjs.com/package/@bonitasoft/custom-widget-builder
+      repo_leg: github-org:bonitasoft
+      publisher_leg: org:bonitasoft
+      matched_by: github-org
+    - name: '@bonitasoft/pagination-selector'
+      version: 1.0.7
+      released: '2024-06-18'
+      released_field: modified
+      lapsed: true
+      page: https://www.npmjs.com/package/@bonitasoft/pagination-selector
+      repo_leg: github-org:bonitasoft
+      publisher_leg: org:bonitasoft
+      matched_by: github-org
+    - name: '@bonitasoft/query-selector'
+      version: 1.0.8
+      released: '2024-06-18'
+      released_field: modified
+      lapsed: true
+      page: https://www.npmjs.com/package/@bonitasoft/query-selector
+      repo_leg: github-org:bonitasoft
+      publisher_leg: org:bonitasoft
+      matched_by: github-org
+    - name: '@bonitasoft/search-box'
+      version: 1.0.9
+      released: '2024-06-18'
+      released_field: modified
+      lapsed: true
+      page: https://www.npmjs.com/package/@bonitasoft/search-box
+      repo_leg: github-org:bonitasoft
+      publisher_leg: org:bonitasoft
+      matched_by: github-org
+    - name: '@bonitasoft/ui-designer-context-binding'
+      version: 0.0.14
+      released: '2024-06-18'
+      released_field: modified
+      lapsed: true
+      page: https://www.npmjs.com/package/@bonitasoft/ui-designer-context-binding
+      repo_leg: github-org:bonitasoft
+      publisher_leg: org:bonitasoft
+      matched_by: github-org
+    current: false
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+generated: '2026-10-18'
+method: searched
+source:
+- https://api.nuget.org/v3
+- https://crates.io/api/v1
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
+checked:
+- https://api.nuget.org/v3
+- https://crates.io/api/v1
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
