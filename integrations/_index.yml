@@ -70,3 +70,39 @@
     detected: '2026-10-18'
   status: not-a-workflow
   arazzo: null
+- slug: bonitasoft-docker-official-images
+  label: Docker Official Images
+  partner: docker-hub
+  partner_name: Docker Official Images
+  category: Docker Official Images programme (upstream-maintained official container image)
+  type: register
+  channel: standard-directory
+  evidence: https://hub.docker.com/_/bonita
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: Docker Official Images (hub.docker.com/v2/repositories/library/ + github.com/docker-library/official-images/library/<image>
+      manifests)
+    standard: Docker Official Images
+    spec_file: null
+    role: official-image-upstream-maintainer
+    registered_name: Ofelia
+    github_org: bonitasoft
+    matched_domain: ofelia.com
+    matched_by: domain
+    identity_leg: org-profile-site
+    images:
+    - bonita
+    certified_products:
+    - product: Docker Official Image
+      product_type: container image
+      standard: Docker Official Images
+      lapsed: false
+    signal_note: 'the image''s GitRepo is owned by this provider''s GitHub organisation (identity: the org''s own
+      profile website or its maintainers'' e-mail domain, held in domain_lookup, name-gated); every update is reviewed
+      by Docker''s docker-library team against the Official Images guidelines. certified_products = ONE entry for
+      the product type; image and pull counts are context, never counted'
+    detected_by: sweep-docker-hub-verified-publishers.py
+    detected: '2026-10-23'
+  status: not-a-workflow
+  arazzo: null
